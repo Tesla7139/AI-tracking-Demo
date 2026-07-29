@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Gift, Mail, Phone, Sparkles, X } from "lucide-react";
+import { ArrowLeft, Gift, Mail, Phone, Sparkles } from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { currencySymbol } from "@/lib/site";
 import { brandDidYouKnows, buildNewArrivals, buildOrderItems, orderDetails } from "@/lib/tracking";
@@ -14,10 +13,11 @@ const CUSTOMER = "Alex Morgan";
 
 /**
  * The AI Email: the same personalized post-purchase experience from the tracking
- * page, re-flowed into a branded order email. Shown in a Gmail-style frame so the
- * value lands even for customers who never open the tracking page.
+ * page, re-flowed into a branded order email. Rendered INSIDE the demo screen (in
+ * place of the tracking page) in a Gmail-style reading pane, so it feels like part
+ * of the same product.
  */
-export function EmailModal({
+export function EmailView({
   brand,
   generated,
   onClose,
@@ -26,14 +26,11 @@ export function EmailModal({
   generated: Generated | null;
   onClose: () => void;
 }) {
-  const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
-  if (!mounted) return null;
 
   const accent = brand.brandColor;
   const sym = currencySymbol(brand.currency);
@@ -77,40 +74,35 @@ export function EmailModal({
       </span>
     );
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-[130] flex items-start justify-center overflow-y-auto bg-black/50 p-4 sm:p-8"
-      style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative my-auto w-full max-w-[640px] overflow-hidden rounded-2xl bg-white shadow-2xl"
-      >
-        {/* Gmail-style header */}
-        <div className="flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-50 px-5 py-3">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-neutral-900">
-              Your {brand.brandName} order is on the way!
-            </p>
-            <p className="truncate text-xs text-neutral-500">
-              {brand.brandName} &lt;{email}&gt; · to you
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            aria-label="Close email preview"
-            className="shrink-0 rounded-full p-1.5 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-800"
-          >
-            <X className="size-5" />
-          </button>
+  return (
+    <div className="min-h-full bg-neutral-100" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
+      {/* Gmail-style header — sticks to the top of the demo screen while the email scrolls */}
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-50 px-5 py-3">
+        <button
+          onClick={onClose}
+          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-200"
+        >
+          <ArrowLeft className="size-4" /> Back to tracking
+        </button>
+        <div className="min-w-0 text-right">
+          <p className="truncate text-sm font-semibold text-neutral-900">
+            Your {brand.brandName} order is on the way!
+          </p>
+          <p className="truncate text-xs text-neutral-500">
+            {brand.brandName} &lt;{email}&gt; · to you
+          </p>
         </div>
+      </div>
 
+      {/* Email reading pane — the branded email as a centered document */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="mx-auto my-6 w-full max-w-[620px] overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_-15px_rgba(0,0,0,0.25)] ring-1 ring-black/5"
+      >
         {/* Email body */}
-        <div className="max-h-[80vh] overflow-y-auto bg-white">
+        <div className="bg-white">
           {/* Logo */}
           <div className="flex justify-center px-6 py-8">
             <Logo />
@@ -270,7 +262,6 @@ export function EmailModal({
           </div>
         </div>
       </motion.div>
-    </div>,
-    document.body
+    </div>
   );
 }

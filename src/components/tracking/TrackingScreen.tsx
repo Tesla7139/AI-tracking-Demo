@@ -8,7 +8,7 @@ import { TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
 import type { Generated } from "@/hooks/useGenerated";
 import { FeaturePanel } from "./FeaturePanel";
 import { TourOverlay, type TargetRect } from "./TourOverlay";
-import { EmailModal } from "./EmailPreview";
+import { EmailView } from "./EmailPreview";
 
 /**
  * Frames the tracking page inside a "screen" on a light sky-blue backdrop (like
@@ -61,6 +61,7 @@ export function TrackingScreen({
     const onStart = (e: Event) => {
       const detail = (e as CustomEvent<{ step?: number }>).detail;
       const start = typeof detail?.step === "number" ? detail.step : 0;
+      setEmailOpen(false);
       setPreview(null);
       setStep(start);
     };
@@ -72,6 +73,7 @@ export function TrackingScreen({
   useEffect(() => {
     const onPreview = (e: Event) => {
       const card = (e as CustomEvent<{ card?: number }>).detail?.card ?? 0;
+      setEmailOpen(false);
       setStep(null);
       setPreview(firstSectionStepForCard(card));
     };
@@ -145,9 +147,13 @@ export function TrackingScreen({
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10"
         >
-          {/* Scrollable content */}
+          {/* Scrollable content — swaps to the AI email view inside the same screen */}
           <div ref={scrollRef} className="thin-scrollbar flex-1 overflow-y-auto overflow-x-hidden">
-            {children}
+            {emailOpen ? (
+              <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
+            ) : (
+              children
+            )}
           </div>
         </motion.div>
       </div>
@@ -165,10 +171,6 @@ export function TrackingScreen({
           onBack={() => setStep((s) => (s === null ? s : Math.max(s - 1, 0)))}
           onClose={endTour}
         />
-      )}
-
-      {emailOpen && (
-        <EmailModal brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
       )}
     </div>
   );
