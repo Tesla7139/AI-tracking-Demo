@@ -518,6 +518,52 @@ function isBrandLike(s: string): boolean {
   return t.length <= 30 && t.split(/\s+/).length <= 4;
 }
 
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h.slice(0, 6);
+  const n = parseInt(full, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+/** HSL saturation + lightness (0..1) for filtering out grays and near white/black. */
+function satLight({ r, g, b }: { r: number; g: number; b: number }): { s: number; l: number } {
+  const rn = r / 255, gn = g / 255, bn = b / 255;
+  const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  const s = max === min ? 0 : (max - min) / (1 - Math.abs(2 * l - 1));
+  return { s, l };
+}
+
+/**
+ * Fallback accent extractor: count every 6-digit hex in the markup, drop grays and
+ * near white/black, and return the most frequent reasonably-saturated color (nudged
+ * by saturation). This surfaces a store's real button/link/accent color when no
+ * usable theme-color meta is declared.
+ */
+function pickAccentFromHtml(html: string): string | null {
+  const counts = new Map<string, number>();
+  const re = /#([0-9a-f]{6})\b/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) {
+    const c = "#" + m[1].toLowerCase();
+    counts.set(c, (counts.get(c) || 0) + 1);
+  }
+  let best: string | null = null;
+  let bestScore = 0;
+  for (const [c, n] of counts) {
+    const { s, l } = satLight(hexToRgb(c));
+    if (l > 0.9 || l < 0.12) continue; // skip near-white / near-black
+    if (s < 0.22) continue; // skip grays / very muted
+    if (isTooLight(c)) continue;
+    const score = n * (0.5 + s); // frequency, weighted up by saturation
+    if (score > bestScore) {
+      bestScore = score;
+      best = c;
+    }
+  }
+  return best;
+}
+
 function parseBranding(
   html: string,
   base: URL
@@ -539,16 +585,30 @@ function parseBranding(
       ? titleName
       : domainName;
 
+  // Accent color: prefer declared meta colors (theme-color, then MS tile color); if
+  // those are missing/white/too-light, fall back to the most frequent vivid color in
+  // the page's markup (usually the brand's button/link/accent color).
   const themeColor = metaContent(html, [
     /<meta[^>]+name=["']theme-color["'][^>]+content=["']([^"']+)["']/i,
     /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']theme-color["']/i,
   ]);
-  const rawColor = themeColor && /^#?[0-9a-f]{3,8}$/i.test(themeColor.replace("#", ""))
-    ? themeColor.startsWith("#")
-      ? themeColor
-      : `#${themeColor}`
-    : null;
-  const brandColor = rawColor && !isTooLight(rawColor) ? rawColor : null;
+  const tileColor = metaContent(html, [
+    /<meta[^>]+name=["']msapplication-TileColor["'][^>]+content=["']([^"']+)["']/i,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']msapplication-TileColor["']/i,
+  ]);
+  const normHex = (v: string | null | undefined): string | null => {
+    if (!v) return null;
+    const t = v.trim();
+    return /^#?[0-9a-f]{3,8}$/i.test(t.replace("#", "")) ? (t.startsWith("#") ? t : `#${t}`) : null;
+  };
+  let brandColor: string | null = null;
+  for (const cand of [normHex(themeColor), normHex(tileColor)]) {
+    if (cand && !isTooLight(cand)) {
+      brandColor = cand;
+      break;
+    }
+  }
+  if (!brandColor) brandColor = pickAccentFromHtml(html);
 
   // Wide brand photo (used for the hero/promo imagery), separate from the logo.
   const ogImage = absolutize(

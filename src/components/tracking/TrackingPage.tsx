@@ -22,13 +22,11 @@ export function TrackingPage({
   location,
   weather,
   generated,
-  onReset,
 }: {
   brand: Brand;
   location: GeoLocation | null;
   weather: Weather | null;
   generated: Generated | null;
-  onReset: () => void;
 }) {
   const accent = brand.brandColor;
   const city = location?.city ?? null;
@@ -57,7 +55,7 @@ export function TrackingPage({
       className="w-full overflow-x-hidden bg-background"
       style={{ zoom: 0.81, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
-      <TrackingHeader brand={brand} onReset={onReset} />
+      <TrackingHeader brand={brand} />
 
       <div className="mx-auto w-full max-w-[1600px] px-4 py-5 md:px-6">
         <div id="tour-status" className="scroll-mt-24">

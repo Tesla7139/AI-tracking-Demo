@@ -75,12 +75,14 @@ function BrandLogo({ brand }: { brand: Brand }) {
   );
 }
 
-export function TrackingHeader({ brand, onReset }: { brand: Brand; onReset: () => void }) {
+export function TrackingHeader({ brand }: { brand: Brand }) {
   const { h, m, s } = useCountdown(5 * 3600 + 42 * 60);
+  const [showSale, setShowSale] = useState(true);
 
   return (
     <div className="w-full">
       {/* Sale ribbon — dark bar, white text, translucent pills (matches the Figma) */}
+      {showSale && (
       <div className="relative flex items-center justify-center px-6 py-3 text-sm text-white" style={{ background: "#26242a" }}>
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
           <span className="flex items-center gap-2">
@@ -104,13 +106,14 @@ export function TrackingHeader({ brand, onReset }: { brand: Brand; onReset: () =
           </button>
         </div>
         <button
-          onClick={onReset}
-          aria-label="Try another store"
+          onClick={() => setShowSale(false)}
+          aria-label="Dismiss announcement"
           className="absolute right-4 rounded p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
         >
           <X className="size-4" />
         </button>
       </div>
+      )}
 
       {/* Logo banner */}
       <div className="flex items-center justify-center border-b border-border/60 bg-white py-5">

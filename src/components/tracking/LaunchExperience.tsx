@@ -76,7 +76,6 @@ export function LaunchExperience({
               location={location}
               weather={weather}
               generated={generated}
-              onReset={onReset}
             />
           </TrackingScreen>
         )}
