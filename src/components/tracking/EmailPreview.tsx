@@ -221,7 +221,9 @@ export function EmailView({
           <div className="mx-6 mt-5 rounded-2xl bg-neutral-100 px-5 py-7">
             <p className="text-center text-lg text-neutral-800">Your Item in this Order</p>
             <p className="mt-1 text-center text-sm text-neutral-500">Order Id {orderDetails.orderId}</p>
-            <div className="mt-5 space-y-4">
+            {/* Fixed-height scroll so the box stays compact as items grow (matches the email design). */}
+            <div className="mt-5 max-h-[360px] space-y-4 overflow-y-auto pr-1">
+
               {items.map((it, i) => (
                 <div key={i} className="rounded-xl bg-white p-4">
                   <p className="mb-3 inline-block rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-500">
