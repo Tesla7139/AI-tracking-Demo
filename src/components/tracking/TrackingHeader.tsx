@@ -37,8 +37,11 @@ function BrandLogo({ brand }: { brand: Brand }) {
       : "text-5xl md:text-6xl";
   return (
     <span
-      className={`max-w-[92%] break-words text-center font-semibold leading-tight tracking-tight text-foreground ${size}`}
-      style={{ fontFamily: "var(--font-fraunces), Georgia, 'Times New Roman', serif" }}
+      className={`max-w-[92%] break-words text-center font-semibold leading-tight tracking-tight ${size}`}
+      style={{
+        color: brand.brandColor,
+        fontFamily: "var(--font-fraunces), Georgia, 'Times New Roman', serif",
+      }}
     >
       {name}
     </span>
@@ -53,7 +56,7 @@ export function TrackingHeader({ brand }: { brand: Brand }) {
     <div className="w-full">
       {/* Sale ribbon — dark bar, white text, translucent pills (matches the Figma) */}
       {showSale && (
-      <div className="relative flex items-center justify-center px-6 py-3 text-sm text-white" style={{ background: "#26242a" }}>
+      <div className="relative flex items-center justify-center px-6 py-3 text-sm text-white" style={{ background: brand.brandColor }}>
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
           <span className="flex items-center gap-2">
             <Gift className="size-4 shrink-0" />
