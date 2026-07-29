@@ -27,9 +27,30 @@ function useCountdown(seconds: number) {
 }
 
 function BrandLogo({ brand }: { brand: Brand }) {
-  // Brand name as a compact, rounded geometric wordmark (Poppins), sized to match
-  // the Figma's logo-to-content ratio (much smaller than a hero headline).
   const name = brand.brandName;
+  // Prefer the store's real logo (like newton's in the Figma) when it's a proper wide
+  // wordmark; fall back to a compact Poppins name for missing / square-favicon logos.
+  const [mode, setMode] = useState<"img" | "text">(brand.logo ? "img" : "text");
+
+  if (brand.logo && mode === "img") {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- remote brand logos from arbitrary hosts
+      <img
+        src={brand.logo}
+        alt={name}
+        className="h-11 w-auto max-w-[240px] object-contain md:h-12"
+        referrerPolicy="no-referrer"
+        onError={() => setMode("text")}
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          const ratio = img.naturalWidth / img.naturalHeight;
+          // Square / near-square (favicon) or tiny → not a real wordmark; use text.
+          if (!ratio || ratio < 1.6 || img.naturalWidth < 64) setMode("text");
+        }}
+      />
+    );
+  }
+
   const size =
     name.length > 26
       ? "text-xl md:text-2xl"
