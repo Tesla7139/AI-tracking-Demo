@@ -23,7 +23,7 @@ export function Navbar({ onProductTour }: { onProductTour?: () => void }) {
             href="#"
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all hover:brightness-110 active:scale-[0.98]"
           >
-            Get started for free
+            Book a free demo
           </a>
         </div>
       </Container>

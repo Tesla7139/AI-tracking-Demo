@@ -101,7 +101,7 @@ export function TrackingScreen({
     >
       <FeaturePanel brand={brand} className="hidden xl:flex" activeStep={activeIndex} />
 
-      {/* Right side: top bar (Start tour / Start free trial) + the framed screen */}
+      {/* Right side: top bar (Start tour / Book a free demo) + the framed screen */}
       <div className="flex h-full w-full min-w-0 max-w-[1040px] flex-col gap-3">
         <div className="flex min-w-0 shrink-0 items-center justify-between gap-3">
           <button
@@ -118,7 +118,7 @@ export function TrackingScreen({
             href="#"
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
           >
-            Start free trial
+            Book a free demo
           </a>
         </div>
 
