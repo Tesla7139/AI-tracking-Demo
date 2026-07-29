@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Monitor, Play, Smartphone } from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
@@ -10,6 +10,7 @@ import { FeaturePanel } from "./FeaturePanel";
 import { TourOverlay, type TargetRect } from "./TourOverlay";
 import { EmailView } from "./EmailPreview";
 import { DeviceContext } from "./device";
+import { PhoneFrame } from "./PhoneFrame";
 
 /**
  * Frames the tracking page inside a "screen" on a light sky-blue backdrop (like
@@ -171,25 +172,47 @@ export function TrackingScreen({
           </a>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16, scale: 0.985 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className={`flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10 transition-[border-radius] duration-500 ${
-            view === "mobile" ? "rounded-[44px]" : "rounded-[34px]"
-          }`}
-        >
-          {/* Scrollable content — swaps to the AI email view inside the same screen */}
-          <div ref={scrollRef} className="thin-scrollbar flex-1 overflow-y-auto overflow-x-hidden">
-            <DeviceContext.Provider value={view}>
-              {emailOpen ? (
-                <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
+        {/* The scrollable screen content, shared by both the desktop and phone frames. */}
+        {(() => {
+          const screen = (
+            <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
+              <DeviceContext.Provider value={view}>
+                {emailOpen ? (
+                  <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
+                ) : (
+                  children
+                )}
+              </DeviceContext.Provider>
+            </div>
+          );
+          return (
+            <AnimatePresence mode="wait" initial={false}>
+              {view === "desktop" ? (
+                <motion.div
+                  key="desktop"
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10"
+                >
+                  {screen}
+                </motion.div>
               ) : (
-                children
+                <motion.div
+                  key="mobile"
+                  initial={{ opacity: 0, scale: 0.82, y: 24 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.82, y: 24 }}
+                  transition={{ type: "spring", stiffness: 190, damping: 23 }}
+                  className="min-h-0 w-full flex-1"
+                >
+                  <PhoneFrame>{screen}</PhoneFrame>
+                </motion.div>
               )}
-            </DeviceContext.Provider>
-          </div>
-        </motion.div>
+            </AnimatePresence>
+          );
+        })()}
       </div>
 
       {activeIndex !== null && TOUR_STEPS[activeIndex] && (
