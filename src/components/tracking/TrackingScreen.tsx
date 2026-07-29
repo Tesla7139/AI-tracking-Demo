@@ -115,7 +115,7 @@ export function TrackingScreen({
     <div
       className="fixed inset-0 flex items-center justify-center gap-8 overflow-hidden p-3 sm:p-6 lg:gap-10 lg:p-10"
       style={{
-        background: "radial-gradient(130% 120% at 50% -10%, #eaf6ff 0%, #c7e6ff 55%, #a5d4ff 100%)",
+        background: "radial-gradient(130% 120% at 50% -10%, #f6fbff 0%, #e6f4ff 55%, #d3ecff 100%)",
       }}
     >
       <FeaturePanel brand={brand} className="hidden xl:flex" activeStep={activeIndex} />
