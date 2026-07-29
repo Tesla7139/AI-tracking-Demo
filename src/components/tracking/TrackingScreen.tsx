@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
+import { Monitor, Play, Smartphone } from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
 import type { Generated } from "@/hooks/useGenerated";
 import { FeaturePanel } from "./FeaturePanel";
 import { TourOverlay, type TargetRect } from "./TourOverlay";
 import { EmailView } from "./EmailPreview";
+import { DeviceContext } from "./device";
 
 /**
  * Frames the tracking page inside a "screen" on a light sky-blue backdrop (like
@@ -29,6 +30,8 @@ export function TrackingScreen({
   const [step, setStep] = useState<number | null>(null);
   // AI email preview modal open/closed.
   const [emailOpen, setEmailOpen] = useState(false);
+  // Device preview: desktop (wide frame) or mobile (phone-shaped frame).
+  const [view, setView] = useState<"desktop" | "mobile">("desktop");
   // Quick single-section preview index (feature-card click), or null when off.
   const [preview, setPreview] = useState<number | null>(null);
   const [rect, setRect] = useState<TargetRect | null>(null);
@@ -120,8 +123,12 @@ export function TrackingScreen({
     >
       <FeaturePanel brand={brand} className="hidden xl:flex" activeStep={activeIndex} />
 
-      {/* Right side: top bar (Start tour / Book a free demo) + the framed screen */}
-      <div className="flex h-full w-full min-w-0 max-w-[1040px] flex-col gap-3">
+      {/* Right side: top bar (Start tour / device toggle / Book a free demo) + the framed screen */}
+      <div
+        className={`flex h-full w-full min-w-0 flex-col gap-3 transition-[max-width] duration-500 ease-out ${
+          view === "mobile" ? "max-w-[440px]" : "max-w-[1040px]"
+        }`}
+      >
         <div className="flex min-w-0 shrink-0 items-center justify-between gap-3">
           <button
             type="button"
@@ -133,6 +140,29 @@ export function TrackingScreen({
             </span>
             Start tour
           </button>
+
+          {/* Desktop / Mobile toggle */}
+          <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/80 p-1 shadow-md ring-1 ring-black/5 backdrop-blur">
+            <button
+              type="button"
+              onClick={() => setView("desktop")}
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${
+                view === "desktop" ? "bg-primary text-white" : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <Monitor className="size-4" /> Desktop
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("mobile")}
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${
+                view === "mobile" ? "bg-primary text-white" : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <Smartphone className="size-4" /> Mobile
+            </button>
+          </div>
+
           <a
             href="#"
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
@@ -145,15 +175,19 @@ export function TrackingScreen({
           initial={{ opacity: 0, y: 16, scale: 0.985 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10"
+          className={`flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10 transition-[border-radius] duration-500 ${
+            view === "mobile" ? "rounded-[44px]" : "rounded-[34px]"
+          }`}
         >
           {/* Scrollable content — swaps to the AI email view inside the same screen */}
           <div ref={scrollRef} className="thin-scrollbar flex-1 overflow-y-auto overflow-x-hidden">
-            {emailOpen ? (
-              <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
-            ) : (
-              children
-            )}
+            <DeviceContext.Provider value={view}>
+              {emailOpen ? (
+                <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
+              ) : (
+                children
+              )}
+            </DeviceContext.Provider>
           </div>
         </motion.div>
       </div>

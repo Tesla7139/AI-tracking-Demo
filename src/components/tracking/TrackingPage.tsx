@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { MapPinned, Lightbulb } from "lucide-react";
 import { currencySymbol, type Brand, type GeoLocation, type Weather } from "@/lib/site";
 import { cityFunFacts, brandDidYouKnows, buildOrderItems, buildNewArrivals } from "@/lib/tracking";
+import { useDevice } from "./device";
 import type { Generated } from "@/hooks/useGenerated";
 import { TrackingHeader } from "./TrackingHeader";
 import { StatusCards } from "./StatusCards";
@@ -28,6 +29,7 @@ export function TrackingPage({
   weather: Weather | null;
   generated: Generated | null;
 }) {
+  const mobile = useDevice() === "mobile";
   const accent = brand.brandColor;
   const city = location?.city ?? null;
   const sym = currencySymbol(brand.currency);
@@ -63,7 +65,11 @@ export function TrackingPage({
         </div>
 
         {/* Two aligned rows: (Journey ∥ Weather+FunFact) then (Order Items ∥ DidYouKnow+OrderDetails+Promo) */}
-        <div className="mt-5 grid grid-cols-1 items-stretch gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div
+          className={`mt-5 grid grid-cols-1 items-stretch gap-5 ${
+            mobile ? "" : "lg:grid-cols-[minmax(0,1fr)_320px]"
+          }`}
+        >
           {/* Row 1 */}
           <div id="tour-journey" className="min-w-0 scroll-mt-24">
             <ShipmentJourney location={location} accent={accent} />

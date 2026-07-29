@@ -4,6 +4,7 @@ import type { Brand, GeoLocation } from "@/lib/site";
 import { estimatedDelivery, orderMock } from "@/lib/tracking";
 import { darken } from "@/lib/colors";
 import { CalendarMotif, TruckMotif, PinMotif } from "./animations";
+import { useDevice } from "./device";
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -29,15 +30,16 @@ export function StatusCards({
   brand: Brand;
   location: GeoLocation | null;
 }) {
+  const mobile = useDevice() === "mobile";
   const accent = brand.brandColor;
   const ink = darken(accent, 0.45); // dark brand shade for headings (e.g. newton's deep green)
   const edd = estimatedDelivery();
   const city = location?.city ?? "your city";
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div className={`grid grid-cols-1 gap-5 ${mobile ? "" : "lg:grid-cols-[minmax(0,1fr)_320px]"}`}>
       {/* Left pair: EDD + Status (sits over the main left column) */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className={`grid grid-cols-1 gap-5 ${mobile ? "" : "sm:grid-cols-2"}`}>
       {/* Estimated delivery */}
       <Card>
         <Illo>
