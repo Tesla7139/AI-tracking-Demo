@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import type { GeoLocation } from "@/lib/site";
@@ -15,6 +16,8 @@ export function ShipmentJourney({
 }) {
   const city = location?.city ?? "In transit";
   const journeySteps = buildJourneySteps(city);
+  // Whether the active step's detailed scan history is expanded.
+  const [detailsOpen, setDetailsOpen] = useState(true);
 
   return (
     <TrackingCard title="Shipment Journey" className="flex h-full flex-col">
@@ -84,15 +87,21 @@ export function ShipmentJourney({
 
                 {active && step.details && (
                   <div className="mt-3 flex flex-col gap-3">
-                    {step.details.map((d, di) => (
-                      <div key={di} className="rounded-lg bg-background-muted/60 p-3">
-                        <Row label="Location" value={d.location} />
-                        <Row label="Time" value={d.time} />
-                        <Row label="Remarks" value={d.remarks} />
-                      </div>
-                    ))}
-                    <button className="flex items-center gap-1 text-xs font-semibold text-foreground">
-                      Close Detailed Journey ▲
+                    {detailsOpen &&
+                      step.details.map((d, di) => (
+                        <div key={di} className="rounded-lg bg-background-muted/60 p-3">
+                          <Row label="Location" value={d.location} />
+                          <Row label="Time" value={d.time} />
+                          <Row label="Remarks" value={d.remarks} />
+                        </div>
+                      ))}
+                    <button
+                      type="button"
+                      onClick={() => setDetailsOpen((o) => !o)}
+                      className="flex w-fit items-center gap-1 text-xs font-semibold transition-colors hover:opacity-80"
+                      style={{ color: accent }}
+                    >
+                      {detailsOpen ? "Close Detailed Journey ▲" : "View Detailed Journey ▼"}
                     </button>
                   </div>
                 )}
