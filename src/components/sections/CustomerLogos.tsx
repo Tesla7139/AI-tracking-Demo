@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Marquee } from "@/components/primitives/Marquee";
-import { customerLogos, brandInfo, type CustomerLogo } from "@/lib/site";
+import { customerLogos, brandInfo, type CustomerLogo } from "@/lib/customers";
 
 /**
  * One brand in the strip. Hovering (or tapping, on touch) expands the card inline

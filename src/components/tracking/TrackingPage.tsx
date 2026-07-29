@@ -1,0 +1,110 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { MapPinned, Lightbulb } from "lucide-react";
+import { currencySymbol, type Brand, type GeoLocation, type Weather } from "@/lib/site";
+import { cityFunFacts, brandDidYouKnows, buildOrderItems, buildNewArrivals } from "@/lib/tracking";
+import type { Generated } from "@/hooks/useGenerated";
+import { TrackingHeader } from "./TrackingHeader";
+import { StatusCards } from "./StatusCards";
+import { WeatherWidget } from "./WeatherWidget";
+import { ShipmentJourney } from "./ShipmentJourney";
+import { OrderItems } from "./OrderItems";
+import { NewArrivals } from "./NewArrivals";
+import { InfoCard } from "./InfoCard";
+import { OrderDetails } from "./OrderDetails";
+import { TrackingFooter } from "./TrackingFooter";
+import { HeroBanner } from "./HeroBanner";
+import { PromoCard } from "./PromoCard";
+
+export function TrackingPage({
+  brand,
+  location,
+  weather,
+  generated,
+  onReset,
+}: {
+  brand: Brand;
+  location: GeoLocation | null;
+  weather: Weather | null;
+  generated: Generated | null;
+  onReset: () => void;
+}) {
+  const accent = brand.brandColor;
+  const city = location?.city ?? null;
+  const sym = currencySymbol(brand.currency);
+  const arrivals = buildNewArrivals(brand.products);
+
+  // AI-generated content when available, else the static/curated fallbacks.
+  const funFacts = generated?.cityFacts?.length ? generated.cityFacts : cityFunFacts(city);
+  const brandFacts = generated?.brandFacts?.length
+    ? generated.brandFacts
+    : brandDidYouKnows(brand.brandName);
+
+  // Order items from the catalog; override the upsell with the AI pick when present.
+  const items = buildOrderItems(brand.products).map((it) => {
+    const rec = generated?.upsells?.find((u) => u.forItem === it.name);
+    return rec ? { ...it, rec: { ...it.rec, name: rec.name, blurb: rec.blurb } } : it;
+  });
+  const orderValue =
+    sym + items.reduce((s, it) => s + it.price * (it.qty || 1), 0).toLocaleString();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="w-full overflow-x-hidden bg-background"
+      style={{ zoom: 0.81, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+    >
+      <TrackingHeader brand={brand} onReset={onReset} />
+
+      <div className="mx-auto w-full max-w-[1600px] px-4 py-5 md:px-6">
+        <div id="tour-status" className="scroll-mt-24">
+          <StatusCards brand={brand} location={location} />
+        </div>
+
+        {/* Two aligned rows: (Journey ∥ Weather+FunFact) then (Order Items ∥ DidYouKnow+OrderDetails+Promo) */}
+        <div className="mt-5 grid grid-cols-1 items-stretch gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+          {/* Row 1 */}
+          <div id="tour-journey" className="min-w-0 scroll-mt-24">
+            <ShipmentJourney location={location} accent={accent} />
+          </div>
+          <div className="flex min-w-0 flex-col gap-5">
+            <div id="tour-weather" className="scroll-mt-24">
+              <WeatherWidget location={location} weather={weather} accent={accent} />
+            </div>
+            <InfoCard
+              icon={MapPinned}
+              title={city ? `${city} Fun Fact` : "Local Fun Fact"}
+              items={funFacts}
+              accent={accent}
+            />
+          </div>
+
+          {/* Row 2 */}
+          <div id="tour-items" className="min-w-0 scroll-mt-24">
+            <OrderItems items={items} accent={accent} sym={sym} />
+          </div>
+          <div className="flex min-w-0 flex-col gap-5">
+            <div id="tour-didyouknow" className="scroll-mt-24">
+              <InfoCard icon={Lightbulb} title="Did You Know?" items={brandFacts} accent={accent} />
+            </div>
+            <OrderDetails orderValue={orderValue} />
+            <PromoCard brand={brand} className="flex-1" />
+          </div>
+        </div>
+
+        {/* Full-width sections below the two-column area */}
+        <div className="mt-6 flex flex-col gap-6">
+          <HeroBanner brand={brand} />
+          <div id="tour-arrivals" className="scroll-mt-24">
+            <NewArrivals products={arrivals} accent={accent} sym={sym} />
+          </div>
+        </div>
+      </div>
+
+      <TrackingFooter brand={brand} />
+    </motion.div>
+  );
+}

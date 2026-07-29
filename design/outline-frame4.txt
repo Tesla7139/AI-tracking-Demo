@@ -1,0 +1,421 @@
+FRAME "pehr"  1280x2999
+[FRAME] "pehr" @(0,0) 1280x2999 bg=#fafafa
+  [FRAME] "footer" @(0,2652) 1280x347 bg=#e9ebed
+    [FRAME] "Frame 3568" @(128,2737) 1024x178 bg=#00000000
+      [FRAME] "Frame 3558" @(128,2737) 165x178 bg=#00000000
+        [TEXT] "Policy" @(128,2737) 165x10 text="Policy" 14px/700 Helvetica color=#323232
+        [FRAME] "Frame 3557" @(128,2779) 165x136 bg=#00000000
+          [TEXT] "Privacy Policy" @(128,2779) 165x22 text="Privacy Policy" 12px/400 Helvetica color=#323232
+          [TEXT] "Return & Exchange Policy" @(128,2817) 165x22 text="Return & Exchange Policy" 12px/400 Helvetica color=#323232
+          [TEXT] "Refund Policy" @(128,2855) 165x22 text="Refund Policy" 12px/400 Helvetica color=#323232
+          [TEXT] "Terms & Conditions" @(128,2893) 165x22 text="Terms & Conditions" 12px/400 Helvetica color=#323232
+      [FRAME] "Frame 3562" @(343,2737) 165x178 bg=#00000000
+        [TEXT] "Contact Us" @(343,2737) 165x10 text="Contact Us" 14px/700 Helvetica color=#323232
+        [FRAME] "Frame 3561" @(343,2779) 165x120 bg=#00000000
+          [FRAME] "Frame 3559" @(343,2779) 131x22 bg=#00000000
+            [GROUP] "Group 3350" @(343,2784) 12x12 bg=#00000000
+              [FRAME] "email-svgrepo-com 1" @(343,2784) 12x12 bg=#00000000
+            [TEXT] "help@yourbrand.com" @(359,2779) 115x22 text="help@yourbrand.com" 12px/400 Helvetica color=#323232
+          [FRAME] "Frame 3560" @(343,2817) 116x22 bg=#00000000
+            [GROUP] "Group" @(343,2822) 12x12 bg=#00000000
+              [VECTOR] "Vector" @(348,2825) 3x3 bg=#323232
+              [VECTOR] "Vector" @(348,2823) 5x5 bg=#323232
+              [VECTOR] "Vector" @(349,2822) 6x6 bg=#323232
+              [VECTOR] "Vector" @(343,2823) 11x11 bg=#323232
+            [TEXT] "+1 (123) 000-0000" @(359,2817) 100x22 text="+1 (123) 000-0000" 12px/600 Open Sans color=#a6a6a6
+          [TEXT] "Mon - Fri 6:00 am to 9:00 pm, Sat - Sun 9:00 am to 12:00 pm" @(343,2855) 165x44 text="Mon - Fri 6:00 am to 9:00 pm, Sat - Sun 9:00 am to 12:00 pm " 12px/400 Helvetica color=#323232
+      [FRAME] "Frame 3565" @(558,2737) 165x178 bg=#00000000
+        [TEXT] "Follow Us" @(558,2737) 165x10 text="Follow Us" 14px/700 Helvetica color=#323232
+        [FRAME] "Social Media Icons" @(558,2779) 165x60 bg=#00000000
+          [GROUP] "Social Media Icon" @(558,2779) 14x14 bg=#00000000
+            [GROUP] "Icon Vector" @(558,2781) 14x10 bg=#00000000
+              [VECTOR] "path7429" @(558,2781) 14x10 bg=#323232
+              [VECTOR] "polygon7431" @(563,2783) 4x4 bg=#ffffff
+            [RECTANGLE] "Icon Background" @(558,2779) 14x14
+          [GROUP] "Social Media Icon" @(604,2779) 14x14 bg=#00000000
+            [RECTANGLE] "Icon Background" @(604,2779) 14x14
+            [GROUP] "Group" @(604,2779) 14x14 bg=#00000000
+              [VECTOR] "Vector" @(604,2779) 14x14 bg=#323232
+              [VECTOR] "Vector" @(604,2786) 6x7 bg=#323232
+              [VECTOR] "Vector" @(611,2779) 6x7 bg=#323232
+          [GROUP] "Social Media Icon" @(650,2779) 14x14 bg=#00000000
+            [RECTANGLE] "Icon Background" @(650,2779) 14x14
+            [VECTOR] "Vector" @(651,2779) 11x14 bg=#323232
+          [GROUP] "XMLID_106_" @(696,2779) 14x14 bg=#00000000
+            [GROUP] "XMLID_107_" @(696,2779) 14x14 bg=#00000000
+              [GROUP] "XMLID_109_" @(696,2779) 3x14 bg=#00000000
+              [VECTOR] "XMLID_108_" @(701,2783) 9x10 bg=#323232
+          [GROUP] "XMLID_102_" @(558,2825) 14x14 bg=#00000000
+            [RECTANGLE] "Social Media Icon" @(558,2825) 14x14
+            [VECTOR] "XMLID_103_" @(563,2826) 5x12 bg=#323232
+          [GROUP] "XMLID_88_" @(604,2825) 14x14 bg=#00000000
+            [GROUP] "XMLID_90_" @(604,2825) 14x14 bg=#00000000
+              [VECTOR] "XMLID_97_" @(604,2825) 14x14 bg=#323232
+              [VECTOR] "XMLID_93_" @(607,2828) 7x7 bg=#323232
+              [VECTOR] "XMLID_91_" @(613,2827) 2x2 bg=#323232
+      [FRAME] "Frame 3567" @(772,2737) 165x178 bg=#00000000
+        [TEXT] "Download Our App" @(772,2737) 165x10 text="Download Our App" 14px/700 Helvetica color=#323232
+        [FRAME] "App Buttons" @(772,2779) 86x68 bg=#00000000
+          [GROUP] "Google Play Button" @(772,2779) 86x26 bg=#00000000
+            [VECTOR] "path99" @(772,2778) 86x26 bg=#ffffff
+            [GROUP] "Group 3362" @(782,2784) 13x15 bg=#00000000
+              [VECTOR] "path100" @(783,2784) 9x7 bg=#00f076
+              [VECTOR] "path101" @(783,2792) 9x7 bg=#f73448
+              [VECTOR] "path102" @(790,2789) 5x5 bg=#ffca00
+              [VECTOR] "path103" @(782,2784) 7x14 bg=#00d2ff
+            [VECTOR] "path104" @(801,2790) 7x7 bg=#191919
+            [VECTOR] "path105" @(808,2792) 4x4 bg=#191919
+            [VECTOR] "path106" @(813,2792) 4x4 bg=#191919
+            [VECTOR] "path107" @(822,2790) 1x7 bg=#191919
+            [VECTOR] "path108" @(824,2792) 4x4 bg=#191919
+            [VECTOR] "path109" @(818,2792) 4x6 bg=#191919
+            [VECTOR] "path110" @(831,2790) 1x7 bg=#191919
+            [VECTOR] "path111" @(833,2790) 2x4 bg=#191919
+            [VECTOR] "path112" @(832,2790) 2x1 bg=#191919
+            [VECTOR] "path113" @(832,2793) 2x1 bg=#191919
+            [VECTOR] "path114" @(836,2790) 1x7 bg=#191919
+            [VECTOR] "path115" @(837,2792) 3x4 bg=#191919
+            [VECTOR] "path116" @(841,2792) 4x6 bg=#191919
+            [VECTOR] "path117" @(805,2784) 2x3 bg=#191919
+            [VECTOR] "path118" @(807,2784) 2x3 bg=#191919
+            [VECTOR] "path119" @(811,2784) 0x3 bg=#191919
+            [VECTOR] "path120" @(812,2784) 2x3 bg=#191919
+            [VECTOR] "path121" @(816,2784) 3x3 bg=#191919
+            [VECTOR] "path122" @(820,2784) 2x3 bg=#191919
+            [VECTOR] "path123" @(801,2784) 3x3 bg=#191919
+          [GROUP] "App Store Button" @(772,2820) 86x26 bg=#00000000
+            [VECTOR] "path124" @(772,2820) 86x26 bg=#ffffff
+            [VECTOR] "path125" @(782,2830) 12x11 bg=#191919
+            [VECTOR] "path126" @(788,2826) 3x3 bg=#191919
+            [VECTOR] "path127" @(798,2825) 3x4 bg=#191919
+            [VECTOR] "path128" @(802,2826) 3x3 bg=#191919
+            [VECTOR] "path129" @(805,2826) 4x3 bg=#191919
+            [VECTOR] "path130" @(810,2826) 2x3 bg=#191919
+            [VECTOR] "path131" @(814,2825) 0x5 bg=#191919
+            [VECTOR] "path132" @(815,2826) 3x3 bg=#191919
+            [VECTOR] "path133" @(819,2826) 2x3 bg=#191919
+            [VECTOR] "path134" @(822,2825) 3x5 bg=#191919
+            [VECTOR] "path135" @(827,2826) 3x3 bg=#191919
+            [VECTOR] "path136" @(831,2826) 2x3 bg=#191919
+            [VECTOR] "path137" @(836,2825) 2x4 bg=#191919
+            [VECTOR] "path138" @(838,2825) 2x5 bg=#191919
+            [VECTOR] "path139" @(842,2826) 3x3 bg=#191919
+            [VECTOR] "path140" @(805,2834) 5x8 bg=#191919
+            [VECTOR] "path141" @(812,2834) 5x8 bg=#191919
+            [VECTOR] "path142" @(829,2834) 5x6 bg=#191919
+            [VECTOR] "path143" @(798,2832) 6x8 bg=#191919
+            [VECTOR] "path144" @(820,2832) 5x8 bg=#191919
+            [VECTOR] "path145" @(826,2833) 3x7 bg=#191919
+            [VECTOR] "path146" @(836,2834) 3x6 bg=#191919
+            [VECTOR] "path147" @(839,2834) 5x6 bg=#191919
+      [FRAME] "Frame 3569" @(987,2737) 165x178 bg=#00000000
+        [TEXT] "Powered By" @(987,2737) 165x10 text="Powered By" 14px/700 Helvetica color=#323232
+        [GROUP] "Group 46" @(987,2779) 65x9 bg=#00000000
+          [FRAME] "Layer_1" @(987,2779) 65x9 bg=#00000000
+            [VECTOR] "Vector" @(987,2779) 8x9 bg=#323232
+            [VECTOR] "Vector" @(997,2779) 5x9 bg=#323232
+            [VECTOR] "Vector" @(1003,2779) 1x9 bg=#323232
+            [VECTOR] "Vector" @(1006,2779) 8x9 bg=#323232
+            [VECTOR] "Vector" @(1015,2779) 6x9 bg=#323232
+            [VECTOR] "Vector" @(1023,2779) 6x9 bg=#323232
+            [VECTOR] "Vector" @(1030,2779) 9x9 bg=#323232
+            [VECTOR] "Vector" @(1039,2779) 7x9 bg=#323232
+            [VECTOR] "Vector" @(1046,2779) 6x9 bg=#323232
+        [RECTANGLE] "image 27" @(987,2820) 60x60 r=146.93878173828125
+  [RECTANGLE] "scrollbar" @(795,1003) 4x114 bg=#d9d9d9 r=3
+  [FRAME] "Frame 3572" @(128,345) 675x1265 bg=#00000000
+    [GROUP] "Group 1000008977" @(128,345) 675x504 bg=#00000000
+      [FRAME] "Shipment journey" @(128,345) 675x504 bg=#ffffff r=16
+        [FRAME] "Section Header" @(152,369) 175x23 bg=#00000000
+          [TEXT] "Section Title" @(152,369) 175x23 text="Shipment Journey" 20px/700 Helvetica color=#030404
+        [LINE] "Line 5" @(152,416) 627x0
+        [GROUP] "Timeline Container" @(152,440) 627x466 bg=#00000000
+          [VECTOR] "Vector 200" @(166,498) 0x399
+          [VECTOR] "Vector 201" @(166,449) 0x143 bg=#00a587
+          [FRAME] "Status Row" @(158,440) 239x34 bg=#00000000
+            [RECTANGLE] "Status Icon" @(158,440) 16x16 bg=#597c7c r=100
+            [FRAME] "Status Text Container" @(188,440) 204x34 bg=#00000000
+              [TEXT] "Status Text" @(188,440) 204x16 text="Order Placed" 14px/700 Helvetica color=#263238
+              [TEXT] "Status Subtext" @(188,460) 204x14 text="Guttenberg, Tue 1 July, 4:00 Pm" 12px/400 Helvetica color=#5e6e76
+          [FRAME] "Status Row" @(158,509) 239x34 bg=#00000000
+            [RECTANGLE] "Status Icon" @(158,509) 16x16 bg=#597c7c r=100
+            [FRAME] "Status Text Container" @(188,509) 204x34 bg=#00000000
+              [TEXT] "Status Text" @(188,509) 204x16 text="Dispatched" 14px/700 Helvetica color=#263238
+              [TEXT] "Status Subtext" @(188,529) 204x14 text="Guttenberg, Wed 2 July, 5:00 Pm" 12px/400 Helvetica color=#5e6e76
+          [FRAME] "Status Row" @(152,578) 247x36 bg=#00000000
+            [GROUP] "Status Icon" @(152,578) 28x28 bg=#00000000
+              [ELLIPSE] "Ellipse 33" @(152,578) 28x28 bg=#597c7c33
+            [FRAME] "Status Text Container" @(188,578) 206x36 bg=#00000000
+              [TEXT] "Status Text" @(188,578) 206x16 text="In Transit" 14px/700 Helvetica color=#000000
+              [TEXT] "Status Subtext" @(188,600) 206x14 text="New York, Thu 3 July, 8:00 Pm" 12px/700 Helvetica color=#030404
+          [FRAME] "Status Row" @(158,833) 143x16 bg=#00000000
+            [RECTANGLE] "Status Icon" @(158,833) 16x16 bg=#ffffff r=100
+            [GROUP] "Status Text Container" @(188,833) 110x16 bg=#00000000
+              [TEXT] "Status Text" @(188,833) 110x16 text="Out For Delivery" 14px/700 Helvetica color=#263238
+          [FRAME] "Status Row" @(158,890) 96x16 bg=#00000000
+            [RECTANGLE] "Status Icon" @(158,890) 16x16 bg=#ffffff r=100
+            [GROUP] "Status Text Container" @(188,890) 64x16 bg=#00000000
+              [TEXT] "Status Text" @(188,890) 64x16 text="Delivered" 14px/700 Helvetica color=#263238
+          [FRAME] "Details Container" @(189,622) 590x175 bg=#00000000
+            [FRAME] "Details Row" @(189,622) 590x74 bg=#fafafa r=8
+              [FRAME] "Labels Column" @(197,630) 61x58 bg=#00000000
+              [FRAME] "Values Column" @(266,630) 205x58 bg=#00000000
+            [FRAME] "Details Row" @(189,704) 590x74 bg=#fafafa r=8
+              [FRAME] "Labels Column" @(197,712) 61x58 bg=#00000000
+              [FRAME] "Values Column" @(266,712) 231x58 bg=#00000000
+            [FRAME] "Close Journey Row" @(189,786) 124x11 bg=#00000000
+              [TEXT] "Close Journey Text" @(189,786) 111x11 text="Close Detailed Journey" 10px/700 Helvetica color=#111111
+              [VECTOR] "Vector" @(303,789) 10x5 bg=#111111
+        [INSTANCE] "beamer" @(146,572) 40x40 bg=#00000000 r=25
+          [ELLIPSE] "Ellipse 231" @(158,584) 16x16 bg=#597c7c
+      [RECTANGLE] "scrollbar" @(795,442) 4x89 bg=#d9d9d9 r=3
+    [FRAME] "Order items" @(128,873) 675x737 bg=#ffffff r=16
+      [FRAME] "Title" @(152,897) 126x23 bg=#00000000
+        [TEXT] "Order Item(s)" @(152,897) 126x23 text="Order Item(s)" 20px/700 Helvetica color=#030404
+      [LINE] "divider" @(152,944) 627x0
+      [FRAME] "Items" @(152,968) 627x855 bg=#00000000
+        [FRAME] "Item 1" @(152,968) 627x412 bg=#00000000
+          [FRAME] "Item Info" @(152,968) 627x116 bg=#00000000
+            [FRAME] "Item Number" @(152,968) 53x19 bg=#eceff1 r=12
+              [TEXT] "Brand" @(160,972) 37x11 text="Item 1/2" 10px/400 Helvetica color=#030404
+            [FRAME] "Item" @(152,1003) 627x81 bg=#ffffff r=8
+              [FRAME] "Item Container" @(152,1003) 627x81 bg=#00000000
+              [FRAME] "Frame 3397" @(168,1112) 296x178 bg=#f9f9f9 r=10
+          [FRAME] "Style tip" @(152,1100) 627x178 bg=#eaeeff r=8
+            [GROUP] "Group 1000008978" @(168,1116) 580x48 bg=#00000000
+              [GROUP] "Icon Container" @(168,1116) 32x32 bg=#00000000
+              [TEXT] "Style Tip Text" @(210,1116) 538x48 text="Pro Tip: Layer the Denim Jacket Vintage Wash over a classic white tee and pair it with neutral Joggers for an effortless" 16px/700 Helvetica color=#030404
+            [FRAME] "Frame 3581" @(168,1180) 595x82 bg=#00000000
+              [FRAME] "Frame 3579" @(168,1180) 595x82 bg=#fafafa r=8
+          [FRAME] "Care tip" @(152,1294) 627x86 bg=#f2fbfe r=8
+            [GROUP] "Icon" @(168,1321) 32x32 bg=#00000000
+              [ELLIPSE] "Ellipse 37" @(168,1321) 32x32 bg=#cce5ff
+              [FRAME] "volunteer_activism_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(175,1328) 18x18 bg=#00000000
+            [TEXT] "Care Tip Text" @(210,1310) 553x54 text="Care Tip: Machine wash your Denim Jacket Vintage Wash in cold water on a gentle cycle and hang it to dry to preserve its" 16px/700 Helvetica color=#030404
+          [FRAME] "Usage tip" @(152,1256) 627x64 bg=#fff6ed r=8
+            [GROUP] "Icon container" @(168,1272) 32x32 bg=#00000000
+              [ELLIPSE] "Ellipse 37" @(168,1272) 32x32 bg=#ffeddc
+              [FRAME] "chat_paste_go_2_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(175,1279) 18x18 bg=#00000000
+            [TEXT] "Usage tip text" @(210,1272) 553x32 text="Usage Tip: These versatile sneakers work great for casual outings, light sports, and streetwear." 16px/700 Helvetica color=#030404
+        [LINE] "divider" @(152,1404) 627x0
+        [FRAME] "Item 4" @(152,1428) 627x395 bg=#00000000
+          [FRAME] "Item Info" @(152,1428) 627x113 bg=#00000000
+            [FRAME] "Item Number" @(152,1428) 53x19 bg=#eceff1 r=12
+              [TEXT] "Brand" @(160,1432) 37x11 text="Item 2/2" 10px/400 Helvetica color=#030404
+            [FRAME] "Item" @(152,1463) 627x78 bg=#ffffff r=8
+              [FRAME] "Item Container" @(152,1463) 627x78 bg=#00000000
+              [FRAME] "Frame 3397" @(168,1572) 296x178 bg=#f9f9f9 r=10
+          [FRAME] "Style tip" @(152,1557) 627x186 bg=#eaeeff r=8
+            [GROUP] "Group 1000008978" @(168,1573) 580x48 bg=#00000000
+              [GROUP] "Icon Container" @(168,1573) 32x32 bg=#00000000
+              [TEXT] "Style Tip Text" @(210,1573) 538x48 text="Pro Tip: Style the Recess Sneakers in Maritime Blue with rolled-up joggers or casual shorts from Pehr's collection to le" 16px/700 Helvetica color=#030404
+            [FRAME] "Frame 3581" @(168,1645) 595x82 bg=#00000000
+              [FRAME] "Frame 3579" @(168,1645) 595x82 bg=#fafafa r=8
+          [FRAME] "Care tip" @(152,1759) 627x64 bg=#f2fbfe r=8
+            [GROUP] "Icon" @(168,1775) 32x32 bg=#00000000
+              [ELLIPSE] "Ellipse 37" @(168,1775) 32x32 bg=#cce5ff
+              [FRAME] "volunteer_activism_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(175,1782) 18x18 bg=#00000000
+            [TEXT] "Care Tip Text" @(210,1775) 553x32 text="Care Tip: Always swab out the interior of your Yamaha YFL-362 flute after each use to prevent moisture buildup that can " 16px/700 Helvetica color=#030404
+          [FRAME] "Usage tip" @(152,1716) 627x64 bg=#fff6ed r=8
+            [GROUP] "Icon container" @(168,1732) 32x32 bg=#00000000
+              [ELLIPSE] "Ellipse 37" @(168,1732) 32x32 bg=#ffeddc
+              [FRAME] "chat_paste_go_2_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(175,1739) 18x18 bg=#00000000
+            [TEXT] "Usage tip text" @(210,1732) 553x32 text="Usage Tip: These versatile sneakers work great for casual outings, light sports, and streetwear." 16px/700 Helvetica color=#030404
+  [FRAME] "weather widget" @(827,345) 325x264 bg=#ffffff80 r=16
+    [FRAME] "Header" @(851,369) 198x32 bg=#00000000
+      [FRAME] "Icon" @(851,369) 32x32 bg=#00000026 r=16
+        [FRAME] "thermometer_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(858,376) 18x18 bg=#00000000
+          [VECTOR] "Vector" @(863,378) 8x14 bg=#000000
+      [TEXT] "Location" @(891,376) 158x18 text="Weather at New York" 16px/700 Helvetica color=#030404
+    [LINE] "Line 127" @(851,417) 277x0
+    [RECTANGLE] "Animation - 1744891669220 1" @(983,425) 153x138
+    [FRAME] "Weather Info" @(851,433) 142x152 bg=#00000000
+      [FRAME] "Weather Details" @(851,433) 93x95 bg=#00000000
+        [FRAME] "Temperature Container" @(851,433) 41x28 bg=#00000000
+          [TEXT] "Temperature" @(851,433) 41x28 text="2°C" 24px/700 Helvetica color=#030404
+        [TEXT] "Condition" @(851,477) 62x21 text="Cloudy" 18px/700 Helvetica color=#000000
+        [TEXT] "Time" @(851,514) 93x14 text="Today at 9:00 pm" 12px/400 Helvetica color=#5e6e76
+      [FRAME] "Additional Info" @(851,553) 275x32 bg=#00000000
+        [FRAME] "Humidity Container" @(851,553) 134x32 bg=#ffffff r=4
+          [FRAME] "humidity_low_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(864,562) 14x14 bg=#00000000
+            [VECTOR] "Vector" @(867,563) 9x11 bg=#5e6e76
+          [TEXT] "Humidity" @(880,561) 91x16 text="Humidity: 60%" 14px/400 Helvetica color=#030404
+        [FRAME] "Wind Container" @(993,553) 134x32 bg=#ffffff r=4
+          [FRAME] "air_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(1008,562) 14x14 bg=#00000000
+            [VECTOR] "Vector" @(1009,564) 12x10 bg=#5e6e76
+          [TEXT] "Wind" @(1032,561) 79x16 text="Wind: 9 mph" 14px/400 Helvetica color=#030404
+  [FRAME] "location fact" @(827,633) 325x214 bg=#ffffff80 r=16
+    [FRAME] "Container" @(851,657) 183x32 bg=#00000000
+      [FRAME] "Icon Container" @(851,657) 32x32 bg=#00000026 r=16
+        [FRAME] "distance_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(858,664) 18x18 bg=#00000000
+          [VECTOR] "Vector" @(862,666) 11x15 bg=#000000
+      [TEXT] "Title" @(891,664) 143x18 text="New York Fun Fact " 16px/700 Helvetica color=#030404
+    [LINE] "Line 127" @(851,705) 277x0
+    [TEXT] "Description" @(851,721) 277x80 text="New York City is home to over 800 languages spoken by its residents, making it one of the most linguistically diverse ci" 14px/400 Helvetica color=#030404
+    [FRAME] "Pagination Container" @(851,817) 277x6 bg=#00000000
+      [RECTANGLE] "Pagination Active" @(851,817) 19x6 bg=#00000080 r=3
+      [ELLIPSE] "Ellipse 35" @(874,817) 6x6 bg=#0000001a
+      [ELLIPSE] "Ellipse 36" @(884,817) 6x6 bg=#0000001a
+  [FRAME] "did you know" @(827,871) 325x206 bg=#ffffff80 r=16
+    [FRAME] "Icon Container" @(851,895) 157x32 bg=#00000000
+      [FRAME] "Icon Background" @(851,895) 32x32 bg=#00000026 r=16
+        [FRAME] "lightbulb_2_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(858,902) 18x18 bg=#00000000
+          [VECTOR] "Vector" @(862,904) 11x15 bg=#000000
+      [TEXT] "Title" @(891,902) 117x18 text="Did You Know?" 16px/700 Helvetica color=#030404
+    [LINE] "Line 127" @(851,943) 277x0
+    [FRAME] "Content Container" @(851,959) 277x104 bg=#00000000
+      [TEXT] "Description" @(851,959) 277x82 text="Pehr is deeply committed to ethical manufacturing, partnering with OEKO-TEX certified facilities to ensure every product" 14px/400 Helvetica color=#030404
+      [FRAME] "Pagination Container" @(851,1057) 277x6 bg=#00000000
+        [RECTANGLE] "Active Pagination Dot" @(851,1057) 19x6 bg=#00000080 r=3
+        [ELLIPSE] "Ellipse 35" @(874,1057) 6x6 bg=#0000001a
+        [ELLIPSE] "Ellipse 36" @(884,1057) 6x6 bg=#0000001a
+  [RECTANGLE] "ChatGPT Image Jul 17, 2026, 11_35_47 AM 1" @(128,1634) 1024x512 r=16
+  [GROUP] "Group 1000008994" @(128,2170) 1024x433 bg=#00000000
+    [FRAME] "new arrivals" @(128,2170) 1024x433 bg=#ffffff r=16
+      [TEXT] "Header" @(152,2194) 976x23 text="Explore Our New Arrivals" 20px/700 Helvetica color=#030404
+      [LINE] "Line 5" @(152,2241) 976x0
+      [FRAME] "Product List" @(152,2265) 1000x314 bg=#00000000
+        [FRAME] "Product Card" @(152,2265) 214x314 bg=#00000000
+          [RECTANGLE] "image" @(152,2265) 214x214
+          [FRAME] "Item" @(152,2479) 214x100 bg=#ffffff
+            [FRAME] "Product Info" @(168,2495) 182x53 bg=#00000000
+              [TEXT] "Item" @(168,2495) 182x16 text="Printed Convertible Diaper Bag" 14px/700 Helvetica color=#030404
+              [TEXT] "Price" @(168,2527) 41x21 text="$195" 18px/700 Helvetica color=#030404
+        [FRAME] "Product Card" @(382,2265) 214x314 bg=#00000000
+          [RECTANGLE] "image" @(382,2265) 214x214
+          [FRAME] "Item" @(382,2479) 214x100 bg=#ffffff
+            [FRAME] "Product Info" @(398,2495) 182x53 bg=#00000000
+              [TEXT] "Item" @(398,2495) 182x16 text="Checkmate Bloomer" 14px/700 Helvetica color=#030404
+              [TEXT] "Price" @(398,2527) 56x21 text="$13.99" 18px/700 Helvetica color=#030404
+        [FRAME] "Product Card" @(612,2265) 214x314 bg=#00000000
+          [RECTANGLE] "image" @(612,2265) 214x214
+          [FRAME] "Item" @(612,2479) 214x100 bg=#ffffff
+            [FRAME] "Product Info" @(628,2495) 182x53 bg=#00000000
+              [TEXT] "Item" @(628,2495) 182x16 text="Seersucker Bucket Hat" 14px/700 Helvetica color=#030404
+              [TEXT] "Price" @(628,2527) 56x21 text="$17.99" 18px/700 Helvetica color=#030404
+        [FRAME] "Product Card" @(842,2265) 214x314 bg=#00000000
+          [RECTANGLE] "image" @(842,2265) 214x214
+          [FRAME] "Item" @(842,2479) 214x100 bg=#ffffff
+            [FRAME] "Product Info" @(858,2495) 182x53 bg=#00000000
+              [TEXT] "Item" @(858,2495) 182x16 text="Tennis Toddler Short" 14px/700 Helvetica color=#030404
+              [TEXT] "Price" @(858,2527) 56x21 text="$12.99" 18px/700 Helvetica color=#030404
+        [FRAME] "Product Card" @(1072,2265) 214x314 bg=#00000000
+          [RECTANGLE] "image" @(1072,2265) 214x214
+          [FRAME] "Item" @(1072,2479) 214x100 bg=#ffffff
+            [FRAME] "Product Info" @(1088,2495) 182x53 bg=#00000000
+              [TEXT] "Item" @(1088,2495) 182x16 text="Checkmate Pocket One-Piece" 14px/700 Helvetica color=#030404
+              [TEXT] "Price" @(1088,2527) 56x21 text="$14.99" 18px/700 Helvetica color=#030404
+    [FRAME] "Frame 3520" @(1100,2390) 28x28 bg=#00000000
+      [GROUP] "Group 3318" @(1100,2390) 28x28 bg=#00000000
+        [ELLIPSE] "Ellipse 34" @(1100,2390) 28x28 bg=#ffffff
+        [VECTOR] "Vector" @(1111,2398) 8x13 bg=#263238
+  [FRAME] "Header" @(0,0) 1280x130 bg=#00000000
+    [FRAME] "sale-ribbon" @(0,0) 1280x50 bg=#597c7c
+      [FRAME] "Content Container" @(112,13) 1024x25 bg=#00000000
+        [FRAME] "Message Container" @(143,13) 963x25 bg=#00000000
+          [FRAME] "Text and Timer Container" @(143,13) 682x24 bg=#00000000
+            [FRAME] "Sale Message Container" @(143,17) 603x16 bg=#00000000
+              [FRAME] "featured_seasonal_and_gifts_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(143,17) 16x16 bg=#00000000
+              [TEXT] "Sale Message" @(167,17) 579x16 text="Summer Slumber Party Sale: 25% OFF 1000's of finds + FREE Shipping Sitewide Use code:\r" 14px/400 Helvetica color=#ffffff
+            [FRAME] "Flash Container" @(762,13) 63x24 bg=#ffffff33 r=4
+              [TEXT] "Flash Text" @(770,17) 47x16 text="FLASH" 14px/700 Helvetica color=#ffffff
+          [FRAME] "Timer Container" @(841,13) 158x24 bg=#00000000
+            [FRAME] "timer_24dp_5F6368_FILL0_wght400_GRAD0_opsz24 1" @(841,13) 24x24 bg=#00000000
+              [VECTOR] "Vector" @(844,14) 18x21 bg=#ffffff
+            [FRAME] "Time Display Container" @(877,13) 122x24 bg=#00000000
+              [FRAME] "Hours Container" @(877,13) 32x24 bg=#ffffff33 r=4
+              [TEXT] "Colon" @(913,17) 5x16 text=":" 14px/700 Helvetica color=#ffffff
+              [FRAME] "Minutes Container" @(922,13) 32x24 bg=#ffffff33 r=4
+              [TEXT] "Colon" @(958,17) 5x16 text=":" 14px/700 Helvetica color=#ffffff
+              [FRAME] "Seconds Container" @(967,13) 32x24 bg=#ffffff33 r=4
+          [FRAME] "Shop Now Container" @(1015,13) 91x25 bg=#ffffff33 r=4
+            [TEXT] "Shop Now Text" @(1023,17) 75x17 text="Shop Now" 14px/700 Montserrat color=#ffffff
+      [FRAME] "close icon" @(1144,13) 24x24 bg=#00000000
+        [VECTOR] "Vector" @(1149,18) 14x14 bg=#ffffff
+    [FRAME] "Logo banner" @(0,50) 1280x80 bg=#ffffff
+      [RECTANGLE] "image 74" @(552,62) 176x56
+  [FRAME] "EDD" @(128,154) 325x167 bg=#ffffff r=16
+    [FRAME] "Container" @(152,178) 181x119 bg=#00000000
+      [FRAME] "Delivery Info" @(152,178) 181x52 bg=#ffffff
+        [TEXT] "Delivery Label" @(152,178) 196x16 text="Estimated Delivery By" 14px/400 Helvetica color=#4e7373
+        [TEXT] "Delivery Date" @(152,202) 266x28 text="Sat, July" 24px/700 Helvetica color=#4e7373
+      [TEXT] "Delivery Day" @(152,242) 181x55 text="25" 70px/700 Helvetica color=#4e7373
+    [ELLIPSE] "mask" @(313,196) 154x154 bg=#1111110a
+    [INSTANCE] "spring" @(339,215) 116x104 bg=#00000000
+      [FRAME] "Spiral" @(339,215) 84x84 bg=#00000000
+        [RECTANGLE] "Spiral" @(339,215) 84x84
+        [VECTOR] "Color" @(346,229) 71x59
+        [RECTANGLE] "Light" @(339,215) 84x84
+      [FRAME] "Spiral" @(389,253) 66x66 bg=#00000000
+        [RECTANGLE] "Spiral" @(389,253) 66x66
+        [VECTOR] "Color" @(398,259) 49x53
+        [RECTANGLE] "Light" @(389,253) 66x66
+    [RECTANGLE] "🟢 https://app.lottiefiles.com/animation/6d65bff9-a17a-4154-abf5-3f992540b0e0" @(262,203) 256x126
+  [GROUP] "Group 1000008995" @(477,154) 325x167 bg=#00000000 r=16
+    [FRAME] "Status" @(477,154) 325x167 bg=#ffffff r=16
+      [FRAME] "Container" @(501,178) 132x119 bg=#00000000 r=8
+        [FRAME] "Status Info" @(501,178) 132x80 bg=#00000000
+          [TEXT] "Status Label" @(501,178) 163x16 text="Current Status" 14px/400 Helvetica color=#4e7373
+          [TEXT] "Status Value" @(501,202) 100x56 text="On The Way" 24px/700 Helvetica color=#4e7373
+        [FRAME] "Badge Container" @(501,274) 85x18 bg=#ababab1a r=16
+          [TEXT] "Badge Text" @(509,278) 69x11 text="Running Timely" 10px/400 Helvetica color=#000000
+      [INSTANCE] "Group 1000008974" @(725,224) 68x82 bg=#00000000
+        [GROUP] "Mask group" @(725,252) 50x49 bg=#00000000
+          [VECTOR] "Vector 202" @(725,252) 50x49 bg=#d9d9d9
+          [FRAME] "Cones" @(721,231) 75x76 bg=#00000000
+            [RECTANGLE] "Cones" @(721,253) 59x55
+            [GROUP] "Colors" @(729,253) 45x47 bg=#00000000
+              [VECTOR] "Color-3" @(729,253) 45x47 bg=#4ec2dc
+            [RECTANGLE] "Lights" @(721,253) 59x55
+        [GROUP] "Mask group" @(739,219) 36x36 bg=#00000000
+          [VECTOR] "Vector 202" @(739,219) 36x36 bg=#d9d9d9
+          [FRAME] "Cones" @(730,215) 55x54 bg=#00000000
+            [RECTANGLE] "Cones" @(735,215) 41x41
+            [GROUP] "Colors" @(740,221) 33x33 bg=#00000000
+              [VECTOR] "Color-3" @(740,221) 33x33 bg=#b169d2
+            [RECTANGLE] "Lights" @(735,215) 41x41
+      [ELLIPSE] "mask" @(662,209) 154x154 bg=#1111110a
+      [RECTANGLE] "truck" @(657,178) 164x164
+      [RECTANGLE] "🟢 https://app.lottiefiles.com/animation/d5c0a4c0-b5b1-4e12-a5a8-34c2104890dc" @(670,204) 136x136
+  [FRAME] "Location" @(827,154) 325x167 bg=#ffffff r=16
+    [FRAME] "Container" @(851,178) 156x119 bg=#00000000 r=8
+      [FRAME] "Update Info" @(851,178) 142x80 bg=#00000000
+        [FRAME] "Header" @(851,178) 88x16 bg=#00000000
+          [TEXT] "Title" @(851,178) 88x16 text="Latest Update" 14px/400 Helvetica color=#4e7373
+        [TEXT] "Location" @(851,202) 142x56 text="Received At New York" 24px/700 Helvetica color=#4e7373
+      [FRAME] "Timestamp Container" @(851,274) 96x18 bg=#fbedba r=16
+        [TEXT] "Timestamp" @(859,278) 80x11 text="Thu 24 July, 8 PM" 10px/400 Helvetica color=#030404
+    [ELLIPSE] "mask" @(1007,207) 154x154 bg=#1111110a
+    [RECTANGLE] "🟢 https://app.lottiefiles.com/animation/ec4326d1-cd5c-4404-a299-66652612ccfe" @(1049,237) 70x70
+  [FRAME] "order details" @(827,1101) 325x305 bg=#ffffff r=16
+    [FRAME] "Header" @(851,1125) 126x23 bg=#00000000
+      [TEXT] "Header Text" @(851,1125) 126x23 text="Order Details" 20px/700 Helvetica color=#030404
+    [LINE] "Line 5" @(851,1172) 277x0
+    [FRAME] "Item" @(851,1196) 277x176 bg=#ffffff r=8
+      [FRAME] "Frame 1618872958" @(851,1196) 277x80 bg=#00000000
+        [FRAME] "Order ID Container" @(851,1196) 277x16 bg=#00000000
+          [TEXT] "Order ID Label" @(851,1196) 108x16 text="Order id:" 14px/400 Helvetica color=#5e6e76
+          [TEXT] "Order ID Value" @(983,1196) 107x16 text="8998372778923" 14px/400 Helvetica color=#030404
+          [GROUP] "content_copy" @(1114,1196) 16x16 bg=#00000000
+            [RECTANGLE] "Bounding box" @(1114,1196) 16x16 bg=#d9d9d9
+            [VECTOR] "content_copy" @(1116,1197) 11x13 bg=#79909c
+        [FRAME] "Tracking ID Container" @(851,1228) 277x16 bg=#00000000
+          [TEXT] "Tracking ID Label" @(851,1228) 108x16 text="Tracking id:" 14px/400 Helvetica color=#5e6e76
+          [TEXT] "Tracking ID Value" @(983,1228) 107x16 text="7578302288971" 14px/400 Helvetica color=#030404
+          [GROUP] "content_copy" @(1114,1228) 16x16 bg=#00000000
+            [RECTANGLE] "Bounding box" @(1114,1228) 16x16 bg=#d9d9d9
+            [VECTOR] "content_copy" @(1116,1229) 11x13 bg=#79909c
+        [FRAME] "Carrier Partner Container" @(851,1260) 277x16 bg=#00000000
+          [TEXT] "Carrier Partner Label" @(851,1260) 108x16 text="Carrier partner:" 14px/400 Helvetica color=#5e6e76
+          [TEXT] "Carrier Partner Value" @(983,1260) 107x16 text="Fedex" 14px/400 Helvetica color=#030404
+      [FRAME] "Order Details" @(851,1292) 277x80 bg=#00000000
+        [FRAME] "Order Type Container" @(851,1292) 277x16 bg=#00000000
+          [TEXT] "Order Type Label" @(851,1292) 108x16 text="Order type:" 14px/400 Helvetica color=#5e6e76
+          [TEXT] "Order Type Value" @(983,1292) 107x16 text="Prepaid" 14px/400 Helvetica color=#030404
+        [FRAME] "Order Date Container" @(851,1324) 277x16 bg=#00000000
+          [TEXT] "Order Date Label" @(851,1324) 108x16 text="Order date:" 14px/400 Helvetica color=#5e6e76
+          [TEXT] "Order Date Value" @(983,1324) 107x16 text="Tue, 1st July" 14px/400 Helvetica color=#030404
+        [FRAME] "Order Value Container" @(851,1356) 277x16 bg=#00000000
+          [TEXT] "Order Value Label" @(851,1356) 108x16 text="Order Value" 14px/400 Helvetica color=#5e6e76
+          [TEXT] "Order Value Amount" @(983,1356) 107x16 text="$390" 14px/400 Helvetica color=#030404
+  [RECTANGLE] "ChatGPT Image Jul 17, 2026, 11_43_38 AM 1" @(827,1425) 325x185 r=8

@@ -38,9 +38,12 @@ export function Marquee({
   const speed = useRef(0); // px/s, eased toward target each frame
   const [hover, setHover] = useState(false);
 
-  // live config the rAF loop reads without needing to restart
+  // live config the rAF loop reads without needing to restart (updated in an
+  // effect, not during render, so it doesn't touch the ref mid-render)
   const cfg = useRef({ duration, paused, reverse, hoverSlow, hover });
-  cfg.current = { duration, paused, reverse, hoverSlow, hover };
+  useEffect(() => {
+    cfg.current = { duration, paused, reverse, hoverSlow, hover };
+  });
 
   useEffect(() => {
     let raf = 0;
