@@ -70,7 +70,7 @@ export function LaunchExperience({
             onContinue={() => setStep("tracking")}
           />
         ) : (
-          <TrackingScreen key="tracking" brand={brand!}>
+          <TrackingScreen key="tracking" brand={brand!} generated={generated}>
             <TrackingPage
               brand={brand!}
               location={location}

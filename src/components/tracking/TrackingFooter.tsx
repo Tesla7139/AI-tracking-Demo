@@ -135,7 +135,7 @@ function LinkedIn() {
   );
 }
 
-const SOCIALS = [
+export const SOCIALS = [
   { label: "Instagram", Mark: Instagram },
   { label: "X", Mark: XMark },
   { label: "Facebook", Mark: Facebook },

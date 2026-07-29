@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
+import type { Generated } from "@/hooks/useGenerated";
 import { FeaturePanel } from "./FeaturePanel";
 import { TourOverlay, type TargetRect } from "./TourOverlay";
+import { EmailModal } from "./EmailPreview";
 
 /**
  * Frames the tracking page inside a "screen" on a light sky-blue backdrop (like
@@ -15,14 +17,18 @@ import { TourOverlay, type TargetRect } from "./TourOverlay";
  */
 export function TrackingScreen({
   brand,
+  generated,
   children,
 }: {
   brand: Brand;
+  generated: Generated | null;
   children: React.ReactNode;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   // Full guided tour step index (Start-tour button), or null when off.
   const [step, setStep] = useState<number | null>(null);
+  // AI email preview modal open/closed.
+  const [emailOpen, setEmailOpen] = useState(false);
   // Quick single-section preview index (feature-card click), or null when off.
   const [preview, setPreview] = useState<number | null>(null);
   const [rect, setRect] = useState<TargetRect | null>(null);
@@ -71,6 +77,17 @@ export function TrackingScreen({
     };
     window.addEventListener("cp:preview-feature", onPreview as EventListener);
     return () => window.removeEventListener("cp:preview-feature", onPreview as EventListener);
+  }, []);
+
+  // AI Emails feature card → open the branded email preview modal.
+  useEffect(() => {
+    const onEmail = () => {
+      setStep(null);
+      setPreview(null);
+      setEmailOpen(true);
+    };
+    window.addEventListener("cp:open-email", onEmail as EventListener);
+    return () => window.removeEventListener("cp:open-email", onEmail as EventListener);
   }, []);
 
   // The index currently driving the overlay: tour step wins, else the preview.
@@ -148,6 +165,10 @@ export function TrackingScreen({
           onBack={() => setStep((s) => (s === null ? s : Math.max(s - 1, 0)))}
           onClose={endTour}
         />
+      )}
+
+      {emailOpen && (
+        <EmailModal brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
       )}
     </div>
   );

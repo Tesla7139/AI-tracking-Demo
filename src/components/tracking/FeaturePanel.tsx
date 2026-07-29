@@ -6,11 +6,13 @@ import { TOUR_STEPS } from "@/lib/tour";
 import { cn } from "@/lib/utils";
 
 // Curated from the Clickpost deck, main feature first. The array index is the
-// card's id; tour steps reference it via TOUR_STEPS[i].card.
+// card's id; tour steps reference it via TOUR_STEPS[i].card. `email` cards open the
+// AI email preview instead of running a section preview.
 const FEATURES = [
   { title: "AI recommendations" },
   { title: "Real-time tracking" },
   { title: "Personalized tips" },
+  { title: "AI Emails", email: true },
 ];
 
 /** Clickpost feature list shown beside the framed screen. Clicking a card launches the
@@ -30,9 +32,13 @@ export function FeaturePanel({
   const activeCard =
     typeof activeStep === "number" ? TOUR_STEPS[activeStep]?.card ?? null : null;
 
-  // Clicking a card does NOT start the full tour — it quickly previews that feature's
-  // section: scroll to it, spotlight it, show a note, then auto-dismiss (see TrackingScreen).
+  // AI Emails opens the branded email preview; other cards quickly preview their
+  // on-page section (scroll + spotlight + note, auto-dismiss — see TrackingScreen).
   const select = (cardIndex: number) => {
+    if (FEATURES[cardIndex].email) {
+      window.dispatchEvent(new CustomEvent("cp:open-email"));
+      return;
+    }
     window.dispatchEvent(new CustomEvent("cp:preview-feature", { detail: { card: cardIndex } }));
   };
 
