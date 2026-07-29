@@ -27,50 +27,20 @@ function useCountdown(seconds: number) {
 }
 
 function BrandLogo({ brand }: { brand: Brand }) {
-  // "img" while we have a usable wide logo; "text" for a clean Helvetica wordmark
-  // (used when the logo fails, or when the fetched logo is a square favicon rather
-  // than a real wordmark — a square icon reads as broken in a logo banner).
-  const [mode, setMode] = useState<"img" | "text">(brand.logo ? "img" : "text");
-
-  if (brand.logo && mode === "img") {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element -- remote brand logos from arbitrary hosts
-      <img
-        src={brand.logo}
-        alt={brand.brandName}
-        className="h-14 w-auto max-w-[300px] object-contain"
-        onError={() => setMode("text")}
-        onLoad={(e) => {
-          const img = e.currentTarget;
-          const ratio = img.naturalWidth / img.naturalHeight;
-          // Square / near-square (favicon) or tiny → not a wordmark; use text instead.
-          if (!ratio || ratio < 1.6 || img.naturalWidth < 64) setMode("text");
-        }}
-      />
-    );
-  }
-  // No usable logo image → a branded monogram lockup (accent badge + wordmark),
-  // so a store whose logo we couldn't find still reads as intentional, not bare.
-  const initials =
-    brand.brandName
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((w) => w[0])
-      .join("")
-      .toUpperCase() || "?";
+  // The brand name set as an elegant Fraunces wordmark (no logo image / monogram).
+  const name = brand.brandName;
+  const size =
+    name.length > 26
+      ? "text-3xl md:text-4xl"
+      : name.length > 16
+      ? "text-4xl md:text-5xl"
+      : "text-5xl md:text-6xl";
   return (
     <span
-      className="flex items-center gap-3"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      className={`max-w-[92%] break-words text-center font-semibold leading-tight tracking-tight text-foreground ${size}`}
+      style={{ fontFamily: "var(--font-fraunces), Georgia, 'Times New Roman', serif" }}
     >
-      <span
-        className="flex size-12 shrink-0 items-center justify-center rounded-xl text-xl font-bold text-white"
-        style={{ background: brand.brandColor }}
-      >
-        {initials}
-      </span>
-      <span className="text-4xl font-bold tracking-tight text-foreground">{brand.brandName}</span>
+      {name}
     </span>
   );
 }
