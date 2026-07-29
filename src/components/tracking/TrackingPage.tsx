@@ -52,7 +52,7 @@ export function TrackingPage({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="w-full overflow-x-hidden bg-background"
+      className="w-full overflow-x-hidden bg-[#f7f8fa]"
       style={{ zoom: 0.81, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
       <TrackingHeader brand={brand} />
