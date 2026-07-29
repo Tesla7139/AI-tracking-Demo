@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Inter, Fraunces, Poppins } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,6 +15,14 @@ const fraunces = Fraunces({
   style: ["normal", "italic"],
 });
 
+// Geometric, slightly-rounded display font used for the brand-name wordmark.
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-logo",
+  display: "swap",
+  weight: ["500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Clickpost · AI Order Tracking",
@@ -27,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang="en" className={`${inter.variable} ${fraunces.variable} ${poppins.variable}`}>
       <body className="relative flex min-h-screen flex-col antialiased">
         <a
           href="#main"

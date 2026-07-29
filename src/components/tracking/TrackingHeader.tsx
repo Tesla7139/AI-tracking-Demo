@@ -27,20 +27,21 @@ function useCountdown(seconds: number) {
 }
 
 function BrandLogo({ brand }: { brand: Brand }) {
-  // The brand name set as an elegant Fraunces wordmark (no logo image / monogram).
+  // Brand name as a compact, rounded geometric wordmark (Poppins), sized to match
+  // the Figma's logo-to-content ratio (much smaller than a hero headline).
   const name = brand.brandName;
   const size =
     name.length > 26
-      ? "text-3xl md:text-4xl"
+      ? "text-xl md:text-2xl"
       : name.length > 16
-      ? "text-4xl md:text-5xl"
-      : "text-5xl md:text-6xl";
+      ? "text-2xl md:text-3xl"
+      : "text-3xl md:text-4xl";
   return (
     <span
       className={`max-w-[92%] break-words text-center font-semibold leading-tight tracking-tight ${size}`}
       style={{
         color: brand.brandColor,
-        fontFamily: "var(--font-fraunces), Georgia, 'Times New Roman', serif",
+        fontFamily: "var(--font-logo), var(--font-inter), system-ui, sans-serif",
       }}
     >
       {name}
