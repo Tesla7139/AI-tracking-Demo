@@ -2,7 +2,31 @@
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Gift, Mail, Phone, Sparkles } from "lucide-react";
+import {
+  Archive,
+  ArrowLeft,
+  CheckCheck,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CircleAlert,
+  Clock,
+  ExternalLink,
+  FolderInput,
+  Forward,
+  Gift,
+  Mail,
+  MoreVertical,
+  Phone,
+  Printer,
+  Reply,
+  ReplyAll,
+  Smile,
+  Sparkles,
+  Star,
+  Tag,
+  Trash2,
+} from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { currencySymbol } from "@/lib/site";
 import { brandDidYouKnows, buildNewArrivals, buildOrderItems, orderDetails } from "@/lib/tracking";
@@ -14,8 +38,7 @@ const CUSTOMER = "Alex Morgan";
 /**
  * The AI Email: the same personalized post-purchase experience from the tracking
  * page, re-flowed into a branded order email. Rendered INSIDE the demo screen (in
- * place of the tracking page) in a Gmail-style reading pane, so it feels like part
- * of the same product.
+ * place of the tracking page) inside a realistic Gmail reading pane.
  */
 export function EmailView({
   brand,
@@ -48,6 +71,28 @@ export function EmailView({
     }
   })();
   const email = `hello@${host}`;
+  const initial = (brand.brandName[0] || "?").toUpperCase();
+
+  const IconBtn = ({
+    children,
+    onClick,
+    title,
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+    title?: string;
+  }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      title={title}
+      className="rounded-full p-2 text-neutral-600 transition-colors hover:bg-neutral-100"
+    >
+      {children}
+    </button>
+  );
+  const Sep = () => <span className="mx-1 h-5 w-px bg-neutral-200" />;
+  const ic = "size-[18px]";
 
   const Btn = ({ children }: { children: React.ReactNode }) => (
     <a
@@ -75,34 +120,84 @@ export function EmailView({
     );
 
   return (
-    <div className="min-h-full bg-neutral-100" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
-      {/* Gmail-style header — sticks to the top of the demo screen while the email scrolls */}
-      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-50 px-5 py-3">
-        <button
-          onClick={onClose}
-          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-200"
-        >
-          <ArrowLeft className="size-4" /> Back to tracking
-        </button>
-        <div className="min-w-0 text-right">
-          <p className="truncate text-sm font-semibold text-neutral-900">
-            Your {brand.brandName} order is on the way!
-          </p>
-          <p className="truncate text-xs text-neutral-500">
-            {brand.brandName} &lt;{email}&gt; · to you
-          </p>
+    <div className="min-h-full bg-white" style={{ fontFamily: "Arial, Helvetica, sans-serif" }}>
+      {/* --- Gmail chrome (sticky) --- */}
+      <div className="sticky top-0 z-10 bg-white">
+        {/* toolbar */}
+        <div className="flex items-center justify-between px-3 py-1.5">
+          <div className="flex items-center">
+            <IconBtn title="Back to tracking" onClick={onClose}>
+              <ArrowLeft className={ic} />
+            </IconBtn>
+            <Sep />
+            <IconBtn title="Archive"><Archive className={ic} /></IconBtn>
+            <IconBtn title="Report spam"><CircleAlert className={ic} /></IconBtn>
+            <IconBtn title="Delete"><Trash2 className={ic} /></IconBtn>
+            <Sep />
+            <IconBtn title="Mark as unread"><Mail className={ic} /></IconBtn>
+            <IconBtn title="Snooze"><Clock className={ic} /></IconBtn>
+            <IconBtn title="Add to Tasks"><CheckCheck className={ic} /></IconBtn>
+            <Sep />
+            <IconBtn title="Move to"><FolderInput className={ic} /></IconBtn>
+            <IconBtn title="Labels"><Tag className={ic} /></IconBtn>
+            <IconBtn title="More"><MoreVertical className={ic} /></IconBtn>
+          </div>
+          <div className="flex items-center gap-1 text-sm text-neutral-500">
+            <span className="mr-1">4 of 313</span>
+            <IconBtn title="Newer"><ChevronLeft className={ic} /></IconBtn>
+            <IconBtn title="Older"><ChevronRight className={ic} /></IconBtn>
+          </div>
         </div>
+
+        {/* subject */}
+        <div className="flex items-center justify-between gap-3 px-6 pt-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <h1 className="truncate text-xl text-neutral-900">
+              Your {brand.brandName} order is on the way!
+            </h1>
+            <span className="inline-flex shrink-0 items-center gap-1 rounded bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600">
+              Inbox <span className="text-neutral-400">✕</span>
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-1 text-neutral-500">
+            <IconBtn title="Print"><Printer className={ic} /></IconBtn>
+            <IconBtn title="Open in new window"><ExternalLink className={ic} /></IconBtn>
+          </div>
+        </div>
+
+        {/* sender */}
+        <div className="flex items-start justify-between gap-3 px-6 py-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+              style={{ background: accent }}
+            >
+              {initial}
+            </span>
+            <div className="min-w-0 leading-tight">
+              <p className="truncate text-sm text-neutral-900">
+                <span className="font-semibold">{brand.brandName}</span>{" "}
+                <span className="text-neutral-500">&lt;{email}&gt;</span>
+              </p>
+              <p className="flex items-center gap-1 text-xs text-neutral-500">
+                to me <ChevronDown className="size-3" />
+              </p>
+            </div>
+          </div>
+          <div className="flex shrink-0 items-center gap-1 text-neutral-500">
+            <span className="mr-1 hidden text-xs sm:inline">10:24 AM (2 hours ago)</span>
+            <IconBtn title="Star"><Star className={ic} /></IconBtn>
+            <IconBtn title="React"><Smile className={ic} /></IconBtn>
+            <IconBtn title="Reply"><Reply className={ic} /></IconBtn>
+            <IconBtn title="More"><MoreVertical className={ic} /></IconBtn>
+          </div>
+        </div>
+        <div className="border-b border-neutral-200" />
       </div>
 
-      {/* Email reading pane — the branded email as a centered document */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="mx-auto my-6 w-full max-w-[620px] overflow-hidden rounded-2xl bg-white shadow-[0_10px_40px_-15px_rgba(0,0,0,0.25)] ring-1 ring-black/5"
-      >
-        {/* Email body */}
-        <div className="bg-white">
+      {/* --- The branded email document --- */}
+      <div className="mx-auto w-full max-w-[620px] px-4 py-6">
+        <div className="overflow-hidden rounded-lg border border-neutral-200 bg-white">
           {/* Logo */}
           <div className="flex justify-center px-6 py-8">
             <Logo />
@@ -110,9 +205,7 @@ export function EmailView({
 
           {/* Status hero */}
           <div className="mx-6 rounded-2xl bg-neutral-100 px-6 py-8 text-center">
-            <p className="text-xl text-neutral-800">
-              Hello {CUSTOMER}! Your order is
-            </p>
+            <p className="text-xl text-neutral-800">Hello {CUSTOMER}! Your order is</p>
             <p className="mt-3 text-lg font-bold" style={{ color: accent }}>
               Shipped
             </p>
@@ -261,7 +354,25 @@ export function EmailView({
             <p className="mt-4 text-[11px] font-bold tracking-wide text-white">Powered By CLICKPOST</p>
           </div>
         </div>
-      </motion.div>
+
+        {/* Gmail reply actions */}
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <ReplyBtn icon={<Reply className="size-4" />}>Reply</ReplyBtn>
+          <ReplyBtn icon={<ReplyAll className="size-4" />}>Reply all</ReplyBtn>
+          <ReplyBtn icon={<Forward className="size-4" />}>Forward</ReplyBtn>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function ReplyBtn({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      className="inline-flex items-center gap-2 rounded-full border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+    >
+      {icon} {children}
+    </button>
   );
 }
