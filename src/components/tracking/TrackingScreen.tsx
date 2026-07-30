@@ -127,7 +127,7 @@ export function TrackingScreen({
       {/* Persistent top-right CTA (same spot in desktop and mobile), left of the close X */}
       <a
         href="#"
-        className="absolute right-[76px] top-4 z-[70] rounded-full bg-primary px-6 py-2 text-[15px] font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
+        className="absolute right-[76px] top-4 z-[70] rounded-full bg-primary px-4 py-1.5 text-[13px] font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
       >
         Book a free demo
       </a>
@@ -137,13 +137,13 @@ export function TrackingScreen({
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("cp:start-tour"))}
-            className="inline-flex items-center justify-center gap-2.5 rounded-full bg-white px-6 py-2 text-[15px] font-semibold text-slate-900 shadow-md ring-1 ring-black/5 transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-1.5 text-[13px] font-semibold text-slate-900 shadow-md ring-1 ring-black/5 transition-transform hover:-translate-y-0.5"
           >
-            <Play className="size-4 fill-slate-900 text-slate-900" />
+            <Play className="size-3 fill-slate-900 text-slate-900" />
             Start tour
           </button>
         );
-        const seg = "rounded-full px-5 py-1.5 text-[15px] transition-all";
+        const seg = "rounded-full px-4 py-1 text-[13px] transition-all";
         const toggle = (
           <div className="flex shrink-0 items-center gap-1 rounded-full bg-slate-100 p-1 shadow-md ring-1 ring-black/5">
             <button
