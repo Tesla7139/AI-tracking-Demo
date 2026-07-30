@@ -330,3 +330,43 @@ input.pill-input:focus-visible {
   .demo-scale-root { zoom: 1.4; }
   .demo-scale-root > .demo-scale-grid { min-height: calc(100svh / 1.4); }
 }
+
+/* ---- Tracking motif animations (CSS-driven so they always run in prod) ---- */
+@keyframes cp-spin { to { transform: rotate(360deg); } }
+@keyframes cp-spin-y {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+@keyframes cp-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes cp-bob-sm {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.2px); }
+}
+@keyframes cp-drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+@keyframes cp-rain {
+  0% { transform: translateY(-8px); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(36px); opacity: 0; }
+}
+@keyframes cp-streak {
+  0% { transform: translateY(0) rotate(16deg); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateY(24px) rotate(16deg); opacity: 0; }
+}
+@keyframes cp-flip {
+  0% { transform: rotateX(0deg); }
+  42%, 58% { transform: rotateX(-150deg); }
+  100% { transform: rotateX(0deg); }
+}
+@keyframes cp-snow {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
