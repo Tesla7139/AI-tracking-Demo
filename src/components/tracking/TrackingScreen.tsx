@@ -124,6 +124,14 @@ export function TrackingScreen({
     >
       <FeaturePanel brand={brand} className="hidden xl:flex" activeStep={activeIndex} />
 
+      {/* Persistent top-right CTA (same spot in desktop and mobile), left of the close X */}
+      <a
+        href="#"
+        className="absolute right-[76px] top-4 z-[70] rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
+      >
+        Book a free demo
+      </a>
+
       {(() => {
         const startTour = (
           <button
@@ -159,14 +167,6 @@ export function TrackingScreen({
             </button>
           </div>
         );
-        const bookDemo = (
-          <a
-            href="#"
-            className="rounded-full bg-primary px-5 py-2.5 text-center text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
-          >
-            Book a free demo
-          </a>
-        );
         const screen = (
           <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
             <DeviceContext.Provider value={view}>
@@ -191,10 +191,9 @@ export function TrackingScreen({
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="flex h-full w-full min-w-0 max-w-[1040px] flex-col gap-3"
               >
-                <div className="flex min-w-0 shrink-0 items-center justify-between gap-3">
+                <div className="flex min-w-0 shrink-0 items-center gap-3">
                   {startTour}
                   {toggle}
-                  {bookDemo}
                 </div>
                 <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10">
                   {screen}
@@ -214,7 +213,6 @@ export function TrackingScreen({
                 <div className="flex shrink-0 flex-col items-center gap-3">
                   {startTour}
                   {toggle}
-                  {bookDemo}
                 </div>
               </motion.div>
             )}
