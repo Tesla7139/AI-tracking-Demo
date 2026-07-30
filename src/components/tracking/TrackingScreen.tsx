@@ -145,14 +145,14 @@ export function TrackingScreen({
         );
         const seg = "rounded-full px-5 py-1.5 text-[15px] transition-all";
         const toggle = (
-          <div className="flex shrink-0 items-center gap-1 rounded-full bg-white p-1 shadow-md ring-1 ring-black/5">
+          <div className="flex shrink-0 items-center gap-1 rounded-full bg-slate-100 p-1 shadow-md ring-1 ring-black/5">
             <button
               type="button"
               onClick={() => setView("desktop")}
               className={`${seg} ${
                 view === "desktop"
-                  ? "bg-slate-50 font-semibold text-slate-900 shadow-sm ring-1 ring-black/5"
-                  : "font-medium text-slate-400 hover:text-slate-600"
+                  ? "bg-white font-semibold text-slate-900 shadow-sm"
+                  : "font-medium text-slate-500 hover:text-slate-700"
               }`}
             >
               Desktop
@@ -162,8 +162,8 @@ export function TrackingScreen({
               onClick={() => setView("mobile")}
               className={`${seg} ${
                 view === "mobile"
-                  ? "bg-slate-50 font-semibold text-slate-900 shadow-sm ring-1 ring-black/5"
-                  : "font-medium text-slate-400 hover:text-slate-600"
+                  ? "bg-white font-semibold text-slate-900 shadow-sm"
+                  : "font-medium text-slate-500 hover:text-slate-700"
               }`}
             >
               Mobile
