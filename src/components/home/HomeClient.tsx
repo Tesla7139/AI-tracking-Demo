@@ -15,9 +15,18 @@ import type { GeoLocation } from "@/lib/site";
  * Home + demo launcher. When `initialStore` is provided (deep link like
  * `/gullylabs.com`), it auto-submits that store and jumps straight into the demo.
  */
+// A valid store URL: no spaces, a real domain with a dot + TLD (protocol optional).
+function isValidStoreUrl(v: string): boolean {
+  const s = v.trim();
+  if (!s || /\s/.test(s)) return false;
+  const host = s.replace(/^https?:\/\//i, "").split(/[/?#]/)[0];
+  return /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i.test(host);
+}
+
 export function HomeClient({ initialStore }: { initialStore?: string }) {
   const [value, setValue] = useState(initialStore ?? "");
   const [highlight, setHighlight] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { status, brand, submittedUrl, submit, reset } = useBrand();
   const weather = useWeather(brand?.lat, brand?.lon);
@@ -44,6 +53,13 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidStoreUrl(value)) {
+      setError("Please enter a valid store URL — e.g. yourstore.com (no spaces).");
+      setHighlight(true);
+      setTimeout(() => setHighlight(false), 1400);
+      return;
+    }
+    setError(null);
     submit(value);
   };
 
@@ -107,7 +123,9 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
             animate={highlight ? { x: [0, -7, 7, -5, 5, -2, 2, 0] } : { x: 0 }}
             transition={{ duration: 0.55, ease: "easeInOut" }}
             className={`mt-9 flex w-full max-w-2xl items-center gap-2 rounded-full border bg-white p-2 transition-all ${
-              highlight
+              error
+                ? "border-red-400 shadow-[0_18px_54px_-14px_rgba(239,68,68,0.35)] ring-4 ring-red-200"
+                : highlight
                 ? "border-primary shadow-[0_18px_54px_-14px_rgba(21,95,255,0.5)] ring-4 ring-primary/30"
                 : "border-border shadow-[0_10px_36px_-14px_rgba(21,95,255,0.25)] focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15"
             }`}
@@ -115,7 +133,10 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
             <input
               ref={inputRef}
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={(e) => {
+                setValue(e.target.value);
+                if (error) setError(null);
+              }}
               placeholder="Enter your store URL"
               autoFocus
               inputMode="url"
@@ -138,6 +159,10 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
               )}
             </button>
           </motion.form>
+
+          {error && (
+            <p className="mt-3 text-sm font-medium text-red-500">{error}</p>
+          )}
         </motion.div>
       </Container>
     </div>
