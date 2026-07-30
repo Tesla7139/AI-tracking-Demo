@@ -124,25 +124,20 @@ export function TrackingScreen({
     >
       <FeaturePanel brand={brand} className="hidden xl:flex" activeStep={activeIndex} />
 
-      {/* Right side: top bar (Start tour / device toggle / Book a free demo) + the framed screen */}
-      <div
-        className={`flex h-full w-full min-w-0 flex-col gap-3 transition-[max-width] duration-500 ease-out ${
-          view === "mobile" ? "max-w-[440px]" : "max-w-[1040px]"
-        }`}
-      >
-        <div className="flex min-w-0 shrink-0 items-center justify-between gap-3">
+      {(() => {
+        const startTour = (
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("cp:start-tour"))}
-            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md ring-1 ring-black/5 transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md ring-1 ring-black/5 transition-transform hover:-translate-y-0.5"
           >
             <span className="flex size-5 items-center justify-center rounded-full bg-primary text-white">
               <Play className="size-3 fill-white" />
             </span>
             Start tour
           </button>
-
-          {/* Desktop / Mobile toggle */}
+        );
+        const toggle = (
           <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/80 p-1 shadow-md ring-1 ring-black/5 backdrop-blur">
             <button
               type="button"
@@ -163,57 +158,69 @@ export function TrackingScreen({
               <Smartphone className="size-4" /> Mobile
             </button>
           </div>
-
+        );
+        const bookDemo = (
           <a
             href="#"
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
+            className="rounded-full bg-primary px-5 py-2.5 text-center text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
           >
             Book a free demo
           </a>
-        </div>
-
-        {/* The scrollable screen content, shared by both the desktop and phone frames. */}
-        {(() => {
-          const screen = (
-            <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
-              <DeviceContext.Provider value={view}>
-                {emailOpen ? (
-                  <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
-                ) : (
-                  children
-                )}
-              </DeviceContext.Provider>
-            </div>
-          );
-          return (
-            <AnimatePresence mode="wait" initial={false}>
-              {view === "desktop" ? (
-                <motion.div
-                  key="desktop"
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10"
-                >
-                  {screen}
-                </motion.div>
+        );
+        const screen = (
+          <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
+            <DeviceContext.Provider value={view}>
+              {emailOpen ? (
+                <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
               ) : (
-                <motion.div
-                  key="mobile"
-                  initial={{ opacity: 0, scale: 0.82, y: 24 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.82, y: 24 }}
-                  transition={{ type: "spring", stiffness: 190, damping: 23 }}
-                  className="min-h-0 w-full flex-1"
-                >
-                  <PhoneFrame>{screen}</PhoneFrame>
-                </motion.div>
+                children
               )}
-            </AnimatePresence>
-          );
-        })()}
-      </div>
+            </DeviceContext.Provider>
+          </div>
+        );
+
+        return (
+          <AnimatePresence mode="wait" initial={false}>
+            {view === "desktop" ? (
+              // Desktop: controls in a top bar above a wide framed screen.
+              <motion.div
+                key="desktop"
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="flex h-full w-full min-w-0 max-w-[1040px] flex-col gap-3"
+              >
+                <div className="flex min-w-0 shrink-0 items-center justify-between gap-3">
+                  {startTour}
+                  {toggle}
+                  {bookDemo}
+                </div>
+                <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10">
+                  {screen}
+                </div>
+              </motion.div>
+            ) : (
+              // Mobile: a tall phone with the controls stacked to its right.
+              <motion.div
+                key="mobile"
+                initial={{ opacity: 0, scale: 0.82, y: 24 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.82, y: 24 }}
+                transition={{ type: "spring", stiffness: 190, damping: 23 }}
+                className="flex h-full items-center justify-center gap-6 lg:gap-10"
+              >
+                <PhoneFrame>{screen}</PhoneFrame>
+                <div className="flex shrink-0 flex-col items-center gap-3">
+                  {startTour}
+                  {toggle}
+                  {bookDemo}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        );
+      })()}
 
       {activeIndex !== null && TOUR_STEPS[activeIndex] && (
         <TourOverlay

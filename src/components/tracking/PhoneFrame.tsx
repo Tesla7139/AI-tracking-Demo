@@ -8,7 +8,7 @@ import { BatteryFull, Signal, Wifi } from "lucide-react";
  */
 export function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative mx-auto flex h-full w-full max-w-[390px] flex-col">
+    <div className="relative flex h-full w-[360px] max-w-full shrink-0 flex-col">
       {/* Side buttons */}
       <span className="absolute -left-[3px] top-[96px] h-8 w-[3px] rounded-l bg-neutral-700" />
       <span className="absolute -left-[3px] top-[150px] h-14 w-[3px] rounded-l bg-neutral-700" />
