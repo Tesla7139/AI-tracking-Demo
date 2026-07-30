@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { ArrowRight, Check, X } from "lucide-react";
 import type { Brand, GeoLocation, Weather } from "@/lib/site";
 import type { Generated } from "@/hooks/useGenerated";
@@ -50,6 +50,8 @@ export function LaunchExperience({
   const ready = status === "ready" && minElapsed && !!brand;
 
   return (
+    // Force animations to always run, even if the OS/browser has "reduce motion" on.
+    <MotionConfig reducedMotion="never">
     <div className="fixed inset-0 z-[100] bg-white">
       <button
         onClick={onReset}
@@ -81,6 +83,7 @@ export function LaunchExperience({
         )}
       </AnimatePresence>
     </div>
+    </MotionConfig>
   );
 }
 
