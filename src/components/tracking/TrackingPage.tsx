@@ -49,6 +49,13 @@ export function TrackingPage({
   const orderValue =
     sym + items.reduce((s, it) => s + it.price * (it.qty || 1), 0).toLocaleString();
 
+  // Staggered "typewriter"-style reveal: each box opens after the previous one.
+  const reveal = (delay: number) => ({
+    initial: { opacity: 0, y: 18 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.45, delay, ease: [0.16, 1, 0.3, 1] as const },
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -60,9 +67,9 @@ export function TrackingPage({
       <TrackingHeader brand={brand} />
 
       <div className="mx-auto w-full max-w-[1600px] px-4 py-5 md:px-6">
-        <div id="tour-status" className="scroll-mt-24">
+        <motion.div id="tour-status" className="scroll-mt-24" {...reveal(0.05)}>
           <StatusCards brand={brand} location={location} />
-        </div>
+        </motion.div>
 
         {/* Two aligned rows: (Journey ∥ Weather+FunFact) then (Order Items ∥ DidYouKnow+OrderDetails+Promo) */}
         <div
@@ -71,10 +78,10 @@ export function TrackingPage({
           }`}
         >
           {/* Row 1 */}
-          <div id="tour-journey" className="min-w-0 scroll-mt-24">
+          <motion.div id="tour-journey" className="min-w-0 scroll-mt-24" {...reveal(0.18)}>
             <ShipmentJourney location={location} accent={accent} />
-          </div>
-          <div className="flex min-w-0 flex-col gap-5">
+          </motion.div>
+          <motion.div className="flex min-w-0 flex-col gap-5" {...reveal(0.3)}>
             <div id="tour-weather" className="scroll-mt-24">
               <WeatherWidget location={location} weather={weather} accent={accent} />
             </div>
@@ -84,27 +91,29 @@ export function TrackingPage({
               items={funFacts}
               accent={accent}
             />
-          </div>
+          </motion.div>
 
           {/* Row 2 */}
-          <div id="tour-items" className="min-w-0 scroll-mt-24">
+          <motion.div id="tour-items" className="min-w-0 scroll-mt-24" {...reveal(0.42)}>
             <OrderItems items={items} accent={accent} sym={sym} />
-          </div>
-          <div className="flex min-w-0 flex-col gap-5">
+          </motion.div>
+          <motion.div className="flex min-w-0 flex-col gap-5" {...reveal(0.54)}>
             <div id="tour-didyouknow" className="scroll-mt-24">
               <InfoCard icon={Lightbulb} title="Did You Know?" items={brandFacts} accent={accent} />
             </div>
             <OrderDetails orderValue={orderValue} />
             <PromoCard brand={brand} className="flex-1" />
-          </div>
+          </motion.div>
         </div>
 
         {/* Full-width sections below the two-column area */}
         <div className="mt-6 flex flex-col gap-6">
-          <HeroBanner brand={brand} />
-          <div id="tour-arrivals" className="scroll-mt-24">
+          <motion.div {...reveal(0.64)}>
+            <HeroBanner brand={brand} />
+          </motion.div>
+          <motion.div id="tour-arrivals" className="scroll-mt-24" {...reveal(0.72)}>
             <NewArrivals products={arrivals} accent={accent} sym={sym} />
-          </div>
+          </motion.div>
         </div>
       </div>
 
