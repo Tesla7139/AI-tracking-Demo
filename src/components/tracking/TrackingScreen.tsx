@@ -198,7 +198,7 @@ export function TrackingScreen({
                   {startTour}
                   <div className="absolute left-1/2 -translate-x-1/2">{toggle}</div>
                 </div>
-                <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-2 ring-black">
+                <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-2 ring-black">
                   {screen}
                 </div>
               </motion.div>
