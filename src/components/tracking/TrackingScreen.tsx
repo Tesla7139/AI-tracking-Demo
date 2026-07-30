@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Monitor, Play, Smartphone } from "lucide-react";
+import { Play } from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
 import type { Generated } from "@/hooks/useGenerated";
@@ -127,7 +127,7 @@ export function TrackingScreen({
       {/* Persistent top-right CTA (same spot in desktop and mobile), left of the close X */}
       <a
         href="#"
-        className="absolute right-[76px] top-4 z-[70] rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
+        className="absolute right-[76px] top-4 z-[70] rounded-full bg-primary px-6 py-3.5 text-[15px] font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
       >
         Book a free demo
       </a>
@@ -137,33 +137,36 @@ export function TrackingScreen({
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("cp:start-tour"))}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-md ring-1 ring-black/5 transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-2.5 rounded-full bg-white px-6 py-3.5 text-[15px] font-semibold text-slate-900 shadow-md ring-1 ring-black/5 transition-transform hover:-translate-y-0.5"
           >
-            <span className="flex size-5 items-center justify-center rounded-full bg-primary text-white">
-              <Play className="size-3 fill-white" />
-            </span>
+            <Play className="size-4 fill-slate-900 text-slate-900" />
             Start tour
           </button>
         );
+        const seg = "rounded-full px-5 py-2.5 text-[15px] transition-all";
         const toggle = (
-          <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/80 p-1 shadow-md ring-1 ring-black/5 backdrop-blur">
+          <div className="flex shrink-0 items-center gap-1 rounded-full bg-white p-1.5 shadow-md ring-1 ring-black/5">
             <button
               type="button"
               onClick={() => setView("desktop")}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${
-                view === "desktop" ? "bg-primary text-white" : "text-slate-600 hover:text-slate-900"
+              className={`${seg} ${
+                view === "desktop"
+                  ? "bg-slate-50 font-semibold text-slate-900 shadow-sm ring-1 ring-black/5"
+                  : "font-medium text-slate-400 hover:text-slate-600"
               }`}
             >
-              <Monitor className="size-4" /> Desktop
+              Desktop
             </button>
             <button
               type="button"
               onClick={() => setView("mobile")}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition-colors ${
-                view === "mobile" ? "bg-primary text-white" : "text-slate-600 hover:text-slate-900"
+              className={`${seg} ${
+                view === "mobile"
+                  ? "bg-slate-50 font-semibold text-slate-900 shadow-sm ring-1 ring-black/5"
+                  : "font-medium text-slate-400 hover:text-slate-600"
               }`}
             >
-              <Smartphone className="size-4" /> Mobile
+              Mobile
             </button>
           </div>
         );
@@ -191,9 +194,9 @@ export function TrackingScreen({
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="flex h-full w-full min-w-0 max-w-[1040px] flex-col gap-3"
               >
-                <div className="flex min-w-0 shrink-0 items-center gap-3">
+                <div className="relative flex min-w-0 shrink-0 items-center">
                   {startTour}
-                  {toggle}
+                  <div className="absolute left-1/2 -translate-x-1/2">{toggle}</div>
                 </div>
                 <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-[34px] bg-white shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] ring-1 ring-black/10">
                   {screen}
