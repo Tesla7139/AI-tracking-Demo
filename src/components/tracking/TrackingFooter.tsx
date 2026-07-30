@@ -84,8 +84,9 @@ export function TrackingFooter({ brand }: { brand: Brand }) {
         {/* Powered by */}
         <div>
           <h3 className="text-eyebrow text-foreground">Powered By</h3>
-          <p className="mt-4 text-xl font-extrabold tracking-tight text-foreground">
-            CLICK<span className="font-black">POST</span>
+          <p className="mt-4 text-xl font-extrabold tracking-tight">
+            <span className="text-primary">CLICK</span>
+            <span className="text-slate-900">POST</span>
           </p>
         </div>
       </div>
