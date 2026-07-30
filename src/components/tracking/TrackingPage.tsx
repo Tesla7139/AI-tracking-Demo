@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { MapPinned, Lightbulb } from "lucide-react";
 import { currencySymbol, type Brand, type GeoLocation, type Weather } from "@/lib/site";
@@ -17,6 +18,10 @@ import { OrderDetails } from "./OrderDetails";
 import { TrackingFooter } from "./TrackingFooter";
 import { HeroBanner } from "./HeroBanner";
 import { PromoCard } from "./PromoCard";
+
+// Persists across remounts within a session so the entrance reveal plays only ONCE
+// (not every time the desktop/mobile toggle remounts the page — that looked glitchy).
+let hasRevealed = false;
 
 export function TrackingPage({
   brand,
@@ -49,16 +54,26 @@ export function TrackingPage({
   const orderValue =
     sym + items.reduce((s, it) => s + it.price * (it.qty || 1), 0).toLocaleString();
 
+  // Play the staggered entrance only on the first mount of the session.
+  const [animateReveal] = useState(() => !hasRevealed);
+  useEffect(() => {
+    hasRevealed = true;
+  }, []);
+
   // Staggered "typewriter"-style reveal: each box opens after the previous one.
-  const reveal = (delay: number) => ({
-    initial: { opacity: 0, y: 18 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.45, delay, ease: [0.16, 1, 0.3, 1] as const },
-  });
+  // On remounts (e.g. toggling desktop/mobile) it renders instantly, no re-animation.
+  const reveal = (delay: number) =>
+    animateReveal
+      ? {
+          initial: { opacity: 0, y: 18 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.45, delay, ease: [0.16, 1, 0.3, 1] as const },
+        }
+      : { initial: false as const, animate: { opacity: 1, y: 0 } };
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={animateReveal ? { opacity: 0 } : false}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="w-full overflow-x-hidden bg-[#f7f8fa]"
