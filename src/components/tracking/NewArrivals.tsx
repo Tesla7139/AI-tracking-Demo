@@ -25,7 +25,10 @@ export function NewArrivals({
               className="aspect-square w-full"
               label={<Package className="size-6 text-muted-foreground" />}
             />
-            <p className="mt-2 line-clamp-2 text-sm font-semibold text-foreground">{p.name}</p>
+            {/* Fixed 2-line height so every price starts at the same level. */}
+            <p className="mt-2 line-clamp-2 min-h-[2.6rem] text-sm font-semibold leading-snug text-foreground">
+              {p.name}
+            </p>
             <p className="mt-0.5 text-base font-bold" style={{ color: accent }}>
               {sym}
               {p.price}
