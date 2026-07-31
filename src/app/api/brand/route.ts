@@ -440,6 +440,66 @@ function parseJsonLdProducts(html: string, base: URL): DemoProductOut[] {
     .slice(0, 8);
 }
 
+/**
+ * Last-resort product scrape straight from the homepage markup for stores that are
+ * neither Shopify nor JSON-LD-rich. Treats each anchor that contains BOTH an image
+ * and a price as a product card and pulls out image + title + price.
+ */
+function productsFromHtmlCards(html: string, base: URL): DemoProductOut[] {
+  const out: DemoProductOut[] = [];
+  const seen = new Set<string>();
+  const priceRe = /(?:[$₹£€]|Rs\.?|USD|INR|AUD|CAD|GBP|EUR)\s?([0-9][0-9.,]*)/i;
+  const anchorRe = /<a\b[^>]*>([\s\S]*?)<\/a>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = anchorRe.exec(html)) && out.length < 8) {
+    const block = m[0];
+    const imgM = block.match(/<img[^>]+(?:data-src|srcset|src)=["']([^"']+)["']/i);
+    const priceM = block.match(priceRe);
+    if (!imgM || !priceM) continue;
+    const rawImg = imgM[1].split(",")[0].trim().split(/\s+/)[0];
+    const image = absolutize(rawImg.replace(/&amp;/gi, "&"), base);
+    if (!image || /\.svg(\?|$)|sprite|icon|logo|placeholder/i.test(image)) continue;
+    const alt = block.match(/<img[^>]+alt=["']([^"']+)["']/i)?.[1];
+    let title = (alt || block.replace(/<[^>]+>/g, " "))
+      .replace(priceRe, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 60);
+    const price = Math.round(parseFloat(priceM[1].replace(/,/g, "")) || 0);
+    if (!title || title.length < 3 || price <= 0) continue;
+    const key = title.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({
+      id: String(out.length + 1),
+      title: decodeHtml(title),
+      variant: "",
+      price,
+      qty: 1,
+      image,
+      variants: [{ title: "Default", price }],
+    });
+  }
+  return out;
+}
+
+/** Homepage logo image (header <img> whose src/alt/class mentions "logo"). */
+function logoFromHtml(html: string, base: URL): string | null {
+  const imgTags = html.match(/<img\b[^>]*>/gi) || [];
+  for (const tag of imgTags) {
+    if (!/logo/i.test(tag)) continue;
+    if (/sprite|payment|footer|badge|icon-/i.test(tag)) continue;
+    const src =
+      tag.match(/(?:data-src|src)=["']([^"']+)["']/i)?.[1] ||
+      tag.match(/srcset=["']([^",\s]+)/i)?.[1];
+    if (!src) continue;
+    const abs = absolutize(src.replace(/&amp;/gi, "&"), base);
+    if (abs && !/\.svg(\?|$)/i.test(abs)) return abs;
+    if (abs) return abs; // allow SVG logos too
+  }
+  return null;
+}
+
 function metaContent(html: string, patterns: RegExp[]): string | null {
   for (const re of patterns) {
     const m = html.match(re);
@@ -620,6 +680,8 @@ function parseBranding(
     base
   );
 
+  // Prefer a real header logo <img>; then apple-touch-icon; then og:image; then favicon.
+  const htmlLogo = logoFromHtml(html, base);
   const iconHref =
     metaContent(html, [
       /<link[^>]+rel=["']apple-touch-icon[^"']*["'][^>]+href=["']([^"']+)["']/i,
@@ -634,7 +696,7 @@ function parseBranding(
   return {
     brandName: siteName ? capitalize(siteName) : null,
     brandColor,
-    logo: upscaleImage(absolutize(iconHref, base)),
+    logo: htmlLogo || upscaleImage(absolutize(iconHref, base)),
     ogImage,
     bannerImage: pickBannerImage(html, base),
   };
@@ -752,6 +814,10 @@ export async function POST(req: Request) {
   // Non-Shopify stores — pull schema.org/JSON-LD products from the homepage.
   if (products.length === 0 && html) {
     products = parseJsonLdProducts(html, url);
+  }
+  // Last resort — scrape product cards directly from the homepage markup.
+  if (products.length === 0 && html) {
+    products = productsFromHtmlCards(html, url);
   }
 
   const currency = parseCurrency(cartJson);
