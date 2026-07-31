@@ -32,9 +32,12 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
   const weather = useWeather(brand?.lat, brand?.lon);
   const generated = useGenerated(brand);
 
-  // Deep link: auto-open the demo for the store named in the URL.
+  // Deep link: auto-open the demo for the store named in the URL — but only if it's
+  // a valid store URL; otherwise show the home page with an error (no garbage launch).
   useEffect(() => {
-    if (initialStore) submit(initialStore);
+    if (!initialStore) return;
+    if (isValidStoreUrl(initialStore)) submit(initialStore);
+    else setError("That doesn't look like a valid store URL — e.g. yourstore.com (no spaces).");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
