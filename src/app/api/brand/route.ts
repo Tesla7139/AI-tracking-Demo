@@ -445,6 +445,10 @@ function parseJsonLdProducts(html: string, base: URL): DemoProductOut[] {
  * neither Shopify nor JSON-LD-rich. Treats each anchor that contains BOTH an image
  * and a price as a product card and pulls out image + title + price.
  */
+// Bare colour / size / material words are usually variant swatches, not products.
+const GENERIC_TITLE =
+  /^(gray|grey|green|blue|black|red|brown|tan|silver|gold|white|pink|purple|orange|yellow|navy|beige|ivory|charcoal|bronze|platinum|gunmetal|rose gold|matte|gloss|natural|small|medium|large|x-?large|xl|xs|default|finger grooved|nickel|brass|copper|wood|leather|standard)$/i;
+
 function productsFromHtmlCards(html: string, base: URL): DemoProductOut[] {
   const out: DemoProductOut[] = [];
   const seen = new Set<string>();
@@ -466,7 +470,7 @@ function productsFromHtmlCards(html: string, base: URL): DemoProductOut[] {
       .trim()
       .slice(0, 60);
     const price = Math.round(parseFloat(priceM[1].replace(/,/g, "")) || 0);
-    if (!title || title.length < 3 || price <= 0) continue;
+    if (!title || title.length < 4 || price <= 0 || GENERIC_TITLE.test(title.trim())) continue;
     const key = title.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
@@ -500,7 +504,7 @@ function productsFromHtmlCards(html: string, base: URL): DemoProductOut[] {
       const dist = Math.abs(from + (im.index ?? 0) - pm.index);
       if (!best || dist < best.dist) best = { alt, src, dist };
     }
-    if (!best) continue;
+    if (!best || GENERIC_TITLE.test(best.alt.trim())) continue;
     const image = absolutize(best.src.replace(/&amp;/gi, "&"), base);
     if (!image) continue;
     const key = best.alt.toLowerCase();
