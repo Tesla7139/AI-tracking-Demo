@@ -31,23 +31,58 @@ function BrandLogo({ brand }: { brand: Brand }) {
   // Prefer the store's real logo (like newton's in the Figma) when it's a proper wide
   // wordmark; fall back to a compact Poppins name for missing / square-favicon logos.
   const [mode, setMode] = useState<"img" | "text">(brand.logo ? "img" : "text");
+  // A predominantly white/light logo would vanish on the white banner → put it on a dark chip.
+  const [lightLogo, setLightLogo] = useState(false);
+
+  useEffect(() => {
+    if (!brand.logo) return;
+    setLightLogo(false);
+    const probe = new Image();
+    probe.crossOrigin = "anonymous";
+    probe.onload = () => {
+      try {
+        const w = 32;
+        const h = 32;
+        const c = document.createElement("canvas");
+        c.width = w;
+        c.height = h;
+        const ctx = c.getContext("2d");
+        if (!ctx) return;
+        ctx.drawImage(probe, 0, 0, w, h);
+        const { data } = ctx.getImageData(0, 0, w, h);
+        let lum = 0;
+        let count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          if (data[i + 3] < 40) continue; // ignore transparent pixels
+          lum += 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+          count += 1;
+        }
+        if (count > 0 && lum / count > 205) setLightLogo(true);
+      } catch {
+        /* cross-origin canvas can't be read — leave as-is */
+      }
+    };
+    probe.src = brand.logo;
+  }, [brand.logo]);
 
   if (brand.logo && mode === "img") {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- remote brand logos from arbitrary hosts
-      <img
-        src={brand.logo}
-        alt={name}
-        className="h-11 w-auto max-w-[240px] object-contain md:h-12"
-        referrerPolicy="no-referrer"
-        onError={() => setMode("text")}
-        onLoad={(e) => {
-          const img = e.currentTarget;
-          const ratio = img.naturalWidth / img.naturalHeight;
-          // Square / near-square (favicon) or tiny → not a real wordmark; use text.
-          if (!ratio || ratio < 1.6 || img.naturalWidth < 64) setMode("text");
-        }}
-      />
+      <span className={lightLogo ? "inline-flex rounded-lg bg-neutral-900 px-3.5 py-2" : ""}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- remote brand logos from arbitrary hosts */}
+        <img
+          src={brand.logo}
+          alt={name}
+          className="h-11 w-auto max-w-[240px] object-contain md:h-12"
+          referrerPolicy="no-referrer"
+          onError={() => setMode("text")}
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            const ratio = img.naturalWidth / img.naturalHeight;
+            // Square / near-square (favicon) or tiny → not a real wordmark; use text.
+            if (!ratio || ratio < 1.6 || img.naturalWidth < 64) setMode("text");
+          }}
+        />
+      </span>
     );
   }
 
