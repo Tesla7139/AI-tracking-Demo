@@ -3,13 +3,19 @@
 import { Mail, Phone, Clock } from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { site } from "@/lib/site";
+import { useDevice } from "./device";
 
 const POLICY = ["Privacy Policy", "Return & Exchange Policy", "Refund Policy", "Terms & Conditions"];
 
 export function TrackingFooter({ brand }: { brand: Brand }) {
+  const mobile = useDevice() === "mobile";
   return (
     <footer className="border-t border-border bg-background-muted">
-      <div className="mx-auto grid w-full max-w-[1200px] grid-cols-2 gap-8 px-6 py-12 md:grid-cols-3 md:px-8 lg:grid-cols-5">
+      <div
+        className={`mx-auto grid w-full max-w-[1200px] gap-8 px-6 md:px-8 ${
+          mobile ? "grid-cols-2 py-8" : "grid-cols-2 py-12 md:grid-cols-3 lg:grid-cols-5"
+        }`}
+      >
         {/* Policy */}
         <div>
           <h3 className="text-eyebrow text-foreground">Policy</h3>

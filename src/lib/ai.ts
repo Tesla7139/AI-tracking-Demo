@@ -108,3 +108,29 @@ export async function recommendUpsells(
       r && typeof r.forItem === "string" && typeof r.name === "string" && typeof r.blurb === "string"
   );
 }
+
+export type HeroCopy = { headline: string; subtext: string; features: string[] };
+
+/** Brand-tailored hero banner copy: a short headline, one supporting line, and 3 benefit tags. */
+export async function generateHeroCopy(
+  brandName: string,
+  productTitles: string[]
+): Promise<HeroCopy | null> {
+  const out = await chatJSON(
+    `Write hero-banner marketing copy for the store "${brandName}". ` +
+      (productTitles.length
+        ? `Its products include: ${JSON.stringify(productTitles.slice(0, 8))}. `
+        : "") +
+      `Return JSON {"headline": string, "subtext": string, "features": string[]}. ` +
+      `headline: punchy, under 6 words, reflecting what this brand sells. ` +
+      `subtext: one warm sentence under 22 words about these products. ` +
+      `features: exactly 3 short benefit tags (2-3 words each) true to this product category. ` +
+      `No emojis, no surrounding quotes.`
+  );
+  if (!out) return null;
+  const headline = typeof out.headline === "string" ? out.headline.trim() : null;
+  const subtext = typeof out.subtext === "string" ? out.subtext.trim() : null;
+  const features = asStrings(out.features);
+  if (!headline || !subtext || !features || features.length < 3) return null;
+  return { headline, subtext, features: features.slice(0, 3) };
+}

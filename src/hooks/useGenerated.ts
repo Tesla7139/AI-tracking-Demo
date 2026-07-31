@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import type { Brand } from "@/lib/site";
-import type { UpsellRec } from "@/lib/ai";
+import type { UpsellRec, HeroCopy } from "@/lib/ai";
 
 export type Generated = {
   enabled: boolean;
   cityFacts: string[] | null;
   brandFacts: string[] | null;
   upsells: UpsellRec[] | null;
+  heroCopy: HeroCopy | null;
 };
 
 /**

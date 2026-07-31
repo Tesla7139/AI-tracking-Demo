@@ -3,6 +3,7 @@ import {
   aiEnabled,
   generateCityFacts,
   generateBrandFacts,
+  generateHeroCopy,
   recommendUpsells,
 } from "@/lib/ai";
 
@@ -14,6 +15,7 @@ type GenResult = {
   cityFacts: string[] | null;
   brandFacts: string[] | null;
   upsells: Awaited<ReturnType<typeof recommendUpsells>>;
+  heroCopy: Awaited<ReturnType<typeof generateHeroCopy>>;
 };
 
 // In-memory cache so demoing the same store repeatedly costs ONE set of calls, not
@@ -40,7 +42,13 @@ export async function POST(req: Request) {
   }
 
   if (!aiEnabled()) {
-    return NextResponse.json({ enabled: false, cityFacts: null, brandFacts: null, upsells: null });
+    return NextResponse.json({
+      enabled: false,
+      cityFacts: null,
+      brandFacts: null,
+      upsells: null,
+      heroCopy: null,
+    });
   }
 
   const { brandName, description, city, country, orderedTitles, catalogTitles } = body;
@@ -52,19 +60,20 @@ export async function POST(req: Request) {
     return NextResponse.json(hit.data);
   }
 
-  const [cityFacts, brandFacts, upsells] = await Promise.all([
+  const [cityFacts, brandFacts, upsells, heroCopy] = await Promise.all([
     city ? generateCityFacts(city, country || "") : Promise.resolve(null),
     brandName ? generateBrandFacts(brandName, description) : Promise.resolve(null),
     orderedTitles?.length && catalogTitles?.length
       ? recommendUpsells(orderedTitles, catalogTitles)
       : Promise.resolve(null),
+    brandName ? generateHeroCopy(brandName, catalogTitles || []) : Promise.resolve(null),
   ]);
 
-  const data: GenResult = { enabled: true, cityFacts, brandFacts, upsells };
+  const data: GenResult = { enabled: true, cityFacts, brandFacts, upsells, heroCopy };
 
   // Only cache a result that actually produced something, so a transient failure
   // (breaker tripped → all nulls) isn't cached and can be retried later.
-  if (cityFacts || brandFacts || upsells) {
+  if (cityFacts || brandFacts || upsells || heroCopy) {
     CACHE.set(cacheKey, { exp: Date.now() + TTL_MS, data });
   }
 

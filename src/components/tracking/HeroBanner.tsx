@@ -3,20 +3,27 @@
 import { useState } from "react";
 import { UserRound, Leaf, ShieldCheck } from "lucide-react";
 import type { Brand } from "@/lib/site";
+import type { HeroCopy } from "@/lib/ai";
 import { darken } from "@/lib/colors";
 import { heroImage } from "@/lib/tracking";
 
-const FEATURES = [
-  { icon: UserRound, text: "Designed for everyone" },
-  { icon: Leaf, text: "Thoughtful materials" },
-  { icon: ShieldCheck, text: "Premium quality" },
-];
+const ICONS = [UserRound, Leaf, ShieldCheck];
+const FALLBACK = {
+  headline: "Made to move with you.",
+  subtext:
+    "Thoughtfully designed products that support every day, shipped with care and tracked with ease.",
+  features: ["Designed for everyone", "Thoughtful materials", "Premium quality"],
+};
 
-/** Brand marketing banner over a lifestyle photo. */
-export function HeroBanner({ brand }: { brand: Brand }) {
+/** Brand marketing banner over a lifestyle photo. Copy is AI-generated per brand when
+ *  available (generated.heroCopy), else the static fallback above. */
+export function HeroBanner({ brand, copy }: { brand: Brand; copy?: HeroCopy | null }) {
   const accent = brand.brandColor;
   const [imgErr, setImgErr] = useState(false);
   const img = brand.ogImage || brand.products.find((p) => p.image)?.image || heroImage;
+  const headline = copy?.headline || FALLBACK.headline;
+  const subtext = copy?.subtext || FALLBACK.subtext;
+  const features = copy?.features?.length ? copy.features.slice(0, 3) : FALLBACK.features;
   return (
     <div
       className="relative overflow-hidden rounded-xl text-white"
@@ -43,11 +50,9 @@ export function HeroBanner({ brand }: { brand: Brand }) {
         {brand.brandName}
       </p>
       <h3 className="mt-3 max-w-md text-3xl font-bold leading-tight md:text-4xl">
-        Made to move with you.
+        {headline}
       </h3>
-      <p className="mt-3 max-w-sm text-sm text-white/80">
-        Thoughtfully designed products that support every day, shipped with care and tracked with ease.
-      </p>
+      <p className="mt-3 max-w-sm text-sm text-white/80">{subtext}</p>
 
       <div className="mt-6 flex flex-wrap gap-3">
         <a
@@ -70,11 +75,14 @@ export function HeroBanner({ brand }: { brand: Brand }) {
       </div>
 
       <div className="mt-7 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/15 pt-5">
-        {FEATURES.map(({ icon: Icon, text }) => (
-          <span key={text} className="flex items-center gap-2 text-sm text-white/85">
-            <Icon className="size-4" /> {text}
-          </span>
-        ))}
+        {features.map((text, i) => {
+          const Icon = ICONS[i] ?? UserRound;
+          return (
+            <span key={text} className="flex items-center gap-2 text-sm text-white/85">
+              <Icon className="size-4" /> {text}
+            </span>
+          );
+        })}
       </div>
       </div>
     </div>

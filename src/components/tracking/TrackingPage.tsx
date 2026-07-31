@@ -124,7 +124,7 @@ export function TrackingPage({
         {/* Full-width sections below the two-column area */}
         <div className="mt-6 flex flex-col gap-6">
           <motion.div {...reveal(0.64)}>
-            <HeroBanner brand={brand} />
+            <HeroBanner brand={brand} copy={generated?.heroCopy} />
           </motion.div>
           <motion.div id="tour-arrivals" className="scroll-mt-24" {...reveal(0.72)}>
             <NewArrivals products={arrivals} accent={accent} sym={sym} />
