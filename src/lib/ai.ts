@@ -8,7 +8,6 @@
 
 const KEY = process.env.OPENAI_API_KEY;
 const TEXT_MODEL = process.env.OPENAI_TEXT_MODEL || "gpt-4o-mini";
-const IMAGE_MODEL = process.env.OPENAI_IMAGE_MODEL || "gpt-image-1";
 
 /**
  * Circuit breaker: once the API answers with an auth/quota/rate error we stop
@@ -108,42 +107,4 @@ export async function recommendUpsells(
     (r): r is UpsellRec =>
       r && typeof r.forItem === "string" && typeof r.name === "string" && typeof r.blurb === "string"
   );
-}
-
-/**
- * Generate a high-quality hero image for the brand. Returns a data URL (base64 PNG)
- * the caller can render or save. Slow + costs money, so call sparingly (cache it).
- */
-export async function generateHeroImage(
-  brandName: string,
-  hint?: string
-): Promise<string | null> {
-  // Images are the costly call, so they need aiEnabled() AND an explicit opt-in.
-  if (!aiEnabled() || process.env.AI_IMAGES !== "true") return null;
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 60000);
-  try {
-    const res = await fetch("https://api.openai.com/v1/images/generations", {
-      method: "POST",
-      signal: controller.signal,
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${KEY}` },
-      body: JSON.stringify({
-        model: IMAGE_MODEL,
-        prompt:
-          `A premium, editorial lifestyle hero photograph for the brand "${brandName}". ` +
-          (hint ? `Products: ${hint}. ` : "") +
-          `Natural light, clean modern composition, high-end e-commerce campaign look, no text, no logos, ultra sharp.`,
-        size: "1536x1024",
-        quality: "high",
-      }),
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    const b64 = data?.data?.[0]?.b64_json;
-    return b64 ? `data:image/png;base64,${b64}` : null;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
 }

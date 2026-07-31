@@ -84,7 +84,7 @@ export function buildJourneySteps(city: string, now: Date = new Date()): Journey
 /** Unsplash CDN helper (loads client-side in the browser). */
 const UIMG = (id: string) => `https://images.unsplash.com/photo-${id}?w=800&q=80&auto=format&fit=crop`;
 
-/** Full-bleed lifestyle hero photo (swapped for an AI-generated image later). */
+/** Full-bleed lifestyle hero photo — fallback when the store has no og:image/product image. */
 export const heroImage = UIMG("1483985988355-763728e1935b");
 
 /** Vertical promo image for the bottom of the right rail. */
