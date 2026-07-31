@@ -311,19 +311,21 @@ export function TrackingScreen({
                 </div>
               </motion.div>
             ) : (
-              // Mobile: a tall phone with the controls stacked to its right.
+              // Mobile: controls in one row on top, the tall phone centered below.
               <motion.div
                 key="mobile"
                 initial={{ opacity: 0, scale: 0.82, y: 24 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.82, y: 24 }}
                 transition={{ type: "spring", stiffness: 190, damping: 23 }}
-                className="flex h-full items-center justify-center gap-6 lg:gap-10"
+                className="flex h-full min-w-0 flex-col items-center gap-3"
               >
-                <PhoneFrame>{screen}</PhoneFrame>
-                <div className="flex shrink-0 flex-col items-center gap-3 self-start pt-1">
+                <div className="flex shrink-0 items-center justify-center gap-3">
                   {startTour}
                   {toggle}
+                </div>
+                <div className="flex min-h-0 w-full flex-1 justify-center">
+                  <PhoneFrame>{screen}</PhoneFrame>
                 </div>
               </motion.div>
             )}
