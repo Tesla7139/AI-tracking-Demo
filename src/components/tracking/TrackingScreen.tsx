@@ -215,7 +215,7 @@ export function TrackingScreen({
             step={activeIndex}
             total={TOUR_STEPS.length}
             preview={isPreview}
-            nextLabel={TOUR_STEPS[activeIndex + 1]?.kind === "feature" ? "Next feature" : "Next"}
+            nextLabel="Next"
             onNext={() => setStep((s) => (s === null ? s : Math.min(s + 1, TOUR_STEPS.length - 1)))}
             onBack={() => setStep((s) => (s === null ? s : Math.max(s - 1, 0)))}
             onClose={endTour}
@@ -341,7 +341,7 @@ export function TrackingScreen({
           step={activeIndex}
           total={TOUR_STEPS.length}
           preview={isPreview}
-          nextLabel={TOUR_STEPS[activeIndex + 1]?.kind === "feature" ? "Next feature" : "Next"}
+          nextLabel="Next"
           onNext={() => setStep((s) => (s === null ? s : Math.min(s + 1, TOUR_STEPS.length - 1)))}
           onBack={() => setStep((s) => (s === null ? s : Math.max(s - 1, 0)))}
           onClose={endTour}
