@@ -42,8 +42,22 @@ export function TourOverlay({
   const [vw, setVw] = useState(1200);
   const [vh, setVh] = useState(800);
   const [show, setShow] = useState(true);
+  const [typed, setTyped] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardH, setCardH] = useState(240);
+
+  // Typewriter: reveal the description one character at a time when the step changes.
+  useEffect(() => {
+    setTyped("");
+    let i = 0;
+    const id = window.setInterval(() => {
+      i += 1;
+      setTyped(desc.slice(0, i));
+      if (i >= desc.length) window.clearInterval(id);
+    }, 15);
+    return () => window.clearInterval(id);
+  }, [desc, step]);
+  const typing = typed.length < desc.length;
 
   useEffect(() => {
     setMounted(true);
@@ -193,7 +207,14 @@ export function TourOverlay({
             </button>
           </div>
 
-          <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">{desc}</p>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+            {typed}
+            {typing && (
+              <span className="ml-px inline-block h-[1em] w-[2px] translate-y-[2px] animate-pulse bg-slate-400" />
+            )}
+            {/* keep the full text in layout (transparent) so the box height stays stable */}
+            <span className="text-transparent">{desc.slice(typed.length)}</span>
+          </p>
 
           {/* Preview mode = just the note (no navigation). Full tour = progress + Back/Next. */}
           {!preview && (
