@@ -33,6 +33,15 @@ export function TrackingScreen({
   const [emailOpen, setEmailOpen] = useState(false);
   // Device preview: desktop (wide frame) or mobile (phone-shaped frame).
   const [view, setView] = useState<"desktop" | "mobile">("desktop");
+  // Real small-screen device (not a desktop previewing mobile) → full-screen layout.
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const sync = () => setCompact(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
   // Quick single-section preview index (feature-card click), or null when off.
   const [preview, setPreview] = useState<number | null>(null);
   const [rect, setRect] = useState<TargetRect | null>(null);
@@ -115,12 +124,65 @@ export function TrackingScreen({
     setRect(null);
   }, []);
 
+  const bgStyle = {
+    background: "radial-gradient(130% 120% at 50% -10%, #f6fbff 0%, #e6f4ff 55%, #d3ecff 100%)",
+  };
+
+  // Real mobile devices: full-screen content, no device frame / toggle (the toggle
+  // is a desktop-only "preview mobile" affordance and the frame would overflow here).
+  if (compact) {
+    return (
+      <div className="fixed inset-0 flex flex-col overflow-hidden" style={bgStyle}>
+        <div className="flex items-center gap-2 px-3 pb-2 pt-3 pr-14">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("cp:start-tour"))}
+            className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 shadow-md ring-1 ring-black/5"
+          >
+            <Play className="size-3 fill-slate-900 text-slate-900" />
+            Start tour
+          </button>
+          <a
+            href="#"
+            className="rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-white shadow-md"
+          >
+            Book a free demo
+          </a>
+        </div>
+        <div className="mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/10">
+          <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
+            <DeviceContext.Provider value="mobile">
+              {emailOpen ? (
+                <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
+              ) : (
+                children
+              )}
+            </DeviceContext.Provider>
+          </div>
+        </div>
+
+        {activeIndex !== null && TOUR_STEPS[activeIndex] && (
+          <TourOverlay
+            rect={rect}
+            title={TOUR_STEPS[activeIndex].title}
+            desc={TOUR_STEPS[activeIndex].desc}
+            step={activeIndex}
+            total={TOUR_STEPS.length}
+            preview={isPreview}
+            nextLabel={TOUR_STEPS[activeIndex + 1]?.kind === "feature" ? "Next feature" : "Next"}
+            onNext={() => setStep((s) => (s === null ? s : Math.min(s + 1, TOUR_STEPS.length - 1)))}
+            onBack={() => setStep((s) => (s === null ? s : Math.max(s - 1, 0)))}
+            onClose={endTour}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       className="fixed inset-0 flex items-center justify-center gap-8 overflow-hidden p-3 sm:p-6 lg:gap-10 lg:px-10 lg:py-4"
-      style={{
-        background: "radial-gradient(130% 120% at 50% -10%, #f6fbff 0%, #e6f4ff 55%, #d3ecff 100%)",
-      }}
+      style={bgStyle}
     >
       <FeaturePanel brand={brand} className="hidden xl:flex" activeStep={activeIndex} />
 
