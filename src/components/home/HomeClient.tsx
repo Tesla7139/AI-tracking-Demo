@@ -94,7 +94,7 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
   const loading = false;
 
   return (
-    <div className="bg-white">
+    <div className="min-h-svh w-full overflow-x-hidden bg-white">
       <Navbar onProductTour={focusUrl} />
       <Container className="flex min-h-[calc(100svh-73px)] flex-col items-center justify-center py-16 text-center">
         <motion.div

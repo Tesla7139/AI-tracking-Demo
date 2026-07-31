@@ -55,6 +55,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
   /* page base color lives here so the fixed globe layer (-z-10 on body)
      is not painted over by an opaque body background */
   background: var(--background);
