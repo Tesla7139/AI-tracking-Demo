@@ -38,7 +38,13 @@ export function TrackingPage({
   const accent = brand.brandColor;
   const city = location?.city ?? null;
   const sym = currencySymbol(brand.currency);
+  // When we couldn't scrape a real catalog (samples), still show ONE real brand photo
+  // (the store's banner/og image) on the first item + first arrival, rest stay mockups.
+  const sampled = brand.products.length === 0;
+  const brandPhoto = sampled ? brand.bannerImage || brand.ogImage : null;
+
   const arrivals = buildNewArrivals(brand.products);
+  if (brandPhoto && arrivals.length) arrivals[0] = { ...arrivals[0], image: brandPhoto };
 
   // AI-generated content when available, else the static/curated fallbacks.
   const funFacts = generated?.cityFacts?.length ? generated.cityFacts : cityFunFacts(city);
@@ -51,6 +57,7 @@ export function TrackingPage({
     const rec = generated?.upsells?.find((u) => u.forItem === it.name);
     return rec ? { ...it, rec: { ...it.rec, name: rec.name, blurb: rec.blurb } } : it;
   });
+  if (brandPhoto && items.length) items[0] = { ...items[0], image: brandPhoto };
   const orderValue =
     sym + items.reduce((s, it) => s + it.price * (it.qty || 1), 0).toLocaleString();
 
