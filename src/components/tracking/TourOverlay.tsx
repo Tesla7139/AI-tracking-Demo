@@ -121,32 +121,24 @@ export function TourOverlay({
     cardTop = Math.max(vh - cardH - 16, 16);
     placeBelow = false;
   } else if (hole) {
-    const centeredTop = clampTop(hole.top + hole.height / 2 - cardH / 2);
-    const roomLeft = hole.left;
-    const roomRight = vw - (hole.left + hole.width);
+    // Keep the card in the empty LEFT area so it never covers the demo screen/phone
+    // (which sits center-right). A left-side target (feature card) gets the card BELOW
+    // it; a right-side target (a section inside the screen) gets the left gutter.
     const holeCenterX = hole.left + hole.width / 2;
-    const preferRight = holeCenterX < vw / 2;
-    if (preferRight && roomRight >= CARD_W + 24) {
-      cardLeft = hole.left + hole.width + 16; // card to the right of a left-side target
-      cardTop = centeredTop;
-      placeBelow = false;
-    } else if (!preferRight && roomLeft >= CARD_W + 24) {
-      cardLeft = 16; // left gutter, clear of a right-side target (over the feature panel)
-      cardTop = centeredTop;
-      placeBelow = false;
-    } else if (roomRight >= CARD_W + 24) {
-      cardLeft = hole.left + hole.width + 16;
-      cardTop = centeredTop;
-      placeBelow = false;
-    } else if (roomLeft >= CARD_W + 24) {
-      cardLeft = 16;
-      cardTop = centeredTop;
-      placeBelow = false;
+    const leftTarget = holeCenterX < vw * 0.5;
+    cardLeft = clampLeft(16);
+    if (leftTarget) {
+      const belowRoom = vh - (hole.top + hole.height);
+      if (belowRoom >= cardH + 24) {
+        cardTop = hole.top + hole.height + 16; // below the highlighted card
+        placeBelow = true;
+      } else {
+        cardTop = clampTop(hole.top - cardH - 16); // above if no room below
+        placeBelow = false;
+      }
     } else {
-      const spaceBelow = vh - (hole.top + hole.height);
-      placeBelow = spaceBelow > cardH + 24;
-      cardTop = placeBelow ? hole.top + hole.height + 16 : Math.max(hole.top - cardH - 16, 16);
-      cardLeft = clampLeft(hole.left);
+      cardTop = clampTop(hole.top + hole.height / 2 - cardH / 2); // vertically centered, left gutter
+      placeBelow = false;
     }
   }
   const isLast = step === total - 1;
