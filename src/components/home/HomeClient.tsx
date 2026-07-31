@@ -106,8 +106,8 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
           <h1
             className="w-full max-w-full text-balance break-words font-medium text-[#0a0a0a]"
             style={{
-              fontSize: "clamp(1.6rem, 6.5vw, 5.25rem)",
-              lineHeight: 1.06,
+              fontSize: "clamp(1.6rem, 4.5vw, 3.5rem)",
+              lineHeight: 1.08,
               letterSpacing: "-0.022em",
             }}
           >
