@@ -480,6 +480,42 @@ function productsFromHtmlCards(html: string, base: URL): DemoProductOut[] {
       variants: [{ title: "Default", price }],
     });
   }
+  if (out.length > 0) return out;
+
+  // Windowed pass: for markup where image + price aren't in one anchor, pair each
+  // price with the nearest image (either side) that has alt text (its product name).
+  const pRe = /(?:[$₹£€]|Rs\.?|USD|INR|GBP|EUR)\s?([0-9][0-9.,]*)/gi;
+  let pm: RegExpExecArray | null;
+  while ((pm = pRe.exec(html)) && out.length < 8) {
+    const price = Math.round(parseFloat(pm[1].replace(/,/g, "")) || 0);
+    if (price < 5) continue;
+    const from = Math.max(0, pm.index - 2200);
+    const win = html.slice(from, pm.index + 2200);
+    let best: { alt: string; src: string; dist: number } | null = null;
+    for (const im of win.matchAll(/<img\b[^>]*>/gi)) {
+      const alt = im[0].match(/alt=["']([^"']+)["']/i)?.[1]?.trim();
+      const src = im[0].match(/(?:data-src|srcset|src)=["']([^"',\s]+)/i)?.[1];
+      if (!alt || alt.length < 3 || !src) continue;
+      if (/sprite|icon|logo|placeholder|payment/i.test(src)) continue;
+      const dist = Math.abs(from + (im.index ?? 0) - pm.index);
+      if (!best || dist < best.dist) best = { alt, src, dist };
+    }
+    if (!best) continue;
+    const image = absolutize(best.src.replace(/&amp;/gi, "&"), base);
+    if (!image) continue;
+    const key = best.alt.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({
+      id: String(out.length + 1),
+      title: decodeHtml(best.alt.slice(0, 60)),
+      variant: "",
+      price,
+      qty: 1,
+      image,
+      variants: [{ title: "Default", price }],
+    });
+  }
   return out;
 }
 
@@ -818,6 +854,12 @@ export async function POST(req: Request) {
   // Last resort — scrape product cards directly from the homepage markup.
   if (products.length === 0 && html) {
     products = productsFromHtmlCards(html, url);
+  }
+  // Some stores render their catalog with JavaScript, so the static HTML has no
+  // products. Jina returns the RENDERED page — try scraping that before giving up.
+  if (products.length === 0) {
+    const rendered = await jinaFetch(url.toString(), "html");
+    if (rendered) products = productsFromHtmlCards(rendered, url);
   }
 
   const currency = parseCurrency(cartJson);
