@@ -325,11 +325,11 @@ export function TrackingScreen({
                 className="absolute inset-0 flex items-center justify-center"
               >
                 <PhoneFrame>{screen}</PhoneFrame>
-                <div
-                  className="absolute top-6 flex flex-col items-start gap-3"
-                  style={{ left: "calc(50% + 205px)" }}
-                >
+                {/* Start tour to the left of the phone, device toggle to the right — both at top */}
+                <div className="absolute top-6" style={{ right: "calc(50% + 205px)" }}>
                   {startTour}
+                </div>
+                <div className="absolute top-6" style={{ left: "calc(50% + 205px)" }}>
                   {toggle}
                 </div>
               </motion.div>
