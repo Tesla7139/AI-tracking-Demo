@@ -20,7 +20,10 @@ const FALLBACK = {
 export function HeroBanner({ brand, copy }: { brand: Brand; copy?: HeroCopy | null }) {
   const accent = brand.brandColor;
   const [imgErr, setImgErr] = useState(false);
-  const img = brand.ogImage || brand.products.find((p) => p.image)?.image || heroImage;
+  const [logoErr, setLogoErr] = useState(false);
+  // Prefer a real lifestyle/banner image for advertising, then og:image, then a product photo.
+  const img =
+    brand.bannerImage || brand.ogImage || brand.products.find((p) => p.image)?.image || heroImage;
   const headline = copy?.headline || FALLBACK.headline;
   const subtext = copy?.subtext || FALLBACK.subtext;
   const features = copy?.features?.length ? copy.features.slice(0, 3) : FALLBACK.features;
@@ -46,9 +49,20 @@ export function HeroBanner({ brand, copy }: { brand: Brand; copy?: HeroCopy | nu
         }}
       />
       <div className="relative p-8 md:p-10">
-      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/80">
-        {brand.brandName}
-      </p>
+      {brand.logo && !logoErr ? (
+        // eslint-disable-next-line @next/next/no-img-element -- remote brand logo
+        <img
+          src={brand.logo}
+          alt={brand.brandName}
+          onError={() => setLogoErr(true)}
+          referrerPolicy="no-referrer"
+          className="mb-3 h-9 w-auto max-w-[180px] rounded-md bg-white/95 object-contain p-1.5 shadow-sm"
+        />
+      ) : (
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-white/80">
+          {brand.brandName}
+        </p>
+      )}
       <h3 className="mt-3 max-w-md text-3xl font-bold leading-tight md:text-4xl">
         {headline}
       </h3>

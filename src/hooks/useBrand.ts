@@ -40,6 +40,7 @@ export function useBrand() {
       brandColor: data?.brandColor || DEFAULT_BRAND.brandColor,
       logo: data?.logo || null,
       ogImage: data?.ogImage || null,
+      bannerImage: data?.bannerImage || null,
       url: data?.url || (trimmed.startsWith("http") ? trimmed : `https://${trimmed}`),
       currency: data?.currency ?? DEFAULT_BRAND.currency,
       country: data?.country ?? DEFAULT_BRAND.country,

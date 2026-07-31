@@ -22,6 +22,7 @@ type Branding = {
   brandColor: string | null;
   logo: string | null;
   ogImage: string | null; // wide brand photo (for hero/promo)
+  bannerImage: string | null; // best-guess wide lifestyle/banner image for the hero
   url: string | null; // the store's homepage (for CTA links)
   currency: string | null;
   country: string | null;
@@ -567,7 +568,7 @@ function pickAccentFromHtml(html: string): string | null {
 function parseBranding(
   html: string,
   base: URL
-): Pick<Branding, "brandName" | "brandColor" | "logo" | "ogImage"> {
+): Pick<Branding, "brandName" | "brandColor" | "logo" | "ogImage" | "bannerImage"> {
   // Prefer og:site_name (a clean brand). Otherwise take the first segment of the
   // <title>, but only split on separators surrounded by whitespace or a pipe/dash —
   // NOT a bare hyphen, so "Post-Surgery Bras … at AnaOno" doesn't become "Post".
@@ -635,7 +636,52 @@ function parseBranding(
     brandColor,
     logo: upscaleImage(absolutize(iconHref, base)),
     ogImage,
+    bannerImage: pickBannerImage(html, base),
   };
+}
+
+/**
+ * Best-guess wide banner / lifestyle image from the homepage for the hero — real
+ * marketing imagery reads far better than a square product shot. Collects <img>
+ * (incl. srcset) + CSS background images, scores by banner-ish signals, and returns
+ * the top candidate (or null → the hero falls back to og:image / a product photo).
+ */
+function pickBannerImage(html: string, base: URL): string | null {
+  const urls = new Set<string>();
+  for (const m of html.matchAll(/<img[^>]+(?:data-src|src)=["']([^"']+)["']/gi)) urls.add(m[1]);
+  for (const m of html.matchAll(/<(?:img|source)[^>]+srcset=["']([^"']+)["']/gi)) {
+    const last = m[1]
+      .split(",")
+      .map((s) => s.trim().split(/\s+/)[0])
+      .filter(Boolean)
+      .pop();
+    if (last) urls.add(last);
+  }
+  for (const m of html.matchAll(/background-image\s*:\s*url\((["']?)([^)"']+)\1\)/gi)) urls.add(m[2]);
+
+  const score = (u: string): number => {
+    const s = u.toLowerCase();
+    let sc = 0;
+    if (/hero|banner|lifestyle|slide|homepage|header|cover|campaign|billboard|hp[_-]/.test(s)) sc += 6;
+    if (/\b(1600|1800|1920|2000|2400|2560|3000)\b/.test(s) || /width=1[5-9]\d\d|width=2\d{3}/.test(s)) sc += 3;
+    if (/product|thumbnail|thumb|icon|logo|favicon|badge|sprite|swatch|\/products\//.test(s)) sc -= 6;
+    if (/\.svg(\?|$)/.test(s) || /placeholder|blank|loading|pixel/.test(s)) sc -= 6;
+    return sc;
+  };
+
+  let best: string | null = null;
+  let bestScore = 0;
+  for (const u of urls) {
+    // Decode HTML entities (e.g. &amp; in srcset/attr URLs) so the image URL is valid.
+    const abs = absolutize(u.replace(/&amp;/gi, "&").replace(/&#38;/g, "&"), base);
+    if (!abs) continue;
+    const sc = score(abs);
+    if (sc > bestScore) {
+      bestScore = sc;
+      best = abs;
+    }
+  }
+  return bestScore >= 4 ? best : null;
 }
 
 function capitalize(s: string) {
@@ -723,6 +769,7 @@ export async function POST(req: Request) {
         brandColor: null,
         logo: null,
         ogImage: null,
+        bannerImage: null,
       };
 
   // Curated accent colors win over (or fill in) the scraped theme-color.

@@ -28,6 +28,8 @@ export type Brand = {
   logo: string | null;
   /** Wide brand photo (og:image) for hero/promo imagery. */
   ogImage: string | null;
+  /** Best-guess wide lifestyle/banner image from the homepage (preferred for the hero). */
+  bannerImage: string | null;
   /** The store's homepage URL (for CTA links). */
   url: string | null;
   currency: string | null;
@@ -45,6 +47,7 @@ export const DEFAULT_BRAND: Brand = {
   brandColor: "#111111",
   logo: null,
   ogImage: null,
+  bannerImage: null,
   url: null,
   currency: "USD",
   country: "United States",
