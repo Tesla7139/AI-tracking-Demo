@@ -101,7 +101,7 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto flex max-w-3xl flex-col items-center"
+          className="mx-auto flex w-full max-w-3xl flex-col items-center"
         >
           <h1
             className="w-full max-w-full text-balance break-words font-medium text-[#0a0a0a]"
