@@ -33,24 +33,29 @@ export function WeatherWidget({
         {weather ? (
           <>
             <div className="flex items-end justify-between gap-2">
-              <div>
+              <div className="min-w-0">
                 <p className="text-3xl font-bold text-foreground">{weather.tempF}°F</p>
                 <p className="mt-1 text-lg font-bold text-foreground">{weather.condition}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {localTimeLabel(location?.timezone ?? null)}
                 </p>
               </div>
-              <WeatherMotif iconKey={weather.iconKey} isDay={weather.isDay} />
+              {/* Scale the 150px motif disc down so it fits the (narrow) weather card. */}
+              <div className="shrink-0 self-center" style={{ width: 104, height: 104 }}>
+                <div style={{ width: 150, height: 150, transform: "scale(0.6933)", transformOrigin: "top left" }}>
+                  <WeatherMotif iconKey={weather.iconKey} isDay={weather.isDay} />
+                </div>
+              </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm">
-                <Droplets className="size-4 text-muted-foreground" />
-                <span className="text-foreground">Humidity: {weather.humidity}%</span>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="flex min-w-0 items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1.5 text-[11px]">
+                <Droplets className="size-3.5 shrink-0 text-muted-foreground" />
+                <span className="truncate text-foreground">Humidity: {weather.humidity}%</span>
               </div>
-              <div className="flex items-center gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm">
-                <Wind className="size-4 text-muted-foreground" />
-                <span className="text-foreground">Wind: {weather.windMph} mph</span>
+              <div className="flex min-w-0 items-center gap-1.5 rounded-md border border-border bg-white px-2.5 py-1.5 text-[11px]">
+                <Wind className="size-3.5 shrink-0 text-muted-foreground" />
+                <span className="truncate text-foreground">Wind: {weather.windMph} mph</span>
               </div>
             </div>
           </>
