@@ -77,7 +77,7 @@ export function TrackingPage({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="w-full overflow-x-hidden bg-[#f7f8fa]"
-      style={{ zoom: 0.81, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      style={{ zoom: mobile ? 0.5 : 0.81, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
       <TrackingHeader brand={brand} />
 
@@ -89,7 +89,7 @@ export function TrackingPage({
         {/* Two aligned rows: (Journey ∥ Weather+FunFact) then (Order Items ∥ DidYouKnow+OrderDetails+Promo) */}
         <div
           className={`mt-5 grid grid-cols-1 items-stretch gap-5 ${
-            mobile ? "" : "lg:grid-cols-[minmax(0,1fr)_320px]"
+            mobile ? "grid-cols-[minmax(0,1fr)_300px]" : "lg:grid-cols-[minmax(0,1fr)_320px]"
           }`}
         >
           {/* Row 1 */}

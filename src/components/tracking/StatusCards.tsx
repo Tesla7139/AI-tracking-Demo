@@ -37,9 +37,13 @@ export function StatusCards({
   const city = location?.city ?? "your city";
 
   return (
-    <div className={`grid grid-cols-1 gap-5 ${mobile ? "" : "lg:grid-cols-[minmax(0,1fr)_320px]"}`}>
+    <div
+      className={`grid grid-cols-1 gap-5 ${
+        mobile ? "grid-cols-[minmax(0,1fr)_300px]" : "lg:grid-cols-[minmax(0,1fr)_320px]"
+      }`}
+    >
       {/* Left pair: EDD + Status (sits over the main left column) */}
-      <div className={`grid grid-cols-1 gap-5 ${mobile ? "" : "sm:grid-cols-2"}`}>
+      <div className={`grid grid-cols-1 gap-5 ${mobile ? "grid-cols-2" : "sm:grid-cols-2"}`}>
       {/* Estimated delivery */}
       <Card>
         <Illo>
