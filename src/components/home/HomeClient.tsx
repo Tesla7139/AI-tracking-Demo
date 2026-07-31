@@ -104,10 +104,10 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
           className="mx-auto flex max-w-3xl flex-col items-center"
         >
           <h1
-            className="text-balance font-medium text-[#0a0a0a]"
+            className="w-full max-w-full text-balance break-words font-medium text-[#0a0a0a]"
             style={{
-              fontSize: "clamp(2rem, 5vw, 5.25rem)",
-              lineHeight: 1.04,
+              fontSize: "clamp(1.6rem, 6.5vw, 5.25rem)",
+              lineHeight: 1.06,
               letterSpacing: "-0.022em",
             }}
           >
@@ -115,7 +115,7 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
             <span className="text-primary">upsells</span> by 8%
           </h1>
           <p
-            className="mt-7 max-w-xl text-muted-foreground"
+            className="mt-7 w-full max-w-xl text-muted-foreground"
             style={{ fontSize: "clamp(1rem, 1.5vw, 1.4rem)" }}
           >
             Enter your store URL to have a personalized demo tailored to your store.
