@@ -89,11 +89,15 @@ export function TrackingPage({
         {/* Two aligned rows: (Journey ∥ Weather+FunFact) then (Order Items ∥ DidYouKnow+OrderDetails+Promo) */}
         <div
           className={`mt-5 grid grid-cols-1 items-stretch gap-5 ${
-            mobile ? "grid-cols-[minmax(0,1fr)_300px]" : "lg:grid-cols-[minmax(0,1fr)_320px]"
+            mobile ? "grid-cols-3" : "lg:grid-cols-3"
           }`}
         >
           {/* Row 1 */}
-          <motion.div id="tour-journey" className="min-w-0 scroll-mt-24" {...reveal(0.18)}>
+          <motion.div
+            id="tour-journey"
+            className={`min-w-0 scroll-mt-24 ${mobile ? "col-span-2" : "lg:col-span-2"}`}
+            {...reveal(0.18)}
+          >
             <ShipmentJourney location={location} accent={accent} />
           </motion.div>
           <motion.div className="flex min-w-0 flex-col gap-5" {...reveal(0.3)}>
@@ -109,7 +113,11 @@ export function TrackingPage({
           </motion.div>
 
           {/* Row 2 */}
-          <motion.div id="tour-items" className="min-w-0 scroll-mt-24" {...reveal(0.42)}>
+          <motion.div
+            id="tour-items"
+            className={`min-w-0 scroll-mt-24 ${mobile ? "col-span-2" : "lg:col-span-2"}`}
+            {...reveal(0.42)}
+          >
             <OrderItems items={items} accent={accent} sym={sym} />
           </motion.div>
           <motion.div className="flex min-w-0 flex-col gap-5" {...reveal(0.54)}>

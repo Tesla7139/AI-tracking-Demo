@@ -37,13 +37,8 @@ export function StatusCards({
   const city = location?.city ?? "your city";
 
   return (
-    <div
-      className={`grid grid-cols-1 gap-5 ${
-        mobile ? "grid-cols-[minmax(0,1fr)_300px]" : "lg:grid-cols-[minmax(0,1fr)_320px]"
-      }`}
-    >
-      {/* Left pair: EDD + Status (sits over the main left column) */}
-      <div className={`grid grid-cols-1 gap-5 ${mobile ? "grid-cols-2" : "sm:grid-cols-2"}`}>
+    // Three equal-width, equal-height boxes (EDD, Status, Latest Update).
+    <div className={`grid grid-cols-1 gap-5 ${mobile ? "grid-cols-3" : "sm:grid-cols-3"}`}>
       {/* Estimated delivery */}
       <Card>
         <Illo>
@@ -73,9 +68,8 @@ export function StatusCards({
           </span>
         </div>
       </Card>
-      </div>
 
-      {/* Latest update — aligns with the right rail (Weather) below */}
+      {/* Latest update */}
       <Card>
         <Illo>
           <PinMotif accent={accent} />
