@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Play } from "lucide-react";
+import { ChevronDown, ChevronRight, Play } from "lucide-react";
 import type { Brand } from "@/lib/site";
 import { TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
 import type { Generated } from "@/hooks/useGenerated";
@@ -11,6 +11,17 @@ import { TourOverlay, type TargetRect } from "./TourOverlay";
 import { EmailView } from "./EmailPreview";
 import { DeviceContext } from "./device";
 import { PhoneFrame } from "./PhoneFrame";
+
+// Mobile "Features" dropdown — mirrors the desktop left feature panel. Each item fires
+// the same event a feature card does (section preview, or open the AI email).
+const fire = (name: string, detail?: unknown) =>
+  window.dispatchEvent(new CustomEvent(name, detail ? { detail } : undefined));
+const MOBILE_FEATURES: { title: string; run: () => void }[] = [
+  { title: "AI recommendations", run: () => fire("cp:preview-feature", { card: 0 }) },
+  { title: "Real-time tracking", run: () => fire("cp:preview-feature", { card: 1 }) },
+  { title: "Personalized tips", run: () => fire("cp:preview-feature", { card: 2 }) },
+  { title: "AI Emails", run: () => fire("cp:open-email") },
+];
 
 /**
  * Frames the tracking page inside a "screen" on a light sky-blue backdrop (like
@@ -35,6 +46,8 @@ export function TrackingScreen({
   const [view, setView] = useState<"desktop" | "mobile">("desktop");
   // Real small-screen device (not a desktop previewing mobile) → full-screen layout.
   const [compact, setCompact] = useState(false);
+  // Mobile "Features" dropdown open/closed.
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 1023px)");
     const sync = () => setCompact(mq.matches);
@@ -133,7 +146,40 @@ export function TrackingScreen({
   if (compact) {
     return (
       <div className="fixed inset-0 flex flex-col overflow-hidden" style={bgStyle}>
-        <div className="flex items-center gap-2 px-3 pb-2 pt-3 pr-14">
+        <div className="flex items-center gap-2 px-3 pb-2 pt-3 pr-12">
+          {/* Features dropdown (replaces the desktop left feature panel on mobile) */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setMenuOpen((o) => !o)}
+              className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 shadow-md ring-1 ring-black/5"
+            >
+              Features
+              <ChevronDown className={`size-3.5 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
+            </button>
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                <div className="absolute left-0 top-full z-50 mt-1.5 w-60 overflow-hidden rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/10">
+                  {MOBILE_FEATURES.map((f) => (
+                    <button
+                      key={f.title}
+                      type="button"
+                      onClick={() => {
+                        f.run();
+                        setMenuOpen(false);
+                      }}
+                      className="flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-[14px] font-medium text-slate-800 hover:bg-slate-50"
+                    >
+                      {f.title}
+                      <ChevronRight className="size-4 shrink-0 text-slate-400" />
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("cp:start-tour"))}
@@ -146,7 +192,7 @@ export function TrackingScreen({
             href="#"
             className="rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-white shadow-md"
           >
-            Book a free demo
+            Book a demo
           </a>
         </div>
         <div className="mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/10">

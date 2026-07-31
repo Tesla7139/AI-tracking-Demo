@@ -89,15 +89,24 @@ export function TourOverlay({
       }
     : null;
 
+  // Small screens: the card is full-width and docked to the bottom, so it never
+  // overlaps the spotlighted section (which scrolls into view above it).
+  const isMobile = vw < 640;
+  const cardW = isMobile ? Math.min(vw - 24, 440) : CARD_W;
+
   // Placement: put the card on the side AWAY from the target so it never covers it.
   // A target on the left half (e.g. a feature card) pushes the card right; a target on
   // the right (a page section) pushes it into the left gutter. Fall back to below/above.
   const clampTop = (t: number) => Math.min(Math.max(t, 16), Math.max(vh - cardH - 16, 16));
-  const clampLeft = (l: number) => Math.min(Math.max(l, 16), Math.max(vw - CARD_W - 16, 16));
-  let cardLeft = clampLeft((vw - CARD_W) / 2);
+  const clampLeft = (l: number) => Math.min(Math.max(l, 16), Math.max(vw - cardW - 16, 16));
+  let cardLeft = clampLeft((vw - cardW) / 2);
   let cardTop = clampTop((vh - cardH) / 2);
   let placeBelow = true;
-  if (hole) {
+  if (isMobile) {
+    cardLeft = (vw - cardW) / 2;
+    cardTop = Math.max(vh - cardH - 16, 16);
+    placeBelow = false;
+  } else if (hole) {
     const centeredTop = clampTop(hole.top + hole.height / 2 - cardH / 2);
     const roomLeft = hole.left;
     const roomRight = vw - (hole.left + hole.width);
@@ -170,7 +179,7 @@ export function TourOverlay({
           exit={{ opacity: 0, y: placeBelow ? -6 : 6 }}
           transition={{ duration: 0.25 }}
           className="absolute rounded-2xl bg-white p-5 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] ring-1 ring-black/10"
-          style={{ top: cardTop, left: cardLeft, width: CARD_W }}
+          style={{ top: cardTop, left: cardLeft, width: cardW }}
         >
           <div className="flex items-start justify-between gap-3">
             <h3 className="text-lg font-bold leading-snug text-slate-900">{title}</h3>
