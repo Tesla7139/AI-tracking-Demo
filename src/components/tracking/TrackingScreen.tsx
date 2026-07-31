@@ -230,7 +230,11 @@ export function TrackingScreen({
       className="fixed inset-0 flex items-center justify-center gap-8 overflow-hidden p-3 sm:p-6 lg:gap-10 lg:px-10 lg:py-4"
       style={bgStyle}
     >
-      <FeaturePanel brand={brand} className="hidden xl:flex" activeStep={activeIndex} />
+      <FeaturePanel
+        brand={brand}
+        className={`hidden xl:flex ${view === "mobile" ? "absolute left-6 top-6 z-10" : ""}`}
+        activeStep={activeIndex}
+      />
 
       {/* Persistent top-right CTA (same spot in desktop and mobile), left of the close X */}
       <a
@@ -311,21 +315,22 @@ export function TrackingScreen({
                 </div>
               </motion.div>
             ) : (
-              // Mobile: controls in one row on top, the tall phone centered below.
+              // Mobile: phone dead-centre (full height); controls stacked at its top-right.
               <motion.div
                 key="mobile"
                 initial={{ opacity: 0, scale: 0.82, y: 24 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.82, y: 24 }}
                 transition={{ type: "spring", stiffness: 190, damping: 23 }}
-                className="flex h-full min-w-0 flex-col items-center gap-3"
+                className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="flex shrink-0 items-center justify-center gap-3">
+                <PhoneFrame>{screen}</PhoneFrame>
+                <div
+                  className="absolute top-6 flex flex-col items-start gap-3"
+                  style={{ left: "calc(50% + 205px)" }}
+                >
                   {startTour}
                   {toggle}
-                </div>
-                <div className="flex min-h-0 w-full flex-1 justify-center">
-                  <PhoneFrame>{screen}</PhoneFrame>
                 </div>
               </motion.div>
             )}
