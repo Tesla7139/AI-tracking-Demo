@@ -321,7 +321,7 @@ export function TrackingScreen({
                 className="flex h-full items-center justify-center gap-6 lg:gap-10"
               >
                 <PhoneFrame>{screen}</PhoneFrame>
-                <div className="flex shrink-0 flex-col items-center gap-3">
+                <div className="flex shrink-0 flex-col items-center gap-3 self-start pt-1">
                   {startTour}
                   {toggle}
                 </div>
