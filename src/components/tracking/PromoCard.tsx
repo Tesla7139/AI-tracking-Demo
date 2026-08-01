@@ -12,8 +12,9 @@ import { cn } from "@/lib/utils";
 export function PromoCard({ brand, className }: { brand: Brand; className?: string }) {
   const accent = brand.brandColor;
   const [imgErr, setImgErr] = useState(false);
-  // Use a product photo that's DIFFERENT from the hero's image (which prefers og:image).
-  const heroImg = brand.ogImage || brand.products.find((p) => p.image)?.image || null;
+  // Use a product photo DIFFERENT from the hero's image (hero: banner/og, else 1st product).
+  const heroImg =
+    brand.bannerImage || brand.ogImage || brand.products.find((p) => p.image)?.image || null;
   const productImgs = brand.products.map((p) => p.image).filter(Boolean) as string[];
   const img = productImgs.find((i) => i !== heroImg) || productImgs[0] || promoImage;
   return (

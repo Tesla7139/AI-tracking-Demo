@@ -21,9 +21,10 @@ export function HeroBanner({ brand, copy }: { brand: Brand; copy?: HeroCopy | nu
   const accent = brand.brandColor;
   const [imgErr, setImgErr] = useState(false);
   const [logoErr, setLogoErr] = useState(false);
-  // Prefer a real lifestyle/banner image for advertising, then og:image, else a generic
-  // lifestyle photo — never a square product shot (looks wrong as a full-bleed banner).
-  const img = brand.bannerImage || brand.ogImage || heroImage;
+  // Real banner/og first, then a real product photo (the store's own imagery), and
+  // only as a TRUE last resort the generic lifestyle stock photo.
+  const productImg = brand.products.find((p) => p.image)?.image || null;
+  const img = brand.bannerImage || brand.ogImage || productImg || heroImage;
   const headline = copy?.headline || FALLBACK.headline;
   const subtext = copy?.subtext || FALLBACK.subtext;
   const features = copy?.features?.length ? copy.features.slice(0, 3) : FALLBACK.features;
