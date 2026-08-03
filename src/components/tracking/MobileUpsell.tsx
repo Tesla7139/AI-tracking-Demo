@@ -5,9 +5,9 @@ import type { OrderItem } from "@/lib/tracking";
 import { ImageTile } from "./TrackingCard";
 
 /**
- * Mobile-only "Perfect Pair" upsell shown at the very top of the tracking page.
- * The outer card takes the brand theme color; the ordered item + AI-recommended
- * pairing + Buy-now CTA sit in a smaller white box docked at its bottom.
+ * Mobile-only "Perfect Pair" upsell at the very top of the tracking page: the
+ * ordered item + AI-recommended pairing + Buy-now CTA. Clean white card; the
+ * accent is used only for the small accents (chip, labels, CTA).
  */
 export function MobileUpsell({
   item,
@@ -19,25 +19,25 @@ export function MobileUpsell({
   href: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-2xl p-4 pt-4 shadow-soft-md" style={{ background: accent }}>
-      {/* Header sits on the theme-colored top area */}
-      <div className="flex items-center gap-2 px-1 pb-3.5">
-        <span className="flex size-6 items-center justify-center rounded-full bg-white/20 text-white">
+    <section className="overflow-hidden rounded-2xl border border-border bg-white p-4 shadow-soft-md">
+      {/* Header */}
+      <div className="flex items-center gap-2 pb-3.5">
+        <span className="flex size-6 items-center justify-center rounded-full text-white" style={{ background: accent }}>
           <Sparkles className="size-3.5" />
         </span>
         <div className="min-w-0">
-          <p className="text-sm font-bold leading-tight text-white">Perfect Pair</p>
-          <p className="text-[11px] leading-tight text-white/80">Complete your order</p>
+          <p className="text-sm font-bold leading-tight text-foreground">Perfect Pair</p>
+          <p className="text-[11px] leading-tight text-muted-foreground">Complete your order</p>
         </div>
       </div>
 
-      {/* Smaller white box docked at the bottom of the theme-colored card */}
-      <div className="rounded-xl bg-white p-3.5 shadow-sm">
-        <div className="flex items-stretch gap-3">
-          <div className="flex-1">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              Ordered
-            </span>
+      {/* Ordered + Pair with — two equal, consistently-framed tiles */}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-2">
+        <div>
+          <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Ordered
+          </span>
+          <div className="rounded-xl border border-border p-1">
             <ImageTile
               accent={accent}
               src={item.image ?? undefined}
@@ -46,38 +46,38 @@ export function MobileUpsell({
               label={<Package className="size-5 text-muted-foreground" />}
             />
           </div>
-          <div className="flex items-center pt-5">
-            <Plus className="size-5 shrink-0" style={{ color: accent }} />
-          </div>
-          <div className="flex-1">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide" style={{ color: accent }}>
-              Pair with
-            </span>
-            <div className="rounded-lg p-[2px]" style={{ background: accent }}>
-              <ImageTile
-                accent={accent}
-                src={item.rec.image ?? undefined}
-                alt={item.rec.name}
-                className="aspect-square w-full"
-                label={<Package className="size-5 text-muted-foreground" />}
-              />
-            </div>
+        </div>
+        <div className="flex items-center self-center pt-5">
+          <Plus className="size-5 shrink-0" style={{ color: accent }} />
+        </div>
+        <div>
+          <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide" style={{ color: accent }}>
+            Pair with
+          </span>
+          <div className="rounded-xl border p-1" style={{ borderColor: accent }}>
+            <ImageTile
+              accent={accent}
+              src={item.rec.image ?? undefined}
+              alt={item.rec.name}
+              className="aspect-square w-full"
+              label={<Package className="size-5 text-muted-foreground" />}
+            />
           </div>
         </div>
-
-        <p className="mt-3 text-sm font-bold text-foreground">{item.rec.name}</p>
-        <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{item.rec.blurb}</p>
-
-        <a
-          href={href || "#"}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-3.5 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white shadow-sm transition-transform active:scale-[0.99]"
-          style={{ background: accent }}
-        >
-          Buy now <ArrowRight className="size-4" />
-        </a>
       </div>
+
+      <p className="mt-3 text-sm font-bold text-foreground">{item.rec.name}</p>
+      <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{item.rec.blurb}</p>
+
+      <a
+        href={href || "#"}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-3.5 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white shadow-sm transition-transform active:scale-[0.99]"
+        style={{ background: accent }}
+      >
+        Buy now <ArrowRight className="size-4" />
+      </a>
     </section>
   );
 }

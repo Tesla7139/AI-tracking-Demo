@@ -117,8 +117,9 @@ export function TrackingHeader({ brand }: { brand: Brand }) {
 
   return (
     <div className="w-full">
-      {/* Sale ribbon — dark bar, white text, translucent pills (matches the Figma) */}
-      {showSale && (
+      {/* Sale ribbon — dark bar, white text, translucent pills (matches the Figma).
+          Hidden on mobile (the strip isn't wanted there). */}
+      {showSale && !mobile && (
       <div
         className={`relative flex items-center justify-center text-white ${
           mobile ? "px-8 py-1.5 text-[11px]" : "px-6 py-3 text-sm"
