@@ -11,9 +11,12 @@ import { useDevice } from "./device";
 export function ShipmentJourney({
   location,
   accent,
+  embedded = false,
 }: {
   location: GeoLocation | null;
   accent: string;
+  /** When rendered inside a bottom sheet, drop the card chrome + title (the sheet supplies them). */
+  embedded?: boolean;
 }) {
   const city = location?.city ?? "In transit";
   const journeySteps = buildJourneySteps(city);
@@ -21,11 +24,9 @@ export function ShipmentJourney({
   const [detailsOpen, setDetailsOpen] = useState(true);
   const mobile = useDevice() === "mobile";
 
-  return (
-    <TrackingCard title="Shipment Journey" className={mobile ? "" : "flex h-full flex-col"}>
-      {/* Desktop: fill the row and scroll internally. Mobile: expand naturally (full list). */}
-      <div className={mobile ? "mt-2" : "relative mt-2 min-h-0 flex-1"}>
-      <ol className={mobile ? "pr-2" : "thin-scrollbar absolute inset-0 overflow-y-auto pr-2"}>
+  const list = (
+      <div className={embedded || mobile ? "mt-2" : "relative mt-2 min-h-0 flex-1"}>
+      <ol className={embedded || mobile ? "pr-2" : "thin-scrollbar absolute inset-0 overflow-y-auto pr-2"}>
         {journeySteps.map((step, i) => {
           const done = step.state === "done";
           const active = step.state === "active";
@@ -111,6 +112,14 @@ export function ShipmentJourney({
         })}
       </ol>
       </div>
+  );
+
+  if (embedded) return list;
+
+  return (
+    <TrackingCard title="Shipment Journey" className={mobile ? "" : "flex h-full flex-col"}>
+      {/* Desktop: fill the row and scroll internally. Mobile: expand naturally (full list). */}
+      {list}
     </TrackingCard>
   );
 }

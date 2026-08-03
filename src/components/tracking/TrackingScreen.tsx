@@ -11,6 +11,7 @@ import { TourOverlay, type TargetRect } from "./TourOverlay";
 import { EmailView } from "./EmailPreview";
 import { DeviceContext } from "./device";
 import { PhoneFrame } from "./PhoneFrame";
+import { SheetHostContext } from "./sheet";
 
 // Mobile "Features" dropdown — mirrors the desktop left feature panel. Each item fires
 // the same event a feature card does (section preview, or open the AI email).
@@ -58,6 +59,8 @@ export function TrackingScreen({
   // Quick single-section preview index (feature-card click), or null when off.
   const [preview, setPreview] = useState<number | null>(null);
   const [rect, setRect] = useState<TargetRect | null>(null);
+  // Sheet host for the compact (real mobile) layout — sheets portal here.
+  const [compactSheetHost, setCompactSheetHost] = useState<HTMLDivElement | null>(null);
 
   // Scroll the current step's target into view, then measure it for the spotlight.
   const measure = useCallback((index: number) => {
@@ -195,17 +198,21 @@ export function TrackingScreen({
             Book a demo
           </a>
         </div>
-        <div className="mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/10">
-          <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
-            <DeviceContext.Provider value="mobile">
-              {emailOpen ? (
-                <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
-              ) : (
-                children
-              )}
-            </DeviceContext.Provider>
+        <SheetHostContext.Provider value={compactSheetHost}>
+          <div className="relative mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/10">
+            <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
+              <DeviceContext.Provider value="mobile">
+                {emailOpen ? (
+                  <EmailView brand={brand} generated={generated} onClose={() => setEmailOpen(false)} />
+                ) : (
+                  children
+                )}
+              </DeviceContext.Provider>
+            </div>
+            {/* Sheet layer for real-mobile */}
+            <div ref={setCompactSheetHost} className="pointer-events-none absolute inset-0 z-30" />
           </div>
-        </div>
+        </SheetHostContext.Provider>
 
         {activeIndex !== null && TOUR_STEPS[activeIndex] && (
           <TourOverlay

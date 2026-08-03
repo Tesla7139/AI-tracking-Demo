@@ -1,13 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { BatteryFull, Signal, Wifi } from "lucide-react";
+import { SheetHostContext } from "./sheet";
 
 /**
  * A realistic phone device shell (bezel, side buttons, notch, status bar) that wraps
  * the demo screen for the mobile preview. `children` is the scrollable screen content.
  */
 export function PhoneFrame({ children }: { children: React.ReactNode }) {
+  // Bottom sheets portal into this node so they stay inside the phone screen.
+  const [sheetHost, setSheetHost] = useState<HTMLDivElement | null>(null);
   return (
+    <SheetHostContext.Provider value={sheetHost}>
     <div className="relative flex h-full w-[390px] max-w-full shrink-0 flex-col">
       {/* Side buttons */}
       <span className="absolute -left-[3px] top-[96px] h-8 w-[3px] rounded-l bg-neutral-700" />
@@ -32,8 +37,12 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
 
           {/* Scrollable screen content */}
           <div className="min-h-0 flex-1">{children}</div>
+
+          {/* Sheet layer — covers the screen; pointer-events off until a sheet mounts */}
+          <div ref={setSheetHost} className="pointer-events-none absolute inset-0 z-30" />
         </div>
       </div>
     </div>
+    </SheetHostContext.Provider>
   );
 }

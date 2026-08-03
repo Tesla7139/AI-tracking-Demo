@@ -31,17 +31,19 @@ function Row({ label, value, copyable }: { label: string; value: string; copyabl
   );
 }
 
-export function OrderDetails({ orderValue }: { orderValue?: string }) {
-  return (
-    <TrackingCard title="Order Details">
-      <div className="mt-2 divide-y divide-border/60">
-        <Row label="Order id" value={orderDetails.orderId} copyable />
-        <Row label="Tracking id" value={orderDetails.trackingId} copyable />
-        <Row label="Carrier partner" value={orderDetails.carrier} />
-        <Row label="Order type" value={orderDetails.orderType} />
-        <Row label="Order date" value={orderDetails.orderDate} />
-        <Row label="Order value" value={orderValue ?? orderDetails.orderValue} />
-      </div>
-    </TrackingCard>
+export function OrderDetails({ orderValue, embedded = false }: { orderValue?: string; embedded?: boolean }) {
+  const rows = (
+    <div className={`${embedded ? "" : "mt-2"} divide-y divide-border/60`}>
+      <Row label="Order id" value={orderDetails.orderId} copyable />
+      <Row label="Tracking id" value={orderDetails.trackingId} copyable />
+      <Row label="Carrier partner" value={orderDetails.carrier} />
+      <Row label="Order type" value={orderDetails.orderType} />
+      <Row label="Order date" value={orderDetails.orderDate} />
+      <Row label="Order value" value={orderValue ?? orderDetails.orderValue} />
+    </div>
   );
+
+  if (embedded) return rows;
+
+  return <TrackingCard title="Order Details">{rows}</TrackingCard>;
 }
