@@ -1,6 +1,7 @@
 "use client";
 
-import { Gem, HeartHandshake, Package } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Gem, HeartHandshake, Package, Sparkles } from "lucide-react";
 import { type OrderItem } from "@/lib/tracking";
 import { TrackingCard, ImageTile } from "./TrackingCard";
 import { useDevice } from "./device";
@@ -52,6 +53,68 @@ function Tip({
   );
 }
 
+/** A single order item with its tips (Pro/Care + upsell) collapsed behind a tap. */
+function OrderItemCard({
+  item,
+  index,
+  total,
+  accent,
+  sym,
+}: {
+  item: OrderItem;
+  index: number;
+  total: number;
+  accent: string;
+  sym: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="flex flex-col gap-3">
+      <span className="inline-flex w-fit items-center rounded-full bg-background-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
+        Item {index + 1}/{total}
+      </span>
+
+      {/* product row — image left; name, price, meta stacked (matches the Figma) */}
+      <div className="flex items-start gap-4 rounded-lg border border-border/60 bg-card p-3">
+        <ImageTile
+          accent={accent}
+          src={item.image}
+          alt={item.name}
+          className="size-20 shrink-0"
+          label={<Package className="size-5 text-muted-foreground" />}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="text-lg font-bold text-foreground">{item.name}</p>
+          <p className="mt-1 text-base font-semibold text-foreground">{sym}{item.price}</p>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Qty: {item.qty} · {item.variant}
+          </p>
+        </div>
+      </div>
+
+      {/* Tips + upsell — hidden by default, revealed on tap */}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex items-center justify-between rounded-lg border border-primary/15 bg-primary/5 px-3.5 py-2.5 transition-colors hover:bg-primary/10"
+      >
+        <span className="flex items-center gap-2 text-sm font-semibold text-primary">
+          <Sparkles className="size-4" /> Pro &amp; Care Tips
+        </span>
+        <ChevronDown className={`size-4 text-primary transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="flex flex-col gap-2">
+          {TIPS.map((tip) => (
+            <Tip key={tip.key} item={item} tip={tip} accent={accent} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function OrderItems({
   items,
   accent,
@@ -66,46 +129,17 @@ export function OrderItems({
     <TrackingCard title="Order Item(s)" className={mobile ? "" : "flex h-full flex-col"}>
       {/* Desktop: absolute list scrolls within the row. Mobile: expand naturally. */}
       <div className={mobile ? "mt-4" : "relative mt-4 min-h-0 flex-1"}>
-      <div
-        className={
-          mobile
-            ? "flex flex-col gap-6 pr-2"
-            : "thin-scrollbar absolute inset-0 flex flex-col gap-6 overflow-y-auto pr-2"
-        }
-      >
-        {items.map((item, i) => (
-          <div key={item.name} className="flex flex-col gap-3">
-            <span className="inline-flex w-fit items-center rounded-full bg-background-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
-              Item {i + 1}/{items.length}
-            </span>
-
-            {/* product row — image left; name, price, meta stacked (matches the Figma) */}
-            <div className="flex items-start gap-4 rounded-lg border border-border/60 bg-card p-3">
-              <ImageTile
-                accent={accent}
-                src={item.image}
-                alt={item.name}
-                className="size-20 shrink-0"
-                label={<Package className="size-5 text-muted-foreground" />}
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold text-foreground">{item.name}</p>
-                <p className="mt-1 text-base font-semibold text-foreground">{sym}{item.price}</p>
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                  Qty: {item.qty} · {item.variant}
-                </p>
-              </div>
-            </div>
-
-            {/* tips */}
-            <div className="flex flex-col gap-2">
-              {TIPS.map((tip) => (
-                <Tip key={tip.key} item={item} tip={tip} accent={accent} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+        <div
+          className={
+            mobile
+              ? "flex flex-col gap-6 pr-2"
+              : "thin-scrollbar absolute inset-0 flex flex-col gap-6 overflow-y-auto pr-2"
+          }
+        >
+          {items.map((item, i) => (
+            <OrderItemCard key={item.name} item={item} index={i} total={items.length} accent={accent} sym={sym} />
+          ))}
+        </div>
       </div>
     </TrackingCard>
   );
