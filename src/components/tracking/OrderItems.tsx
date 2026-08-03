@@ -53,19 +53,22 @@ function Tip({
   );
 }
 
-/** A single order item with its tips (Pro/Care + upsell) collapsed behind a tap. */
+/** A single order item. On mobile the tips (Pro/Care + upsell) collapse behind a tap;
+ *  on desktop they stay visible as before. */
 function OrderItemCard({
   item,
   index,
   total,
   accent,
   sym,
+  mobile,
 }: {
   item: OrderItem;
   index: number;
   total: number;
   accent: string;
   sym: string;
+  mobile: boolean;
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -92,19 +95,29 @@ function OrderItemCard({
         </div>
       </div>
 
-      {/* Tips + upsell — hidden by default, revealed on tap */}
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="flex items-center justify-between rounded-lg border border-primary/15 bg-primary/5 px-3.5 py-2.5 transition-colors hover:bg-primary/10"
-      >
-        <span className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <Sparkles className="size-4" /> Pro &amp; Care Tips
-        </span>
-        <ChevronDown className={`size-4 text-primary transition-transform ${open ? "rotate-180" : ""}`} />
-      </button>
-      {open && (
+      {/* Mobile: tips collapse behind a tap. Desktop: tips shown as before. */}
+      {mobile ? (
+        <>
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            className="flex items-center justify-between rounded-lg border border-primary/15 bg-primary/5 px-3.5 py-2.5 transition-colors hover:bg-primary/10"
+          >
+            <span className="flex items-center gap-2 text-sm font-semibold text-primary">
+              <Sparkles className="size-4" /> Pro &amp; Care Tips
+            </span>
+            <ChevronDown className={`size-4 text-primary transition-transform ${open ? "rotate-180" : ""}`} />
+          </button>
+          {open && (
+            <div className="flex flex-col gap-2">
+              {TIPS.map((tip) => (
+                <Tip key={tip.key} item={item} tip={tip} accent={accent} />
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
         <div className="flex flex-col gap-2">
           {TIPS.map((tip) => (
             <Tip key={tip.key} item={item} tip={tip} accent={accent} />
@@ -137,7 +150,7 @@ export function OrderItems({
           }
         >
           {items.map((item, i) => (
-            <OrderItemCard key={item.name} item={item} index={i} total={items.length} accent={accent} sym={sym} />
+            <OrderItemCard key={item.name} item={item} index={i} total={items.length} accent={accent} sym={sym} mobile={mobile} />
           ))}
         </div>
       </div>
