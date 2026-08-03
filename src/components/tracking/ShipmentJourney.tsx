@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import type { GeoLocation } from "@/lib/site";
 import { buildJourneySteps } from "@/lib/tracking";
 import { TrackingCard } from "./TrackingCard";
+import { useDevice } from "./device";
 
 export function ShipmentJourney({
   location,
@@ -18,12 +19,13 @@ export function ShipmentJourney({
   const journeySteps = buildJourneySteps(city);
   // Whether the active step's detailed scan history is expanded.
   const [detailsOpen, setDetailsOpen] = useState(true);
+  const mobile = useDevice() === "mobile";
 
   return (
-    <TrackingCard title="Shipment Journey" className="flex h-full flex-col">
-      {/* Fills the row height (Weather + Fun Fact beside it) and scrolls internally. */}
-      <div className="relative mt-2 min-h-0 flex-1">
-      <ol className="thin-scrollbar absolute inset-0 overflow-y-auto pr-2">
+    <TrackingCard title="Shipment Journey" className={mobile ? "" : "flex h-full flex-col"}>
+      {/* Desktop: fill the row and scroll internally. Mobile: expand naturally (full list). */}
+      <div className={mobile ? "mt-2" : "relative mt-2 min-h-0 flex-1"}>
+      <ol className={mobile ? "pr-2" : "thin-scrollbar absolute inset-0 overflow-y-auto pr-2"}>
         {journeySteps.map((step, i) => {
           const done = step.state === "done";
           const active = step.state === "active";

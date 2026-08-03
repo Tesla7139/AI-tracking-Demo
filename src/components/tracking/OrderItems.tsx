@@ -3,6 +3,7 @@
 import { Gem, HeartHandshake, Package } from "lucide-react";
 import { type OrderItem } from "@/lib/tracking";
 import { TrackingCard, ImageTile } from "./TrackingCard";
+import { useDevice } from "./device";
 
 const TIPS = [
   { key: "styleTip", label: "Pro Tip", icon: Gem, bg: "#e8f8ef", color: "#00a862" },
@@ -60,11 +61,18 @@ export function OrderItems({
   accent: string;
   sym: string;
 }) {
+  const mobile = useDevice() === "mobile";
   return (
-    <TrackingCard title="Order Item(s)" className="flex h-full flex-col">
-      {/* Absolutely-positioned list so more items scroll instead of growing the box */}
-      <div className="relative mt-4 min-h-0 flex-1">
-      <div className="thin-scrollbar absolute inset-0 flex flex-col gap-6 overflow-y-auto pr-2">
+    <TrackingCard title="Order Item(s)" className={mobile ? "" : "flex h-full flex-col"}>
+      {/* Desktop: absolute list scrolls within the row. Mobile: expand naturally. */}
+      <div className={mobile ? "mt-4" : "relative mt-4 min-h-0 flex-1"}>
+      <div
+        className={
+          mobile
+            ? "flex flex-col gap-6 pr-2"
+            : "thin-scrollbar absolute inset-0 flex flex-col gap-6 overflow-y-auto pr-2"
+        }
+      >
         {items.map((item, i) => (
           <div key={item.name} className="flex flex-col gap-3">
             <span className="inline-flex w-fit items-center rounded-full bg-background-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">

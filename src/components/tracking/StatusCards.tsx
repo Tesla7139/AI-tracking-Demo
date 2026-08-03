@@ -37,8 +37,8 @@ export function StatusCards({
   const city = location?.city ?? "your city";
 
   return (
-    // Three equal-width, equal-height boxes (EDD, Status, Latest Update).
-    <div className={`grid grid-cols-1 gap-5 ${mobile ? "grid-cols-3" : "sm:grid-cols-3"}`}>
+    // 3 equal boxes on desktop; stacked single column on mobile.
+    <div className={`grid grid-cols-1 gap-4 ${mobile ? "" : "sm:grid-cols-3"}`}>
       {/* Estimated delivery */}
       <Card>
         <Illo>

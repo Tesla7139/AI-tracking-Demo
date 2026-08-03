@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPinned, Lightbulb } from "lucide-react";
+import { MapPinned, Lightbulb, ChevronDown, Navigation } from "lucide-react";
 import { currencySymbol, type Brand, type GeoLocation, type Weather } from "@/lib/site";
 import { cityFunFacts, brandDidYouKnows, buildOrderItems, buildNewArrivals } from "@/lib/tracking";
 import { useDevice } from "./device";
@@ -66,6 +66,8 @@ export function TrackingPage({
   useEffect(() => {
     hasRevealed = true;
   }, []);
+  // Mobile: the full shipment journey is tucked behind a "Track your order" button.
+  const [journeyOpen, setJourneyOpen] = useState(false);
 
   // Staggered "typewriter"-style reveal: each box opens after the previous one.
   // On remounts (e.g. toggling desktop/mobile) it renders instantly, no re-animation.
@@ -78,13 +80,89 @@ export function TrackingPage({
         }
       : { initial: false as const, animate: { opacity: 1, y: 0 } };
 
+  // ---- Mobile: a clean, section-by-section single column (native app feel) ----
+  if (mobile) {
+    return (
+      <motion.div
+        initial={animateReveal ? { opacity: 0 } : false}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="w-full overflow-x-hidden bg-[#f7f8fa]"
+        style={{ zoom: 0.86, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      >
+        <TrackingHeader brand={brand} />
+
+        <div className="flex flex-col gap-5 px-4 py-5">
+          {/* Order items + AI pairing upsell — up top */}
+          <div id="tour-items" className="scroll-mt-24">
+            <OrderItems items={items} accent={accent} sym={sym} />
+          </div>
+
+          {/* Status summary */}
+          <div id="tour-status" className="scroll-mt-24">
+            <StatusCards brand={brand} location={location} />
+          </div>
+
+          {/* Track your order → expands the full shipment journey */}
+          <div id="tour-journey" className="scroll-mt-24">
+            <button
+              type="button"
+              onClick={() => setJourneyOpen((o) => !o)}
+              className="flex w-full items-center justify-between rounded-xl border border-border bg-card px-5 py-4 text-left shadow-soft-md"
+            >
+              <span className="flex items-center gap-3">
+                <span className="flex size-9 items-center justify-center rounded-full text-white" style={{ background: accent }}>
+                  <Navigation className="size-4" />
+                </span>
+                <span className="text-base font-bold text-foreground">Track your order</span>
+              </span>
+              <ChevronDown className={`size-5 text-muted-foreground transition-transform ${journeyOpen ? "rotate-180" : ""}`} />
+            </button>
+            {journeyOpen && (
+              <div className="mt-3">
+                <ShipmentJourney location={location} accent={accent} />
+              </div>
+            )}
+          </div>
+
+          {/* Promo / pairings */}
+          <PromoCard brand={brand} />
+
+          {/* Weather */}
+          <div id="tour-weather" className="scroll-mt-24">
+            <WeatherWidget location={location} weather={weather} accent={accent} />
+          </div>
+
+          {/* Facts */}
+          <InfoCard
+            icon={MapPinned}
+            title={city ? `${city} Fun Fact` : "Local Fun Fact"}
+            items={funFacts}
+            accent={accent}
+          />
+          <div id="tour-didyouknow" className="scroll-mt-24">
+            <InfoCard icon={Lightbulb} title="Did You Know?" items={brandFacts} accent={accent} />
+          </div>
+
+          {/* Hero + arrivals */}
+          <HeroBanner brand={brand} copy={generated?.heroCopy} />
+          <div id="tour-arrivals" className="scroll-mt-24">
+            <NewArrivals products={arrivals} accent={accent} sym={sym} />
+          </div>
+        </div>
+
+        <TrackingFooter brand={brand} />
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial={animateReveal ? { opacity: 0 } : false}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="w-full overflow-x-hidden bg-[#f7f8fa]"
-      style={{ zoom: mobile ? 0.5 : 0.81, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      style={{ zoom: 0.81, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
       <TrackingHeader brand={brand} />
 
