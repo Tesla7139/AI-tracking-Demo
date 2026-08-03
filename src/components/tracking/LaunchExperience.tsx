@@ -320,9 +320,19 @@ function WelcomeView({
                   <span className="truncate">{dom}/track</span>
                 </span>
               </div>
-              {/* brand mark inside the screen */}
-              <div className="relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden bg-white px-6">
-                {brand.logo ? (
+              {/* Inside the screen: the store's banner/hero image (a real preview),
+                  falling back to the logo, then a monogram lockup. */}
+              <div className="relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden bg-white">
+                {brand.bannerImage || brand.ogImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- remote brand banner
+                  <img
+                    src={(brand.bannerImage || brand.ogImage) as string}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  />
+                ) : brand.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element -- remote brand logo
                   <img
                     src={brand.logo}
