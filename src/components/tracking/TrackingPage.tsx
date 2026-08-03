@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPinned, Lightbulb, ChevronDown, Navigation } from "lucide-react";
+import { MapPinned, Lightbulb } from "lucide-react";
 import { currencySymbol, type Brand, type GeoLocation, type Weather } from "@/lib/site";
 import { cityFunFacts, brandDidYouKnows, buildOrderItems, buildNewArrivals } from "@/lib/tracking";
 import { useDevice } from "./device";
@@ -19,6 +19,7 @@ import { TrackingFooter } from "./TrackingFooter";
 import { HeroBanner } from "./HeroBanner";
 import { PromoCard } from "./PromoCard";
 import { MobileUpsell } from "./MobileUpsell";
+import { MobileStatus } from "./MobileStatus";
 
 // Persists across remounts within a session so the entrance reveal plays only ONCE
 // (not every time the desktop/mobile toggle remounts the page — that looked glitchy).
@@ -67,8 +68,6 @@ export function TrackingPage({
   useEffect(() => {
     hasRevealed = true;
   }, []);
-  // Mobile: the full shipment journey is tucked behind a "Track your order" button.
-  const [journeyOpen, setJourneyOpen] = useState(false);
 
   // Staggered "typewriter"-style reveal: each box opens after the previous one.
   // On remounts (e.g. toggling desktop/mobile) it renders instantly, no re-animation.
@@ -102,31 +101,11 @@ export function TrackingPage({
             <OrderItems items={items} accent={accent} sym={sym} />
           </div>
 
-          {/* Status summary */}
+          {/* Status summary + Track Details / Order Details (reveal in place) */}
           <div id="tour-status" className="scroll-mt-24">
-            <StatusCards brand={brand} location={location} />
-          </div>
-
-          {/* Track your order → expands the full shipment journey */}
-          <div id="tour-journey" className="scroll-mt-24">
-            <button
-              type="button"
-              onClick={() => setJourneyOpen((o) => !o)}
-              className="flex w-full items-center justify-between rounded-xl border border-border bg-card px-5 py-4 text-left shadow-soft-md"
-            >
-              <span className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-full text-white" style={{ background: accent }}>
-                  <Navigation className="size-4" />
-                </span>
-                <span className="text-base font-bold text-foreground">Track your order</span>
-              </span>
-              <ChevronDown className={`size-5 text-muted-foreground transition-transform ${journeyOpen ? "rotate-180" : ""}`} />
-            </button>
-            {journeyOpen && (
-              <div className="mt-3">
-                <ShipmentJourney location={location} accent={accent} />
-              </div>
-            )}
+            <div id="tour-journey" className="scroll-mt-24">
+              <MobileStatus location={location} accent={accent} orderValue={orderValue} />
+            </div>
           </div>
 
           {/* Promo / pairings */}
