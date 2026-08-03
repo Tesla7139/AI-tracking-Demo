@@ -121,37 +121,54 @@ export function TrackingHeader({ brand }: { brand: Brand }) {
       {showSale && (
       <div
         className={`relative flex items-center justify-center text-white ${
-          mobile ? "px-3 py-1.5 text-[11px]" : "px-6 py-3 text-sm"
+          mobile ? "px-8 py-1.5 text-[11px]" : "px-6 py-3 text-sm"
         }`}
         style={{ background: brand.brandColor }}
       >
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
-          <span className="flex items-center gap-2">
-            <Gift className="size-4 shrink-0" />
-            <span className="hidden sm:inline">
-              Summer Slumber Party Sale: 25% OFF 1000&apos;s of finds + FREE Shipping Sitewide Use code:
+        {mobile ? (
+          // Compact single line so the strip stays thin on a phone.
+          <div className="flex w-full min-w-0 items-center justify-center gap-2 overflow-hidden">
+            <Gift className="size-3.5 shrink-0" />
+            <span className="truncate font-medium">25% OFF + Free Shipping</span>
+            <span className="inline-flex shrink-0 items-center gap-1 tabular-nums">
+              <Seg value={h} />
+              <span className="opacity-70">:</span>
+              <Seg value={m} />
+              <span className="opacity-70">:</span>
+              <Seg value={s} />
             </span>
-            <span className="sm:hidden">Summer Sale: 25% OFF + FREE Shipping</span>
-            <span className="rounded bg-white/15 px-2 py-1 font-bold tracking-wide">FLASH</span>
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Timer className="size-4" />
-            <Seg value={h} />
-            <span className="opacity-70">:</span>
-            <Seg value={m} />
-            <span className="opacity-70">:</span>
-            <Seg value={s} />
-          </span>
-          <button className="rounded bg-white/15 px-3 py-1 font-semibold transition-colors hover:bg-white/25">
-            Shop Now
-          </button>
-        </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
+            <span className="flex items-center gap-2">
+              <Gift className="size-4 shrink-0" />
+              <span className="hidden sm:inline">
+                Summer Slumber Party Sale: 25% OFF 1000&apos;s of finds + FREE Shipping Sitewide Use code:
+              </span>
+              <span className="sm:hidden">Summer Sale: 25% OFF + FREE Shipping</span>
+              <span className="rounded bg-white/15 px-2 py-1 font-bold tracking-wide">FLASH</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Timer className="size-4" />
+              <Seg value={h} />
+              <span className="opacity-70">:</span>
+              <Seg value={m} />
+              <span className="opacity-70">:</span>
+              <Seg value={s} />
+            </span>
+            <button className="rounded bg-white/15 px-3 py-1 font-semibold transition-colors hover:bg-white/25">
+              Shop Now
+            </button>
+          </div>
+        )}
         <button
           onClick={() => setShowSale(false)}
           aria-label="Dismiss announcement"
-          className="absolute right-4 rounded p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+          className={`absolute rounded p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white ${
+            mobile ? "right-2" : "right-4"
+          }`}
         >
-          <X className="size-4" />
+          <X className={mobile ? "size-3.5" : "size-4"} />
         </button>
       </div>
       )}
