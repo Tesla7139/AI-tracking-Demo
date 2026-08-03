@@ -43,24 +43,9 @@ export function MobileStatus({
   return (
     <div className="flex flex-col gap-3">
       <div className="rounded-2xl border border-border bg-card p-5 shadow-soft-md">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Current Status</p>
-        <div className="mt-2 flex items-center gap-3">
-          <IconChip accent={accent}><Truck className="size-5" /></IconChip>
-          <p className="text-2xl font-bold" style={{ color: accent }}>{orderMock.status}</p>
-        </div>
-
-        <p className="mt-5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Last Update</p>
-        <div className="mt-2 flex items-center gap-3">
-          <IconChip accent={accent}><MapPin className="size-5" /></IconChip>
-          <div className="min-w-0">
-            <p className="text-2xl font-bold leading-tight" style={{ color: accent }}>Received at {city}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">{orderMock.latestUpdateTimeLabel}</p>
-          </div>
-        </div>
-
-        {/* Local weather at the delivery city — folded into the status card on mobile. */}
+        {/* Local weather at the delivery city — pinned to the top of the status card on mobile. */}
         {weather && (
-          <div id="tour-weather" className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-background-muted/50 p-3 scroll-mt-24">
+          <div id="tour-weather" className="mb-5 flex items-center gap-3 rounded-xl border border-border bg-background-muted/50 p-3 scroll-mt-24">
             <div className="shrink-0" style={{ width: 56, height: 56 }}>
               <div style={{ width: 150, height: 150, transform: "scale(0.373)", transformOrigin: "top left" }}>
                 <WeatherMotif iconKey={weather.iconKey} isDay={weather.isDay} />
@@ -82,6 +67,21 @@ export function MobileStatus({
             </div>
           </div>
         )}
+
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Current Status</p>
+        <div className="mt-2 flex items-center gap-3">
+          <IconChip accent={accent}><Truck className="size-5" /></IconChip>
+          <p className="text-2xl font-bold" style={{ color: accent }}>{orderMock.status}</p>
+        </div>
+
+        <p className="mt-5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Last Update</p>
+        <div className="mt-2 flex items-center gap-3">
+          <IconChip accent={accent}><MapPin className="size-5" /></IconChip>
+          <div className="min-w-0">
+            <p className="text-2xl font-bold leading-tight" style={{ color: accent }}>Received at {city}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{orderMock.latestUpdateTimeLabel}</p>
+          </div>
+        </div>
 
         <button
           type="button"
