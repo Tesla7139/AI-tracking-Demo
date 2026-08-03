@@ -101,20 +101,15 @@ export function TrackingPage({
             <OrderItems items={items} accent={accent} sym={sym} />
           </div>
 
-          {/* Status summary + Track Details / Order Details (reveal in place) */}
+          {/* Status summary + local weather + Track Details / Order Details */}
           <div id="tour-status" className="scroll-mt-24">
             <div id="tour-journey" className="scroll-mt-24">
-              <MobileStatus location={location} accent={accent} orderValue={orderValue} />
+              <MobileStatus location={location} weather={weather} accent={accent} orderValue={orderValue} />
             </div>
           </div>
 
           {/* Promo / pairings */}
           <PromoCard brand={brand} />
-
-          {/* Weather */}
-          <div id="tour-weather" className="scroll-mt-24">
-            <WeatherWidget location={location} weather={weather} accent={accent} />
-          </div>
 
           {/* Facts */}
           <InfoCard

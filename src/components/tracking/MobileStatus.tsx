@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, MapPin, Truck } from "lucide-react";
-import type { GeoLocation } from "@/lib/site";
-import { orderMock } from "@/lib/tracking";
+import { ChevronRight, Droplets, MapPin, Truck, Wind } from "lucide-react";
+import type { GeoLocation, Weather } from "@/lib/site";
+import { orderMock, localTimeLabel } from "@/lib/tracking";
 import { ShipmentJourney } from "./ShipmentJourney";
 import { OrderDetails } from "./OrderDetails";
+import { WeatherMotif } from "./animations";
 import { BottomSheet } from "./sheet";
 
 /** Accent-tinted round icon chip for the status rows. */
@@ -27,10 +28,12 @@ function IconChip({ accent, children }: { accent: string; children: React.ReactN
  */
 export function MobileStatus({
   location,
+  weather,
   accent,
   orderValue,
 }: {
   location: GeoLocation | null;
+  weather: Weather | null;
   accent: string;
   orderValue: string;
 }) {
@@ -54,6 +57,31 @@ export function MobileStatus({
             <p className="mt-0.5 text-xs text-muted-foreground">{orderMock.latestUpdateTimeLabel}</p>
           </div>
         </div>
+
+        {/* Local weather at the delivery city — folded into the status card on mobile. */}
+        {weather && (
+          <div id="tour-weather" className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-background-muted/50 p-3 scroll-mt-24">
+            <div className="shrink-0" style={{ width: 56, height: 56 }}>
+              <div style={{ width: 150, height: 150, transform: "scale(0.373)", transformOrigin: "top left" }}>
+                <WeatherMotif iconKey={weather.iconKey} isDay={weather.isDay} />
+              </div>
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline gap-2">
+                <p className="text-2xl font-bold text-foreground">{weather.tempF}°F</p>
+                <p className="truncate text-sm font-semibold text-foreground">{weather.condition}</p>
+              </div>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                {location?.city ? `${location.city} · ` : ""}
+                {localTimeLabel(location?.timezone ?? null)}
+              </p>
+              <div className="mt-1.5 flex items-center gap-3 text-[11px] text-muted-foreground">
+                <span className="inline-flex items-center gap-1"><Droplets className="size-3.5" />{weather.humidity}%</span>
+                <span className="inline-flex items-center gap-1"><Wind className="size-3.5" />{weather.windMph} mph</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         <button
           type="button"
