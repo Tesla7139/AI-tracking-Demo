@@ -720,14 +720,14 @@ function parseBranding(
     base
   );
 
-  // Prefer a real header logo <img>; then apple-touch-icon; then og:image; then favicon.
+  // Prefer a real header logo <img>; then apple-touch-icon; then favicon.
+  // NOTE: never use og:image as the logo — it's usually a hero/social photo (e.g. anaono's).
   const htmlLogo = logoFromHtml(html, base);
   const iconHref =
     metaContent(html, [
       /<link[^>]+rel=["']apple-touch-icon[^"']*["'][^>]+href=["']([^"']+)["']/i,
       /<link[^>]+href=["']([^"']+)["'][^>]+rel=["']apple-touch-icon[^"']*["']/i,
     ]) ||
-    metaContent(html, [/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i]) ||
     metaContent(html, [
       /<link[^>]+rel=["'](?:shortcut )?icon["'][^>]+href=["']([^"']+)["']/i,
       /<link[^>]+href=["']([^"']+)["'][^>]+rel=["'](?:shortcut )?icon["']/i,

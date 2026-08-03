@@ -56,6 +56,12 @@ export function HeroBanner({ brand, copy }: { brand: Brand; copy?: HeroCopy | nu
           src={brand.logo}
           alt={brand.brandName}
           onError={() => setLogoErr(true)}
+          onLoad={(e) => {
+            const im = e.currentTarget;
+            const ratio = im.naturalWidth / im.naturalHeight;
+            // Small / square favicon → not a wordmark; use the brand-name text instead.
+            if (im.naturalWidth < 80 || ratio < 1.5) setLogoErr(true);
+          }}
           referrerPolicy="no-referrer"
           className="mb-3 h-9 w-auto max-w-[180px] rounded-md bg-white/95 object-contain p-1.5 shadow-sm"
         />
