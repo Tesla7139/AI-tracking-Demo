@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Timer, Gift, X } from "lucide-react";
 import type { Brand } from "@/lib/site";
+import { useDevice } from "./device";
 
 /** Two-digit countdown segment in a translucent box (matches the Figma). */
 function Seg({ value }: { value: number }) {
@@ -28,6 +29,7 @@ function useCountdown(seconds: number) {
 
 function BrandLogo({ brand }: { brand: Brand }) {
   const name = brand.brandName;
+  const mobile = useDevice() === "mobile";
   // Prefer the store's real logo (like newton's in the Figma) when it's a proper wide
   // wordmark; fall back to a compact Poppins name for missing / square-favicon logos.
   const [mode, setMode] = useState<"img" | "text">(brand.logo ? "img" : "text");
@@ -72,7 +74,7 @@ function BrandLogo({ brand }: { brand: Brand }) {
         <img
           src={brand.logo}
           alt={name}
-          className="h-11 w-auto max-w-[240px] object-contain md:h-12"
+          className={`w-auto object-contain ${mobile ? "h-7 max-w-[150px]" : "h-11 max-w-[240px] md:h-12"}`}
           referrerPolicy="no-referrer"
           onError={() => setMode("text")}
           onLoad={(e) => {
@@ -86,12 +88,15 @@ function BrandLogo({ brand }: { brand: Brand }) {
     );
   }
 
-  const size =
-    name.length > 26
-      ? "text-xl md:text-2xl"
-      : name.length > 16
-      ? "text-2xl md:text-3xl"
-      : "text-3xl md:text-4xl";
+  const size = mobile
+    ? name.length > 20
+      ? "text-lg"
+      : "text-xl"
+    : name.length > 26
+    ? "text-xl md:text-2xl"
+    : name.length > 16
+    ? "text-2xl md:text-3xl"
+    : "text-3xl md:text-4xl";
   return (
     <span
       className={`max-w-[92%] break-words text-center font-semibold leading-tight tracking-tight ${size}`}
@@ -108,12 +113,18 @@ function BrandLogo({ brand }: { brand: Brand }) {
 export function TrackingHeader({ brand }: { brand: Brand }) {
   const { h, m, s } = useCountdown(5 * 3600 + 42 * 60);
   const [showSale, setShowSale] = useState(true);
+  const mobile = useDevice() === "mobile";
 
   return (
     <div className="w-full">
       {/* Sale ribbon — dark bar, white text, translucent pills (matches the Figma) */}
       {showSale && (
-      <div className="relative flex items-center justify-center px-6 py-3 text-sm text-white" style={{ background: brand.brandColor }}>
+      <div
+        className={`relative flex items-center justify-center text-white ${
+          mobile ? "px-3 py-1.5 text-[11px]" : "px-6 py-3 text-sm"
+        }`}
+        style={{ background: brand.brandColor }}
+      >
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
           <span className="flex items-center gap-2">
             <Gift className="size-4 shrink-0" />
@@ -146,7 +157,7 @@ export function TrackingHeader({ brand }: { brand: Brand }) {
       )}
 
       {/* Logo banner */}
-      <div className="flex items-center justify-center border-b border-border/60 bg-white py-5">
+      <div className={`flex items-center justify-center border-b border-border/60 bg-white ${mobile ? "py-2.5" : "py-5"}`}>
         <BrandLogo brand={brand} />
       </div>
     </div>
