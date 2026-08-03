@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Gem, HeartHandshake, Package, Sparkles } from "lucide-react";
+import { Gem, HeartHandshake, Package, Sparkles } from "lucide-react";
 import { type OrderItem } from "@/lib/tracking";
 import { TrackingCard, ImageTile } from "./TrackingCard";
 import { useDevice } from "./device";
+import { BottomSheet } from "./sheet";
 
 const TIPS = [
   { key: "styleTip", label: "Pro Tip", icon: Gem, bg: "#e8f8ef", color: "#00a862" },
@@ -53,24 +54,20 @@ function Tip({
   );
 }
 
-/** A single order item. On mobile the tips (Pro/Care + upsell) collapse behind a tap;
- *  on desktop they stay visible as before. */
+/** Desktop order item: image left, tips shown inline below (unchanged). */
 function OrderItemCard({
   item,
   index,
   total,
   accent,
   sym,
-  mobile,
 }: {
   item: OrderItem;
   index: number;
   total: number;
   accent: string;
   sym: string;
-  mobile: boolean;
 }) {
-  const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-col gap-3">
       <span className="inline-flex w-fit items-center rounded-full bg-background-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
@@ -95,35 +92,47 @@ function OrderItemCard({
         </div>
       </div>
 
-      {/* Mobile: tips collapse behind a tap. Desktop: tips shown as before. */}
-      {mobile ? (
-        <>
-          <button
-            type="button"
-            onClick={() => setOpen((o) => !o)}
-            aria-expanded={open}
-            className="flex items-center justify-between rounded-lg border border-primary/15 bg-primary/5 px-3.5 py-2.5 transition-colors hover:bg-primary/10"
-          >
-            <span className="flex items-center gap-2 text-sm font-semibold text-primary">
-              <Sparkles className="size-4" /> Pro &amp; Care Tips
-            </span>
-            <ChevronDown className={`size-4 text-primary transition-transform ${open ? "rotate-180" : ""}`} />
-          </button>
-          {open && (
-            <div className="flex flex-col gap-2">
-              {TIPS.map((tip) => (
-                <Tip key={tip.key} item={item} tip={tip} accent={accent} />
-              ))}
-            </div>
-          )}
-        </>
-      ) : (
+      <div className="flex flex-col gap-2">
+        {TIPS.map((tip) => (
+          <Tip key={tip.key} item={item} tip={tip} accent={accent} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Mobile order item: a compact grid cell (image on top) with a "Tips" button that
+ *  opens the Pro/Care tips + upsell in a bottom sheet contained inside the phone. */
+function MobileItemCell({ item, accent, sym }: { item: OrderItem; accent: string; sym: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="flex flex-col rounded-xl border border-border/60 bg-card p-2.5">
+      <ImageTile
+        accent={accent}
+        src={item.image}
+        alt={item.name}
+        className="aspect-square w-full"
+        label={<Package className="size-5 text-muted-foreground" />}
+      />
+      <p className="mt-2 line-clamp-2 text-sm font-bold leading-snug text-foreground">{item.name}</p>
+      <p className="mt-1 text-sm font-semibold text-foreground">{sym}{item.price}</p>
+      <p className="mt-0.5 text-[11px] text-muted-foreground">Qty: {item.qty} · {item.variant}</p>
+
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mt-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2 text-[13px] font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.98]"
+      >
+        <Sparkles className="size-3.5" /> Pro &amp; Care Tips
+      </button>
+
+      <BottomSheet open={open} onClose={() => setOpen(false)} title={item.name}>
         <div className="flex flex-col gap-2">
           {TIPS.map((tip) => (
             <Tip key={tip.key} item={item} tip={tip} accent={accent} />
           ))}
         </div>
-      )}
+      </BottomSheet>
     </div>
   );
 }
@@ -138,19 +147,27 @@ export function OrderItems({
   sym: string;
 }) {
   const mobile = useDevice() === "mobile";
+
+  if (mobile) {
+    return (
+      <TrackingCard title="Order Item(s)">
+        {/* Items sit side by side; tips open in a pop-up sheet on tap. */}
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {items.map((item) => (
+            <MobileItemCell key={item.name} item={item} accent={accent} sym={sym} />
+          ))}
+        </div>
+      </TrackingCard>
+    );
+  }
+
   return (
-    <TrackingCard title="Order Item(s)" className={mobile ? "" : "flex h-full flex-col"}>
-      {/* Desktop: absolute list scrolls within the row. Mobile: expand naturally. */}
-      <div className={mobile ? "mt-4" : "relative mt-4 min-h-0 flex-1"}>
-        <div
-          className={
-            mobile
-              ? "flex flex-col gap-6 pr-2"
-              : "thin-scrollbar absolute inset-0 flex flex-col gap-6 overflow-y-auto pr-2"
-          }
-        >
+    <TrackingCard title="Order Item(s)" className="flex h-full flex-col">
+      {/* Desktop: absolute list scrolls within the row. */}
+      <div className="relative mt-4 min-h-0 flex-1">
+        <div className="thin-scrollbar absolute inset-0 flex flex-col gap-6 overflow-y-auto pr-2">
           {items.map((item, i) => (
-            <OrderItemCard key={item.name} item={item} index={i} total={items.length} accent={accent} sym={sym} mobile={mobile} />
+            <OrderItemCard key={item.name} item={item} index={i} total={items.length} accent={accent} sym={sym} />
           ))}
         </div>
       </div>
