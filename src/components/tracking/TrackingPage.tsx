@@ -18,6 +18,7 @@ import { OrderDetails } from "./OrderDetails";
 import { TrackingFooter } from "./TrackingFooter";
 import { HeroBanner } from "./HeroBanner";
 import { PromoCard } from "./PromoCard";
+import { MobileUpsell } from "./MobileUpsell";
 
 // Persists across remounts within a session so the entrance reveal plays only ONCE
 // (not every time the desktop/mobile toggle remounts the page — that looked glitchy).
@@ -93,7 +94,10 @@ export function TrackingPage({
         <TrackingHeader brand={brand} />
 
         <div className="flex flex-col gap-5 px-4 py-5">
-          {/* Order items + AI pairing upsell — up top */}
+          {/* Perfect-pair upsell — front and centre at the top */}
+          {items[0] && <MobileUpsell item={items[0]} accent={accent} href={brand.url || "#"} />}
+
+          {/* Order items (tips collapse behind a tap) */}
           <div id="tour-items" className="scroll-mt-24">
             <OrderItems items={items} accent={accent} sym={sym} />
           </div>
