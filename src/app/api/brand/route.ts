@@ -523,6 +523,120 @@ function productsFromHtmlCards(html: string, base: URL): DemoProductOut[] {
   return out;
 }
 
+// Prices we assign to catalogs that embed products without listing prices (e.g.
+// jewlr's personalized items price on configuration) — so the demo card is complete.
+const DEMO_PRICES = [79, 129, 99, 189, 149, 249, 109, 169];
+
+/** First usable product image out of an embedded-state value (handles srcSet). */
+function embeddedImage(obj: Record<string, unknown>): string | null {
+  // jewlr-style: looks[view].images[0] is a srcSet string.
+  const looks = obj.looks as Record<string, { images?: unknown[] }> | undefined;
+  if (looks && typeof looks === "object") {
+    const dl = typeof obj.default_look === "string" ? obj.default_look : "";
+    const pick = (dl && looks[dl]) || Object.values(looks)[0];
+    const first = pick?.images?.[0];
+    if (typeof first === "string") return first;
+  }
+  // Generic fallbacks.
+  for (const k of ["image", "featured_image", "img", "thumbnail"]) {
+    const v = obj[k];
+    if (typeof v === "string") return v;
+  }
+  const arr = obj.images;
+  if (Array.isArray(arr) && typeof arr[0] === "string") return arr[0];
+  return null;
+}
+
+/** Take one URL out of a srcSet ("url 256w, url 600w") and request a large render. */
+function cleanSrcset(s: string): string {
+  const first = s.split(",")[0].trim().split(/\s+/)[0];
+  return first.replace(/([?&])dim=\d+/, "$1dim=600").replace(/&amp;/gi, "&");
+}
+
+/** Read a numeric price out of an embedded-state product's price field, if any. */
+function embeddedPrice(obj: Record<string, unknown>): number {
+  const p = obj.price;
+  if (typeof p === "number") return Math.round(p);
+  if (p && typeof p === "object") {
+    for (const k of ["price_to_display", "sale_price", "reg_price", "retail_price"]) {
+      const v = (p as Record<string, unknown>)[k];
+      if (typeof v === "number" && v > 0) return Math.round(v);
+    }
+  }
+  return 0;
+}
+
+/**
+ * Catalog embedded as JSON in the page (SPA stores): React Query / Next / Nuxt
+ * dehydrated state. Walks the blob for product-shaped objects (a name + an image).
+ */
+function productsFromEmbeddedState(html: string, base: URL): DemoProductOut[] {
+  const out: DemoProductOut[] = [];
+  const seen = new Set<string>();
+  const blobs: unknown[] = [];
+  const patterns = [
+    /window\.__REACT_QUERY_STATE__\s*=\s*(\{[\s\S]*?\})\s*<\/script>/,
+    /window\.__PRELOADED_STATE__\s*=\s*(\{[\s\S]*?\})\s*<\/script>/,
+    /window\.__NUXT__\s*=\s*(\{[\s\S]*?\})\s*<\/script>/,
+    /<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/,
+  ];
+  for (const re of patterns) {
+    const m = html.match(re);
+    if (m) {
+      try {
+        blobs.push(JSON.parse(m[1]));
+      } catch {
+        /* not valid JSON — skip */
+      }
+    }
+  }
+
+  const walk = (o: unknown) => {
+    if (out.length >= 8 || !o || typeof o !== "object") return;
+    if (Array.isArray(o)) {
+      for (const v of o) walk(v);
+      return;
+    }
+    const obj = o as Record<string, unknown>;
+    // Only treat clearly product-shaped objects as products (avoids picking up
+    // nav items / authors / categories that merely have a name + image).
+    const productish =
+      "looks" in obj ||
+      "sku" in obj ||
+      "permalink" in obj ||
+      "handle" in obj ||
+      "style_code" in obj ||
+      "product_type" in obj ||
+      "product_defaults" in obj ||
+      "variants" in obj ||
+      "price" in obj;
+    const name = productish && typeof obj.name === "string" ? obj.name : null;
+    const rawImg = name ? embeddedImage(obj) : null;
+    if (name && name.length >= 3 && rawImg && !GENERIC_TITLE.test(name.trim())) {
+      const key = name.toLowerCase();
+      if (!seen.has(key)) {
+        const image = absolutize(cleanSrcset(rawImg), base);
+        if (image && !/\.svg(\?|$)|sprite|icon|logo|placeholder/i.test(image)) {
+          seen.add(key);
+          const price = embeddedPrice(obj) || DEMO_PRICES[out.length % DEMO_PRICES.length];
+          out.push({
+            id: String(out.length + 1),
+            title: decodeHtml(name.slice(0, 60)),
+            variant: "",
+            price,
+            qty: 1,
+            image,
+            variants: [{ title: "Default", price }],
+          });
+        }
+      }
+    }
+    for (const v of Object.values(obj)) walk(v);
+  };
+  for (const b of blobs) walk(b);
+  return out;
+}
+
 /** Homepage logo image (header <img> whose src/alt/class mentions "logo"). */
 function logoFromHtml(html: string, base: URL): string | null {
   const imgTags = html.match(/<img\b[^>]*>/gi) || [];
@@ -854,6 +968,11 @@ export async function POST(req: Request) {
   // Non-Shopify stores — pull schema.org/JSON-LD products from the homepage.
   if (products.length === 0 && html) {
     products = parseJsonLdProducts(html, url);
+  }
+  // SPA stores that embed their catalog as JSON in the page (React Query / Next /
+  // Nuxt state) — e.g. jewlr.com. Parse those product objects before card-scraping.
+  if (products.length === 0 && html) {
+    products = productsFromEmbeddedState(html, url);
   }
   // Last resort — scrape product cards directly from the homepage markup.
   if (products.length === 0 && html) {
