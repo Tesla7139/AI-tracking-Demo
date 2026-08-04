@@ -9,6 +9,56 @@ const POLICY = ["Privacy Policy", "Return & Exchange Policy", "Refund Policy", "
 
 export function TrackingFooter({ brand }: { brand: Brand }) {
   const mobile = useDevice() === "mobile";
+
+  // Mobile: a clean, centred single-column footer.
+  if (mobile) {
+    return (
+      <footer className="bg-white px-6 py-10 text-center">
+        <div className="flex flex-col items-center gap-8">
+          {/* Policy */}
+          <div>
+            <h3 className="text-base font-bold text-foreground">Policy</h3>
+            <ul className="mt-4 flex flex-col gap-3.5">
+              {["Return Policy", "Refund Policy", "Terms & Conditions"].map((p) => (
+                <li key={p}>
+                  <a href="#" className="text-sm text-foreground underline underline-offset-4 transition-opacity hover:opacity-70">
+                    {p}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Us */}
+          <div>
+            <h3 className="text-base font-bold text-foreground">Contact Us</h3>
+            <p className="mt-4 flex items-center justify-center gap-2 text-sm text-foreground">
+              <Mail className="size-4 shrink-0" /> support@{slug(brand.brandName)}.com
+            </p>
+          </div>
+
+          {/* Follow Us */}
+          <div>
+            <h3 className="text-base font-bold text-foreground">Follow Us</h3>
+            <div className="mt-4 flex justify-center gap-5 text-foreground">
+              <a href="#" aria-label="Facebook" className="transition-opacity hover:opacity-70"><Facebook /></a>
+              <a href="#" aria-label="Instagram" className="transition-opacity hover:opacity-70"><Instagram /></a>
+            </div>
+          </div>
+
+          {/* Powered By */}
+          <div>
+            <h3 className="text-base font-bold text-foreground">Powered By</h3>
+            <p className="mt-4 text-2xl font-extrabold tracking-tight">
+              <span className="text-[#5c8df6]">CLICK</span>
+              <span className="font-black text-[#1e3faa]">POST</span>
+            </p>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
   return (
     <footer className="border-t border-border bg-background-muted">
       <div
