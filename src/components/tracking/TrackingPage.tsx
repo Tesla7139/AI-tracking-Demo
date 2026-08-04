@@ -96,16 +96,16 @@ export function TrackingPage({
           {/* Perfect-pair upsell — front and centre at the top */}
           {items[0] && <MobileUpsell item={items[0]} accent={accent} href={brand.url || "#"} />}
 
-          {/* Order items (tips collapse behind a tap) */}
-          <div id="tour-items" className="scroll-mt-24">
-            <OrderItems items={items} accent={accent} sym={sym} />
-          </div>
-
-          {/* Status summary + local weather + Track Details / Order Details */}
+          {/* Tracking status — directly below the upsell */}
           <div id="tour-status" className="scroll-mt-24">
             <div id="tour-journey" className="scroll-mt-24">
               <MobileStatus location={location} weather={weather} accent={accent} orderValue={orderValue} />
             </div>
+          </div>
+
+          {/* Order items (tips open in a pop-up) */}
+          <div id="tour-items" className="scroll-mt-24">
+            <OrderItems items={items} accent={accent} sym={sym} />
           </div>
 
           {/* Promo / pairings */}
