@@ -97,7 +97,7 @@ export function TrackingPage({
           {items[0] && <MobileUpsell item={items[0]} accent={accent} href={brand.url || "#"} />}
 
           {/* Tracking status — slides up to overlap the upsell above it (layered look) */}
-          <div id="tour-status" className="relative z-[1] -mt-9 scroll-mt-24">
+          <div id="tour-status" className="relative z-[1] -mt-16 scroll-mt-24">
             <div id="tour-journey" className="scroll-mt-24">
               <MobileStatus location={location} weather={weather} accent={accent} orderValue={orderValue} />
             </div>

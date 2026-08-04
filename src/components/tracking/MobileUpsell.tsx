@@ -19,7 +19,7 @@ export function MobileUpsell({
   href: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-border bg-white p-4 pb-8 shadow-soft-md">
+    <section className="overflow-hidden rounded-2xl border border-border bg-white p-4 pb-14 shadow-soft-md">
       {/* Header */}
       <div className="flex items-center gap-2 pb-3.5">
         <span className="flex size-6 items-center justify-center rounded-full text-white" style={{ background: accent }}>
@@ -33,34 +33,34 @@ export function MobileUpsell({
 
       {/* Ordered + Pair with — two equal, consistently-framed tiles */}
       <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-2">
-        <div>
+        <div className="flex flex-col items-center">
           <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
             Ordered
           </span>
-          <div className="rounded-xl border border-border p-1">
+          <div className="w-[74%] rounded-xl border border-border p-1">
             <ImageTile
               accent={accent}
               src={item.image ?? undefined}
               alt={item.name}
               className="aspect-square w-full"
-              label={<Package className="size-5 text-muted-foreground" />}
+              label={<Package className="size-4 text-muted-foreground" />}
             />
           </div>
         </div>
         <div className="flex items-center self-center pt-5">
           <Plus className="size-5 shrink-0" style={{ color: accent }} />
         </div>
-        <div>
+        <div className="flex flex-col items-center">
           <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide" style={{ color: accent }}>
             Pair with
           </span>
-          <div className="rounded-xl border p-1" style={{ borderColor: accent }}>
+          <div className="w-[74%] rounded-xl border p-1" style={{ borderColor: accent }}>
             <ImageTile
               accent={accent}
               src={item.rec.image ?? undefined}
               alt={item.rec.name}
               className="aspect-square w-full"
-              label={<Package className="size-5 text-muted-foreground" />}
+              label={<Package className="size-4 text-muted-foreground" />}
             />
           </div>
         </div>
