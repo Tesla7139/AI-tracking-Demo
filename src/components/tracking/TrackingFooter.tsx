@@ -13,15 +13,15 @@ export function TrackingFooter({ brand }: { brand: Brand }) {
   // Mobile: a clean, centred single-column footer.
   if (mobile) {
     return (
-      <footer className="bg-white px-6 py-10 text-center">
-        <div className="flex flex-col items-center gap-8">
+      <footer className="bg-white px-6 py-7 text-center">
+        <div className="flex flex-col items-center gap-5">
           {/* Policy */}
           <div>
-            <h3 className="text-base font-bold text-foreground">Policy</h3>
-            <ul className="mt-4 flex flex-col gap-3.5">
+            <h3 className="text-sm font-bold text-foreground">Policy</h3>
+            <ul className="mt-2.5 flex flex-col gap-2">
               {["Return Policy", "Refund Policy", "Terms & Conditions"].map((p) => (
                 <li key={p}>
-                  <a href="#" className="text-sm text-foreground underline underline-offset-4 transition-opacity hover:opacity-70">
+                  <a href="#" className="text-[13px] text-foreground underline underline-offset-4 transition-opacity hover:opacity-70">
                     {p}
                   </a>
                 </li>
@@ -31,16 +31,16 @@ export function TrackingFooter({ brand }: { brand: Brand }) {
 
           {/* Contact Us */}
           <div>
-            <h3 className="text-base font-bold text-foreground">Contact Us</h3>
-            <p className="mt-4 flex items-center justify-center gap-2 text-sm text-foreground">
-              <Mail className="size-4 shrink-0" /> support@{slug(brand.brandName)}.com
+            <h3 className="text-sm font-bold text-foreground">Contact Us</h3>
+            <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[13px] text-foreground">
+              <Mail className="size-3.5 shrink-0" /> support@{slug(brand.brandName)}.com
             </p>
           </div>
 
           {/* Follow Us */}
           <div>
-            <h3 className="text-base font-bold text-foreground">Follow Us</h3>
-            <div className="mt-4 flex justify-center gap-5 text-foreground">
+            <h3 className="text-sm font-bold text-foreground">Follow Us</h3>
+            <div className="mt-2.5 flex justify-center gap-4 text-foreground [&_svg]:size-4">
               <a href="#" aria-label="Facebook" className="transition-opacity hover:opacity-70"><Facebook /></a>
               <a href="#" aria-label="Instagram" className="transition-opacity hover:opacity-70"><Instagram /></a>
             </div>
@@ -48,8 +48,8 @@ export function TrackingFooter({ brand }: { brand: Brand }) {
 
           {/* Powered By */}
           <div>
-            <h3 className="text-base font-bold text-foreground">Powered By</h3>
-            <p className="mt-4 text-2xl font-extrabold tracking-tight">
+            <h3 className="text-sm font-bold text-foreground">Powered By</h3>
+            <p className="mt-2 text-lg font-extrabold tracking-tight">
               <span className="text-[#5c8df6]">CLICK</span>
               <span className="font-black text-[#1e3faa]">POST</span>
             </p>
