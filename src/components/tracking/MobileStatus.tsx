@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Droplets, MapPin, Truck, Wind } from "lucide-react";
+import { Droplets, MapPin, MapPinned, Truck, Wind } from "lucide-react";
 import type { GeoLocation, Weather } from "@/lib/site";
 import { orderMock, localTimeLabel } from "@/lib/tracking";
 import { ShipmentJourney } from "./ShipmentJourney";
 import { OrderDetails } from "./OrderDetails";
+import { InfoCard } from "./InfoCard";
 import { WeatherMotif } from "./animations";
 import { BottomSheet } from "./sheet";
 
@@ -21,7 +22,7 @@ function IconChip({ accent, children }: { accent: string; children: React.ReactN
   );
 }
 
-/** Compact local-weather card shown to one side inside the Track Details sheet. */
+/** Compact local-weather card (sits beside the fun fact at the top of the sheet). */
 function WeatherCard({
   weather,
   location,
@@ -30,7 +31,7 @@ function WeatherCard({
   location: GeoLocation | null;
 }) {
   return (
-    <div id="tour-weather" className="mb-4 ml-auto w-[62%] rounded-xl border border-border/60 bg-background-muted/40 p-3 scroll-mt-24">
+    <div id="tour-weather" className="w-full rounded-xl border border-border/60 bg-background-muted/40 p-3 scroll-mt-24">
       <div className="flex items-center gap-2">
         <div className="shrink-0" style={{ width: 44, height: 44 }}>
           <div style={{ width: 150, height: 150, transform: "scale(0.293)", transformOrigin: "top left" }}>
@@ -62,11 +63,15 @@ function WeatherCard({
 export function MobileStatus({
   location,
   weather,
+  funFacts,
+  city: cityName,
   accent,
   orderValue,
 }: {
   location: GeoLocation | null;
   weather: Weather | null;
+  funFacts: string[];
+  city: string | null;
   accent: string;
   orderValue: string;
 }) {
@@ -110,7 +115,26 @@ export function MobileStatus({
 
       {/* Detail views open as a bottom sheet contained inside the phone screen. */}
       <BottomSheet open={panel === "track"} onClose={() => setPanel(null)} title="Shipment Journey">
-        {weather && <WeatherCard weather={weather} location={location} />}
+        {/* Local weather + city fun fact, side by side */}
+        {(weather || funFacts.length > 0) && (
+          <div className="mb-4 flex items-start gap-3">
+            {weather && (
+              <div className="w-[46%] shrink-0">
+                <WeatherCard weather={weather} location={location} />
+              </div>
+            )}
+            {funFacts.length > 0 && (
+              <div className="min-w-0 flex-1">
+                <InfoCard
+                  icon={MapPinned}
+                  title={cityName ? `${cityName} Fun Fact` : "Local Fun Fact"}
+                  items={funFacts}
+                  accent={accent}
+                />
+              </div>
+            )}
+          </div>
+        )}
         <ShipmentJourney location={location} accent={accent} embedded />
       </BottomSheet>
       <BottomSheet open={panel === "order"} onClose={() => setPanel(null)} title="Order Details">

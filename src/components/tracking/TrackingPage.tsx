@@ -99,7 +99,14 @@ export function TrackingPage({
           {/* Tracking status — slides up to overlap the upsell above it (layered look) */}
           <div id="tour-status" className="relative z-[1] -mt-16 scroll-mt-24">
             <div id="tour-journey" className="scroll-mt-24">
-              <MobileStatus location={location} weather={weather} accent={accent} orderValue={orderValue} />
+              <MobileStatus
+                location={location}
+                weather={weather}
+                funFacts={funFacts}
+                city={city}
+                accent={accent}
+                orderValue={orderValue}
+              />
             </div>
           </div>
 
@@ -112,12 +119,6 @@ export function TrackingPage({
           <PromoCard brand={brand} />
 
           {/* Facts */}
-          <InfoCard
-            icon={MapPinned}
-            title={city ? `${city} Fun Fact` : "Local Fun Fact"}
-            items={funFacts}
-            accent={accent}
-          />
           <div id="tour-didyouknow" className="scroll-mt-24">
             <InfoCard icon={Lightbulb} title="Did You Know?" items={brandFacts} accent={accent} />
           </div>
