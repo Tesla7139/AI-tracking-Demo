@@ -19,7 +19,7 @@ export function MobileUpsell({
   href: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-border bg-white p-4 shadow-soft-md">
+    <section className="overflow-hidden rounded-2xl border border-border bg-white p-4 pb-8 shadow-soft-md">
       {/* Header */}
       <div className="flex items-center gap-2 pb-3.5">
         <span className="flex size-6 items-center justify-center rounded-full text-white" style={{ background: accent }}>
