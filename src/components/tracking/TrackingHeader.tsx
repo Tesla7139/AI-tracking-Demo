@@ -116,7 +116,7 @@ export function TrackingHeader({ brand }: { brand: Brand }) {
   const mobile = useDevice() === "mobile";
 
   return (
-    <div className="w-full">
+    <>
       {/* Sale ribbon — dark bar, white text, translucent pills (matches the Figma).
           Hidden on mobile (the strip isn't wanted there). */}
       {showSale && !mobile && (
@@ -174,10 +174,16 @@ export function TrackingHeader({ brand }: { brand: Brand }) {
       </div>
       )}
 
-      {/* Logo banner */}
-      <div className={`flex items-center justify-center border-b border-border/60 bg-white ${mobile ? "py-2.5" : "py-5"}`}>
+      {/* Logo banner. On mobile it stays pinned to the top as a frosted-glass bar. */}
+      <div
+        className={`flex items-center justify-center border-b border-border/60 ${
+          mobile
+            ? "sticky top-0 z-30 bg-white/70 py-2.5 backdrop-blur-lg"
+            : "bg-white py-5"
+        }`}
+      >
         <BrandLogo brand={brand} />
       </div>
-    </div>
+    </>
   );
 }
