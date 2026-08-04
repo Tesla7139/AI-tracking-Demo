@@ -201,7 +201,9 @@ export function TrackingScreen({
             Start tour
           </button>
           <a
-            href="#"
+            href="https://calendly.com/jatin-trighatia-clickpost/30min"
+            target="_blank"
+            rel="noreferrer"
             className="rounded-full bg-primary px-3 py-1.5 text-[13px] font-semibold text-white shadow-md"
           >
             Book a demo
@@ -254,7 +256,9 @@ export function TrackingScreen({
 
       {/* Persistent top-right CTA (same spot in desktop and mobile), left of the close X */}
       <a
-        href="#"
+        href="https://calendly.com/jatin-trighatia-clickpost/30min"
+        target="_blank"
+        rel="noreferrer"
         className="absolute right-[76px] top-4 z-[70] rounded-full bg-primary px-4 py-1.5 text-[13px] font-semibold text-white shadow-md transition-transform hover:-translate-y-0.5"
       >
         Book a free demo

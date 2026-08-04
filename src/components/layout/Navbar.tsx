@@ -20,7 +20,9 @@ export function Navbar({ onProductTour }: { onProductTour?: () => void }) {
             Product Tour
           </button>
           <a
-            href="#"
+            href="https://calendly.com/jatin-trighatia-clickpost/30min"
+            target="_blank"
+            rel="noreferrer"
             className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all hover:brightness-110 active:scale-[0.98]"
           >
             Book a free demo
