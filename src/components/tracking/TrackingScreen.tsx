@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronRight, Play } from "lucide-react";
 import type { Brand } from "@/lib/site";
-import { TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
+import { TOUR_STEPS, MOBILE_TOUR_STEPS, firstSectionStepForCard } from "@/lib/tour";
 import type { Generated } from "@/hooks/useGenerated";
 import { FeaturePanel } from "./FeaturePanel";
 import { TourOverlay, type TargetRect } from "./TourOverlay";
@@ -62,9 +62,18 @@ export function TrackingScreen({
   // Sheet host for the compact (real mobile) layout — sheets portal here.
   const [compactSheetHost, setCompactSheetHost] = useState<HTMLDivElement | null>(null);
 
+  // Mobile (real device OR desktop previewing mobile) uses a phone-specific tour.
+  const mobile = compact || view === "mobile";
+  const steps = mobile ? MOBILE_TOUR_STEPS : TOUR_STEPS;
+  // Ref so the stable `measure` callback always reads the current step set.
+  const stepsRef = useRef(steps);
+  useEffect(() => {
+    stepsRef.current = steps;
+  }, [steps]);
+
   // Scroll the current step's target into view, then measure it for the spotlight.
   const measure = useCallback((index: number) => {
-    const s = TOUR_STEPS[index];
+    const s = stepsRef.current[index];
     if (!s) return;
     const el = document.getElementById(s.target);
     if (!el) {
@@ -104,7 +113,7 @@ export function TrackingScreen({
       const card = (e as CustomEvent<{ card?: number }>).detail?.card ?? 0;
       setEmailOpen(false);
       setStep(null);
-      setPreview(firstSectionStepForCard(card));
+      setPreview(firstSectionStepForCard(card, stepsRef.current));
     };
     window.addEventListener("cp:preview-feature", onPreview as EventListener);
     return () => window.removeEventListener("cp:preview-feature", onPreview as EventListener);
@@ -149,7 +158,7 @@ export function TrackingScreen({
   if (compact) {
     return (
       <div className="fixed inset-0 flex flex-col overflow-hidden" style={bgStyle}>
-        <div className="flex items-center gap-2 px-3 pb-2 pt-3 pr-12">
+        <div className="flex flex-wrap items-center gap-2 px-3 pb-2 pt-3 pr-12">
           {/* Features dropdown (replaces the desktop left feature panel on mobile) */}
           <div className="relative">
             <button
@@ -214,16 +223,16 @@ export function TrackingScreen({
           </div>
         </SheetHostContext.Provider>
 
-        {activeIndex !== null && TOUR_STEPS[activeIndex] && (
+        {activeIndex !== null && steps[activeIndex] && (
           <TourOverlay
             rect={rect}
-            title={TOUR_STEPS[activeIndex].title}
-            desc={TOUR_STEPS[activeIndex].desc}
+            title={steps[activeIndex].title}
+            desc={steps[activeIndex].desc}
             step={activeIndex}
-            total={TOUR_STEPS.length}
+            total={steps.length}
             preview={isPreview}
             nextLabel="Next"
-            onNext={() => setStep((s) => (s === null ? s : Math.min(s + 1, TOUR_STEPS.length - 1)))}
+            onNext={() => setStep((s) => (s === null ? s : Math.min(s + 1, steps.length - 1)))}
             onBack={() => setStep((s) => (s === null ? s : Math.max(s - 1, 0)))}
             onClose={endTour}
           />
@@ -345,16 +354,16 @@ export function TrackingScreen({
         );
       })()}
 
-      {activeIndex !== null && TOUR_STEPS[activeIndex] && (
+      {activeIndex !== null && steps[activeIndex] && (
         <TourOverlay
           rect={rect}
-          title={TOUR_STEPS[activeIndex].title}
-          desc={TOUR_STEPS[activeIndex].desc}
+          title={steps[activeIndex].title}
+          desc={steps[activeIndex].desc}
           step={activeIndex}
-          total={TOUR_STEPS.length}
+          total={steps.length}
           preview={isPreview}
           nextLabel="Next"
-          onNext={() => setStep((s) => (s === null ? s : Math.min(s + 1, TOUR_STEPS.length - 1)))}
+          onNext={() => setStep((s) => (s === null ? s : Math.min(s + 1, steps.length - 1)))}
           onBack={() => setStep((s) => (s === null ? s : Math.max(s - 1, 0)))}
           onClose={endTour}
         />

@@ -86,14 +86,47 @@ export const TOUR_STEPS: TourStep[] = [
   },
 ];
 
+// Mobile tour — no left feature panel, and weather/fun-fact live inside the Track
+// Details sheet, so the mobile tour walks only the sections visible on the phone.
+export const MOBILE_TOUR_STEPS: TourStep[] = [
+  {
+    card: 0,
+    kind: "section",
+    target: "tour-items",
+    title: "Matched add-on on your item",
+    desc: "Every ordered item gets a hand-picked add-on with a one-tap buy, turning post-purchase attention into incremental revenue.",
+  },
+  {
+    card: 0,
+    kind: "section",
+    target: "tour-arrivals",
+    title: "New arrivals that convert",
+    desc: "A carousel pulled from the store's live catalog with one-tap Add to Cart, placed right where attention is highest.",
+  },
+  {
+    card: 1,
+    kind: "section",
+    target: "tour-status",
+    title: "Live status & delivery ETA",
+    desc: "An always-current order status with an accurate delivery estimate, front and center the moment the page loads.",
+  },
+  {
+    card: 2,
+    kind: "section",
+    target: "tour-items",
+    title: "Personalized care tips",
+    desc: "Tap “Pro & Care Tips” on any item for AI style, care, and usage guidance — a personal touch that keeps shoppers engaged.",
+  },
+];
+
 /** First tour step index that belongs to a given feature card (for the full tour). */
-export function firstStepForCard(card: number): number {
-  const i = TOUR_STEPS.findIndex((s) => s.card === card);
+export function firstStepForCard(card: number, steps: TourStep[] = TOUR_STEPS): number {
+  const i = steps.findIndex((s) => s.card === card);
   return i === -1 ? 0 : i;
 }
 
 /** First on-page SECTION step for a card — the target for the quick card-click preview. */
-export function firstSectionStepForCard(card: number): number {
-  const i = TOUR_STEPS.findIndex((s) => s.card === card && s.kind === "section");
-  return i === -1 ? firstStepForCard(card) : i;
+export function firstSectionStepForCard(card: number, steps: TourStep[] = TOUR_STEPS): number {
+  const i = steps.findIndex((s) => s.card === card && s.kind === "section");
+  return i === -1 ? firstStepForCard(card, steps) : i;
 }
