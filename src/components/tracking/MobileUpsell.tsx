@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Package, Plus, Star } from "lucide-react";
+import { Package, Plus, Star } from "lucide-react";
 import type { OrderItem } from "@/lib/tracking";
 import { ImageTile } from "./TrackingCard";
 
@@ -71,10 +71,10 @@ export function MobileUpsell({
         href={href || "#"}
         target="_blank"
         rel="noreferrer"
-        className="mx-auto mt-4 flex w-fit items-center justify-center gap-2 rounded-full bg-white px-7 py-2.5 text-sm font-bold shadow-sm transition-transform active:scale-[0.98]"
+        className="mx-auto mt-4 flex w-fit items-center justify-center rounded-full bg-white px-7 py-2.5 text-sm font-bold shadow-sm transition-transform active:scale-[0.98]"
         style={{ color: accent }}
       >
-        Buy now <ArrowRight className="size-4" />
+        Buy now
       </a>
     </section>
   );

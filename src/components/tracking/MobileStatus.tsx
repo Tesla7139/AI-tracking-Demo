@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, Droplets, MapPin, Truck, Wind } from "lucide-react";
+import { Droplets, MapPin, Truck, Wind } from "lucide-react";
 import type { GeoLocation, Weather } from "@/lib/site";
 import { orderMock, localTimeLabel } from "@/lib/tracking";
 import { ShipmentJourney } from "./ShipmentJourney";
@@ -90,19 +90,17 @@ export function MobileStatus({
         <button
           type="button"
           onClick={() => setPanel("track")}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white transition-transform active:scale-[0.99]"
+          className="mt-4 flex w-full items-center justify-center rounded-xl py-3 text-sm font-bold text-white transition-transform active:scale-[0.99]"
           style={{ background: accent }}
         >
           Track Details
-          <ChevronRight className="size-4" />
         </button>
         <button
           type="button"
           onClick={() => setPanel("order")}
-          className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-bold text-foreground transition-colors hover:bg-background-muted active:scale-[0.99]"
+          className="mt-2.5 flex w-full items-center justify-center rounded-xl border border-border py-3 text-sm font-bold text-foreground transition-colors hover:bg-background-muted active:scale-[0.99]"
         >
           Order Details
-          <ChevronRight className="size-4 text-muted-foreground" />
         </button>
       </div>
 
