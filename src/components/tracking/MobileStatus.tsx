@@ -90,7 +90,7 @@ export function MobileStatus({
         <button
           type="button"
           onClick={() => setPanel("track")}
-          className="mt-4 flex w-full items-center justify-center rounded-xl py-3 text-sm font-bold text-white transition-transform active:scale-[0.99]"
+          className="mt-4 flex w-full items-center justify-center rounded-xl py-3.5 text-sm font-bold text-white transition-transform active:scale-[0.99]"
           style={{ background: accent }}
         >
           Track Details
@@ -98,7 +98,7 @@ export function MobileStatus({
         <button
           type="button"
           onClick={() => setPanel("order")}
-          className="mt-2.5 flex w-full items-center justify-center rounded-xl border border-border py-3 text-sm font-bold text-foreground transition-colors hover:bg-background-muted active:scale-[0.99]"
+          className="mt-2.5 flex w-full items-center justify-center rounded-xl border border-border py-3.5 text-sm font-bold text-foreground transition-colors hover:bg-background-muted active:scale-[0.99]"
         >
           Order Details
         </button>

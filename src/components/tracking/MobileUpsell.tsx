@@ -20,7 +20,7 @@ export function MobileUpsell({
 }) {
   return (
     <section
-      className="-mx-4 -mt-5 overflow-hidden rounded-b-[2.75rem] px-5 pb-20 pt-5 shadow-[0_16px_36px_-16px_rgba(0,0,0,0.3)]"
+      className="-mx-4 -mt-4 overflow-hidden rounded-b-[2.75rem] px-5 pb-20 pt-5 shadow-[0_16px_36px_-16px_rgba(0,0,0,0.3)]"
       style={{ background: accent }}
     >
       {/* Ordered + Pair with — two small white tiles on the theme-colored card */}
@@ -58,7 +58,7 @@ export function MobileUpsell({
         </div>
       </div>
 
-      <p className="mt-4 text-center text-sm font-bold leading-snug text-white">{item.rec.name}</p>
+      <p className="mt-4 text-center text-base font-bold leading-snug text-white">{item.rec.name}</p>
 
       <div className="mt-2.5 rounded-xl bg-white/15 p-3">
         <p className="text-[13px] leading-relaxed text-white/90">
@@ -71,7 +71,7 @@ export function MobileUpsell({
         href={href || "#"}
         target="_blank"
         rel="noreferrer"
-        className="mx-auto mt-4 flex w-fit items-center justify-center rounded-full bg-white px-7 py-2.5 text-sm font-bold shadow-sm transition-transform active:scale-[0.98]"
+        className="mx-auto mt-4 flex w-fit items-center justify-center rounded-full bg-white px-12 py-3 text-sm font-bold shadow-sm transition-transform active:scale-[0.98]"
         style={{ color: accent }}
       >
         Buy now

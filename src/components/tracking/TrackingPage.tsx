@@ -92,7 +92,7 @@ export function TrackingPage({
       >
         <TrackingHeader brand={brand} />
 
-        <div className="flex flex-col gap-5 px-4 py-5">
+        <div className="flex flex-col gap-4 px-4 py-4">
           {/* Perfect-pair upsell — front and centre at the top */}
           {items[0] && <MobileUpsell item={items[0]} accent={accent} href={brand.url || "#"} />}
 
