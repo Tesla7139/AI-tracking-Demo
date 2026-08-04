@@ -75,15 +75,15 @@ export function MobileStatus({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative z-[1] rounded-2xl border border-border bg-card p-4 shadow-soft-md">
+      <div className="relative z-[1] rounded-2xl border border-border bg-card p-5 shadow-soft-md">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Current Status</p>
-        <div className="mt-1.5 flex items-center gap-2.5">
+        <div className="mt-2 flex items-center gap-2.5">
           <IconChip accent={accent}><Truck className="size-4" /></IconChip>
           <p className="text-xl font-bold" style={{ color: accent }}>{orderMock.status}</p>
         </div>
 
-        <p className="mt-4 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Last Update</p>
-        <div className="mt-1.5 flex items-center gap-2.5">
+        <p className="mt-7 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Last Update</p>
+        <div className="mt-2 flex items-center gap-2.5">
           <IconChip accent={accent}><MapPin className="size-4" /></IconChip>
           <div className="min-w-0">
             <p className="text-xl font-bold leading-tight" style={{ color: accent }}>Received at {city}</p>
@@ -94,7 +94,7 @@ export function MobileStatus({
         <button
           type="button"
           onClick={() => setPanel("track")}
-          className="mt-4 flex w-full items-center justify-center rounded-xl py-3.5 text-sm font-bold text-white transition-transform active:scale-[0.99]"
+          className="mt-7 flex w-full items-center justify-center rounded-xl py-4 text-sm font-bold text-white transition-transform active:scale-[0.99]"
           style={{ background: accent }}
         >
           Track Details
@@ -102,7 +102,7 @@ export function MobileStatus({
         <button
           type="button"
           onClick={() => setPanel("order")}
-          className="mt-2.5 flex w-full items-center justify-center rounded-xl border border-border py-3.5 text-sm font-bold text-foreground transition-colors hover:bg-background-muted active:scale-[0.99]"
+          className="mt-3.5 flex w-full items-center justify-center rounded-xl border border-border py-4 text-sm font-bold text-foreground transition-colors hover:bg-background-muted active:scale-[0.99]"
         >
           Order Details
         </button>
