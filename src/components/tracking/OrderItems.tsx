@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Gem, HeartHandshake, Package, Star } from "lucide-react";
+import { Gem, HeartHandshake, Package, SlidersHorizontal, Star } from "lucide-react";
 import { type OrderItem } from "@/lib/tracking";
 import { TrackingCard, ImageTile } from "./TrackingCard";
 import { useDevice } from "./device";
@@ -106,7 +106,7 @@ function OrderItemCard({
 function MobileItemCard({ item, accent, sym }: { item: OrderItem; accent: string; sym: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-soft-sm">
+    <div className="overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-soft-md">
       {/* Big product image */}
       <ImageTile
         accent={accent}
@@ -160,14 +160,18 @@ export function OrderItems({
   const mobile = useDevice() === "mobile";
 
   if (mobile) {
-    // Mobile shows a single, compact ordered item.
+    // Mobile shows a single, compact ordered item as one clean card (no outer box).
     const item = items[0];
     return (
-      <TrackingCard title="Order Item(s)">
-        <div className="mt-4">
-          {item && <MobileItemCard item={item} accent={accent} sym={sym} />}
+      <div>
+        <div className="mb-3 flex items-center gap-2">
+          <SlidersHorizontal className="size-5" style={{ color: accent }} />
+          <h2 className="text-lg font-bold text-foreground">
+            My Order Items <span className="text-muted-foreground">({items.length})</span>
+          </h2>
         </div>
-      </TrackingCard>
+        {item && <MobileItemCard item={item} accent={accent} sym={sym} />}
+      </div>
     );
   }
 
