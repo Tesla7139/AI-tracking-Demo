@@ -101,27 +101,31 @@ function OrderItemCard({
   );
 }
 
-/** Mobile order item: a compact grid cell (image on top) with a "Tips" button that
- *  opens the Pro/Care tips + upsell in a bottom sheet contained inside the phone. */
-function MobileItemCell({ item, accent, sym }: { item: OrderItem; accent: string; sym: string }) {
+/** Mobile order item: a compact horizontal row (image left, details right) with a
+ *  "Tips" button that opens the Pro/Care tips + upsell in a bottom sheet. */
+function MobileItemRow({ item, accent, sym }: { item: OrderItem; accent: string; sym: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="flex flex-col rounded-xl border border-border/60 bg-card p-2.5">
-      <ImageTile
-        accent={accent}
-        src={item.image}
-        alt={item.name}
-        className="aspect-square w-full"
-        label={<Package className="size-5 text-muted-foreground" />}
-      />
-      <p className="mt-2 line-clamp-2 text-sm font-bold leading-snug text-foreground">{item.name}</p>
-      <p className="mt-1 text-sm font-semibold text-foreground">{sym}{item.price}</p>
-      <p className="mt-0.5 text-[11px] text-muted-foreground">Qty: {item.qty} · {item.variant}</p>
+    <div className="rounded-xl border border-border/60 bg-card p-3">
+      <div className="flex items-center gap-3">
+        <ImageTile
+          accent={accent}
+          src={item.image}
+          alt={item.name}
+          className="size-16 shrink-0"
+          label={<Package className="size-5 text-muted-foreground" />}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="line-clamp-1 text-sm font-bold text-foreground">{item.name}</p>
+          <p className="mt-0.5 text-sm font-semibold text-foreground">{sym}{item.price}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">Qty: {item.qty} · {item.variant}</p>
+        </div>
+      </div>
 
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mt-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2 text-[13px] font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.98]"
+        className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-primary/15 bg-primary/5 px-3 py-2 text-[13px] font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.98]"
       >
         <Sparkles className="size-3.5" /> Pro &amp; Care Tips
       </button>
@@ -149,13 +153,12 @@ export function OrderItems({
   const mobile = useDevice() === "mobile";
 
   if (mobile) {
+    // Mobile shows a single, compact ordered item.
+    const item = items[0];
     return (
       <TrackingCard title="Order Item(s)">
-        {/* Items sit side by side; tips open in a pop-up sheet on tap. */}
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          {items.map((item) => (
-            <MobileItemCell key={item.name} item={item} accent={accent} sym={sym} />
-          ))}
+        <div className="mt-4">
+          {item && <MobileItemRow item={item} accent={accent} sym={sym} />}
         </div>
       </TrackingCard>
     );
