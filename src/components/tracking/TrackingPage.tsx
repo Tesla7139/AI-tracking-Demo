@@ -118,11 +118,6 @@ export function TrackingPage({
           {/* Promo / pairings */}
           <PromoCard brand={brand} />
 
-          {/* Facts */}
-          <div id="tour-didyouknow" className="scroll-mt-24">
-            <InfoCard icon={Lightbulb} title="Did You Know?" items={brandFacts} accent={accent} />
-          </div>
-
           {/* Hero + arrivals */}
           <HeroBanner brand={brand} copy={generated?.heroCopy} />
           <div id="tour-arrivals" className="scroll-mt-24">
