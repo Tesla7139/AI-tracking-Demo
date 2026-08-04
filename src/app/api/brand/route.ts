@@ -464,7 +464,7 @@ function productsFromHtmlCards(html: string, base: URL): DemoProductOut[] {
     const image = absolutize(rawImg.replace(/&amp;/gi, "&"), base);
     if (!image || /\.svg(\?|$)|sprite|icon|logo|placeholder/i.test(image)) continue;
     const alt = block.match(/<img[^>]+alt=["']([^"']+)["']/i)?.[1];
-    let title = (alt || block.replace(/<[^>]+>/g, " "))
+    const title = (alt || block.replace(/<[^>]+>/g, " "))
       .replace(priceRe, " ")
       .replace(/\s+/g, " ")
       .trim()
