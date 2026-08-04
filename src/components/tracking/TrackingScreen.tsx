@@ -157,8 +157,8 @@ export function TrackingScreen({
   // is a desktop-only "preview mobile" affordance and the frame would overflow here).
   if (compact) {
     return (
-      <div className="fixed inset-0 flex flex-col overflow-hidden" style={bgStyle}>
-        <div className="flex flex-wrap items-center gap-2 px-3 pb-2 pt-3 pr-12">
+      <div className="fixed inset-0 flex flex-col overflow-hidden bg-white">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border/60 bg-white px-3 py-2">
           {/* Features dropdown (replaces the desktop left feature panel on mobile) */}
           <div className="relative">
             <button
@@ -208,7 +208,7 @@ export function TrackingScreen({
           </a>
         </div>
         <SheetHostContext.Provider value={compactSheetHost}>
-          <div className="relative mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/10">
+          <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
             <div ref={scrollRef} className="thin-scrollbar h-full flex-1 overflow-y-auto overflow-x-hidden">
               <DeviceContext.Provider value="mobile">
                 {emailOpen ? (

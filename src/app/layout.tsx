@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Fraunces, Poppins } from "next/font/google";
 import "./globals.css";
 
@@ -31,6 +31,13 @@ export const metadata: Metadata = {
   description:
     "A branded, personalized post-purchase order-tracking experience for any store using Clickpost.",
   robots: { index: false, follow: false },
+};
+
+// Ensure phones report their real device width so the mobile layout is used
+// (a missing viewport makes a phone render at ~980px = the desktop layout).
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
