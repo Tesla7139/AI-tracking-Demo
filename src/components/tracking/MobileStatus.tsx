@@ -6,7 +6,6 @@ import type { GeoLocation, Weather } from "@/lib/site";
 import { orderMock, localTimeLabel } from "@/lib/tracking";
 import { ShipmentJourney } from "./ShipmentJourney";
 import { OrderDetails } from "./OrderDetails";
-import { InfoCard } from "./InfoCard";
 import { WeatherMotif } from "./animations";
 import { BottomSheet } from "./sheet";
 
@@ -22,6 +21,31 @@ function IconChip({ accent, children }: { accent: string; children: React.ReactN
   );
 }
 
+/** Compact city fun-fact card, sized to match the weather card beside it. */
+function FunFactCard({
+  city,
+  facts,
+  accent,
+}: {
+  city: string | null;
+  facts: string[];
+  accent: string;
+}) {
+  return (
+    <div className="flex h-full w-full flex-col rounded-xl border border-border/60 bg-background-muted/40 p-2.5">
+      <div className="flex items-center gap-1.5">
+        <MapPinned className="size-4 shrink-0" style={{ color: accent }} />
+        <p className="truncate text-[11px] font-bold text-foreground">
+          {city ? `${city} Fun Fact` : "Local Fun Fact"}
+        </p>
+      </div>
+      <p className="mt-1.5 line-clamp-4 text-[11px] leading-relaxed text-muted-foreground">
+        {facts[0]}
+      </p>
+    </div>
+  );
+}
+
 /** Compact local-weather card (sits beside the fun fact at the top of the sheet). */
 function WeatherCard({
   weather,
@@ -31,7 +55,7 @@ function WeatherCard({
   location: GeoLocation | null;
 }) {
   return (
-    <div id="tour-weather" className="w-full rounded-xl border border-border/60 bg-background-muted/40 p-2.5 scroll-mt-24">
+    <div id="tour-weather" className="flex h-full w-full flex-col rounded-xl border border-border/60 bg-background-muted/40 p-2.5 scroll-mt-24">
       <div className="flex items-center gap-1.5">
         <div className="shrink-0" style={{ width: 36, height: 36 }}>
           <div style={{ width: 150, height: 150, transform: "scale(0.24)", transformOrigin: "top left" }}>
@@ -115,24 +139,11 @@ export function MobileStatus({
 
       {/* Detail views open as a bottom sheet contained inside the phone screen. */}
       <BottomSheet open={panel === "track"} onClose={() => setPanel(null)} title="Shipment Journey">
-        {/* Local weather + city fun fact, side by side */}
+        {/* Local weather + city fun fact — two equal cards side by side */}
         {(weather || funFacts.length > 0) && (
-          <div className="mb-4 flex items-start gap-3">
-            {weather && (
-              <div className="w-[46%] shrink-0">
-                <WeatherCard weather={weather} location={location} />
-              </div>
-            )}
-            {funFacts.length > 0 && (
-              <div className="min-w-0 flex-1">
-                <InfoCard
-                  icon={MapPinned}
-                  title={cityName ? `${cityName} Fun Fact` : "Local Fun Fact"}
-                  items={funFacts}
-                  accent={accent}
-                />
-              </div>
-            )}
+          <div className="mb-4 grid grid-cols-2 items-stretch gap-3">
+            {weather && <WeatherCard weather={weather} location={location} />}
+            {funFacts.length > 0 && <FunFactCard city={cityName} facts={funFacts} accent={accent} />}
           </div>
         )}
         <ShipmentJourney location={location} accent={accent} embedded />

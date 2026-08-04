@@ -118,11 +118,10 @@ export function TrackingPage({
           {/* Promo / pairings */}
           <PromoCard brand={brand} />
 
-          {/* Arrivals above the hero banner (banner is the last section) */}
+          {/* Arrivals (hero banner removed on mobile) */}
           <div id="tour-arrivals" className="scroll-mt-24">
             <NewArrivals products={arrivals} accent={accent} sym={sym} />
           </div>
-          <HeroBanner brand={brand} copy={generated?.heroCopy} />
         </div>
 
         <TrackingFooter brand={brand} />
