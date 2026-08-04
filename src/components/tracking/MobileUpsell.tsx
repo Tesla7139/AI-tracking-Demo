@@ -20,7 +20,7 @@ export function MobileUpsell({
 }) {
   return (
     <section
-      className="overflow-hidden rounded-2xl p-4 pb-16 shadow-soft-md"
+      className="-mx-4 -mt-5 overflow-hidden rounded-b-[2.75rem] px-5 pb-20 pt-5 shadow-[0_16px_36px_-16px_rgba(0,0,0,0.3)]"
       style={{ background: accent }}
     >
       {/* Ordered + Pair with — two small white tiles on the theme-colored card */}
