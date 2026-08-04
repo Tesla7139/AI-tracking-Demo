@@ -92,9 +92,9 @@ export const MOBILE_TOUR_STEPS: TourStep[] = [
   {
     card: 0,
     kind: "section",
-    target: "tour-items",
-    title: "Matched add-on on your item",
-    desc: "Every ordered item gets a hand-picked add-on with a one-tap buy, turning post-purchase attention into incremental revenue.",
+    target: "tour-upsell",
+    title: "Perfect Pair — AI-matched add-on",
+    desc: "AI reads the order and surfaces a hand-picked pairing with a one-tap buy, turning post-purchase attention into incremental revenue.",
   },
   {
     card: 0,

@@ -93,8 +93,12 @@ export function TrackingPage({
         <TrackingHeader brand={brand} />
 
         <div className="flex flex-col gap-4 px-4 py-4">
-          {/* Perfect-pair upsell — front and centre at the top */}
-          {items[0] && <MobileUpsell item={items[0]} accent={accent} href={brand.url || "#"} />}
+          {/* Perfect-pair upsell (AI-matched add-on) — front and centre at the top */}
+          {items[0] && (
+            <div id="tour-upsell" className="scroll-mt-24">
+              <MobileUpsell item={items[0]} accent={accent} href={brand.url || "#"} />
+            </div>
+          )}
 
           {/* Tracking status — slides up to overlap the upsell above it (layered look) */}
           <div id="tour-status" className="relative z-[1] -mt-16 scroll-mt-24">
