@@ -41,11 +41,12 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reflect the open store in the address bar (e.g. /gullylabs.com) so it's a
-  // shareable deep link. Only for the home-input flow — explicit deep links keep
-  // their own URL.
+  // Keep the address bar mirroring the current view: /<store> while a store's demo
+  // is open (a shareable deep link), and / when back on the home input. Applies
+  // however the store was opened (input or deep link), so going back always
+  // restores the plain link.
   useEffect(() => {
-    if (typeof window === "undefined" || initialStore) return;
+    if (typeof window === "undefined") return;
     if (status !== "idle" && submittedUrl) {
       const seg = submittedUrl
         .trim()
@@ -57,7 +58,7 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
     } else if (status === "idle" && window.location.pathname !== "/") {
       window.history.replaceState(null, "", "/");
     }
-  }, [status, submittedUrl, initialStore]);
+  }, [status, submittedUrl]);
 
   // The delivery location is the brand's own city (derived from its store currency).
   const location: GeoLocation | null = brand
