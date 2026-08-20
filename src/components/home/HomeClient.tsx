@@ -23,6 +23,27 @@ function isValidStoreUrl(v: string): boolean {
   return /^([a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i.test(host);
 }
 
+// Ping the salesperson's Slack/Discord (via /api/track) when a SHARED demo link is
+// opened. Fires once per browser session per store, and never when `?noping` is set
+// (so the owner can open their own links without alerting themselves). Fire-and-forget.
+function notifyOpen(store: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (new URLSearchParams(window.location.search).has("noping")) return;
+    const key = `cp-tracked:${store.toLowerCase()}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ store }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    /* private mode / storage blocked — skip silently */
+  }
+}
+
 export function HomeClient({ initialStore }: { initialStore?: string }) {
   const [value, setValue] = useState(initialStore ?? "");
   const [highlight, setHighlight] = useState(false);
@@ -36,8 +57,12 @@ export function HomeClient({ initialStore }: { initialStore?: string }) {
   // a valid store URL; otherwise show the home page with an error (no garbage launch).
   useEffect(() => {
     if (!initialStore) return;
-    if (isValidStoreUrl(initialStore)) submit(initialStore);
-    else setError("That doesn't look like a valid store URL — e.g. yourstore.com (no spaces).");
+    if (isValidStoreUrl(initialStore)) {
+      submit(initialStore);
+      notifyOpen(initialStore);
+    } else {
+      setError("That doesn't look like a valid store URL — e.g. yourstore.com (no spaces).");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
