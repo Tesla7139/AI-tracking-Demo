@@ -49,15 +49,17 @@ const CURATED_COLORS: [RegExp, string][] = [
 type CuratedProduct = { title: string; price: number; image?: string };
 const CURATED_CATALOGS: { match: RegExp; currency?: string; products: CuratedProduct[] }[] = [
   {
+    // Real products + TL prices from adidas.com.tr (Aug 2025). Add `image` URLs
+    // (right-click a product photo -> Copy image address) to show real photos.
     match: /(^|\.)adidas\./i,
     currency: "TRY",
     products: [
-      { title: "Samba OG Ayakkabı", price: 5999 },
-      { title: "Superstar Ayakkabı", price: 4999 },
-      { title: "Gazelle Ayakkabı", price: 5499 },
-      { title: "Stan Smith Ayakkabı", price: 4499 },
-      { title: "Ultraboost 5 Koşu Ayakkabısı", price: 8999 },
-      { title: "Forum Low Ayakkabı", price: 4999 },
+      { title: "HYPERBOOST EDGE Running Shoes", price: 13599 },
+      { title: "Hyperboost Run HYPERBOOST PRO Running Shoes", price: 11549 },
+      { title: "HYPERBOOST RUN Running Shoes", price: 11549 },
+      { title: "ADIZERO EVO SL ATR Shoes", price: 10899 },
+      { title: "Hyperboost Run HYPERBOOST PRO Running Shoes (Core Black)", price: 11549 },
+      { title: "HYPERBOOST EDGE Running Shoes (Cloud White)", price: 13599 },
     ],
   },
 ];
