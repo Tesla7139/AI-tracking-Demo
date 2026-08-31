@@ -33,11 +33,19 @@ export async function POST(req: Request) {
         /* ignore malformed referrer */
       }
     }
-    const when = new Date().toLocaleString("en-US", {
-      dateStyle: "medium",
-      timeStyle: "short",
-      timeZone: "Asia/Kolkata",
-    }) + " IST";
+    // Show the time in the VISITOR's own timezone (from their IP), falling back to
+    // IST when Vercel can't resolve it (e.g. local dev).
+    const tz = h.get("x-vercel-ip-timezone") || "Asia/Kolkata";
+    let when: string;
+    try {
+      when = new Date().toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: tz,
+      }) + ` (${tz})`;
+    } catch {
+      when = new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
+    }
 
     const parts = [
       `📬 Demo opened — *${store}*`,
