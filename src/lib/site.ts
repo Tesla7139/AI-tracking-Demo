@@ -73,6 +73,8 @@ export function currencySymbol(code: string | null | undefined): string {
       return "AED ";
     case "SAR":
       return "SAR ";
+    case "TRY":
+      return "₺";
     case "BRL":
       return "R$";
     case "ZAR":

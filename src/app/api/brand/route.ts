@@ -39,6 +39,27 @@ const CURATED_COLORS: [RegExp, string][] = [
   [/thirdlove/i, "#2c272d"],
   [/armani/i, "#111111"],
   [/pehr/i, "#597c7c"],
+  [/adidas/i, "#000000"],
+];
+
+// Curated catalogs for stores we cannot scrape at all (enterprise bot walls like
+// adidas). Used ONLY when live scraping returns zero products. Prices are demo
+// placeholders per market — replace with real values; add `image` URLs to show
+// real photos (otherwise a branded tile renders).
+type CuratedProduct = { title: string; price: number; image?: string };
+const CURATED_CATALOGS: { match: RegExp; currency?: string; products: CuratedProduct[] }[] = [
+  {
+    match: /(^|\.)adidas\./i,
+    currency: "TRY",
+    products: [
+      { title: "Samba OG Ayakkabı", price: 5999 },
+      { title: "Superstar Ayakkabı", price: 4999 },
+      { title: "Gazelle Ayakkabı", price: 5499 },
+      { title: "Stan Smith Ayakkabı", price: 4499 },
+      { title: "Ultraboost 5 Koşu Ayakkabısı", price: 8999 },
+      { title: "Forum Low Ayakkabı", price: 4999 },
+    ],
+  },
 ];
 
 // Store currency -> the country + a famous city there (with coords + timezone).
@@ -57,6 +78,7 @@ const LOCALE_BY_CURRENCY: Record<string, Locale> = {
   ZAR: { country: "South Africa", city: "Cape Town", lat: -33.9249, lon: 18.4241, tz: "Africa/Johannesburg" },
   BRL: { country: "Brazil", city: "Sao Paulo", lat: -23.5505, lon: -46.6333, tz: "America/Sao_Paulo" },
   SAR: { country: "Saudi Arabia", city: "Riyadh", lat: 24.7136, lon: 46.6753, tz: "Asia/Riyadh" },
+  TRY: { country: "Türkiye", city: "Istanbul", lat: 41.0082, lon: 28.9784, tz: "Europe/Istanbul" },
 };
 const DEFAULT_LOCALE: Locale = LOCALE_BY_CURRENCY.USD;
 
@@ -76,6 +98,7 @@ function currencyFromTld(host: string): string | null {
     [/\.za$/, "ZAR"],
     [/\.br$/, "BRL"],
     [/\.sa$/, "SAR"],
+    [/\.tr$/, "TRY"],
   ];
   for (const [re, cur] of map) if (re.test(h)) return cur;
   return null;
@@ -985,7 +1008,25 @@ export async function POST(req: Request) {
     if (rendered) products = productsFromHtmlCards(rendered, url);
   }
 
-  const currency = parseCurrency(cartJson);
+  let currency = parseCurrency(cartJson);
+
+  // Curated fallback for stores we can't scrape at all (enterprise bot walls, e.g.
+  // adidas): if nothing scraped, use a hand-curated catalog for known brands.
+  if (products.length === 0) {
+    const cat = CURATED_CATALOGS.find((c) => c.match.test(url.hostname));
+    if (cat) {
+      products = cat.products.map((p, i) => ({
+        id: String(i + 1),
+        title: p.title,
+        variant: "",
+        price: p.price,
+        qty: 1,
+        image: p.image ?? null,
+        variants: [{ title: "Default", price: p.price }],
+      }));
+      if (cat.currency) currency = cat.currency;
+    }
+  }
 
   // Never hard-fail: even when a store blocks us entirely (no readable homepage and
   // no products — e.g. Flipkart/Amazon-style bot walls), we still return the brand
