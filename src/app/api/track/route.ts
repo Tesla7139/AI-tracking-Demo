@@ -36,7 +36,8 @@ export async function POST(req: Request) {
     const when = new Date().toLocaleString("en-US", {
       dateStyle: "medium",
       timeStyle: "short",
-    });
+      timeZone: "Asia/Kolkata",
+    }) + " IST";
 
     const parts = [
       `📬 Demo opened — *${store}*`,
