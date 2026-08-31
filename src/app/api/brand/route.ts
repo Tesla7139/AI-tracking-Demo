@@ -85,6 +85,18 @@ const CURATED_CATALOGS: { match: RegExp; currency?: string; banner?: string; pro
         image:
           "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/545c54d48f534116a2ca1947acbc7d69_faec/ADIZERO_EVO_SL_ATR_Shoes_Beige_KI7833_HM3_hover.tiff.jpg",
       },
+      {
+        title: "Handball Spezial Shoes",
+        price: 7499,
+        image:
+          "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/1fc4b3d7c1e04cad8780bf99a6b4097b_faec/Handball_Spezial_Shoes_Grey_KZ6705_HM3_hover.tiff.jpg",
+      },
+      {
+        title: "PREMIUM ESSENTIALS TWILL JACKET",
+        price: 8149,
+        image:
+          "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/755c1c18ba754c01b3c8349172064ddc_9366/PREMIUM_ESSENTIALS_TWILL_JACKET_Beige_KS1694_23_hover_model.jpg",
+      },
     ],
   },
 ];
