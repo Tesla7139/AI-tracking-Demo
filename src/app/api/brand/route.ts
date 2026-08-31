@@ -47,19 +47,44 @@ const CURATED_COLORS: [RegExp, string][] = [
 // placeholders per market — replace with real values; add `image` URLs to show
 // real photos (otherwise a branded tile renders).
 type CuratedProduct = { title: string; price: number; image?: string };
-const CURATED_CATALOGS: { match: RegExp; currency?: string; products: CuratedProduct[] }[] = [
+const CURATED_CATALOGS: { match: RegExp; currency?: string; banner?: string; products: CuratedProduct[] }[] = [
   {
-    // Real products + TL prices from adidas.com.tr (Aug 2025). Add `image` URLs
-    // (right-click a product photo -> Copy image address) to show real photos.
+    // Real products, TL prices, and images from adidas.com.tr (Aug 2025).
     match: /(^|\.)adidas\./i,
     currency: "TRY",
+    banner:
+      "https://z2photorankmedia-a.akamaihd.net/media/g/x/k/gxko3e5/original.jpeg",
     products: [
-      { title: "HYPERBOOST EDGE Running Shoes", price: 13599 },
-      { title: "Hyperboost Run HYPERBOOST PRO Running Shoes", price: 11549 },
-      { title: "HYPERBOOST RUN Running Shoes", price: 11549 },
-      { title: "ADIZERO EVO SL ATR Shoes", price: 10899 },
-      { title: "Hyperboost Run HYPERBOOST PRO Running Shoes (Core Black)", price: 11549 },
-      { title: "HYPERBOOST EDGE Running Shoes (Cloud White)", price: 13599 },
+      {
+        title: "FEN HOODIE FTB TR",
+        price: 4699,
+        image:
+          "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/2146b17f7170472fb4812457e379024c_9366/FEN_HOODIE_FTB_TR_Blue_KM9972_23_hover_model.jpg",
+      },
+      {
+        title: "Liverpool FC 26/27 Third Jersey",
+        price: 6799,
+        image:
+          "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/37726715357643cfa7c9e7d76e3f8093_9366/Liverpool_FC_26-27_Third_Jersey_Black_KA6855_23_model.jpg",
+      },
+      {
+        title: "SAMBA OG Shoes",
+        price: 9299,
+        image:
+          "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/bc06d38b38ed48038ea248452f454ec4_faec/SAMBA_OG_SHOES_Brown_KJ7447_HM3_hover.tiff.jpg",
+      },
+      {
+        title: "HYPERBOOST EDGE Running Shoes",
+        price: 13599,
+        image:
+          "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/7393fdee7f434bb3971f6e3b9da1803d_9366/HYPERBOOST_EDGE_Running_Shoes_White_KI1913_HM3.jpg",
+      },
+      {
+        title: "ADIZERO EVO SL ATR Shoes",
+        price: 10899,
+        image:
+          "https://assets.adidas.com/images/w_766,h_766,f_auto,q_auto,fl_lossy,c_fill,g_auto/545c54d48f534116a2ca1947acbc7d69_faec/ADIZERO_EVO_SL_ATR_Shoes_Beige_KI7833_HM3_hover.tiff.jpg",
+      },
     ],
   },
 ];
@@ -1014,20 +1039,19 @@ export async function POST(req: Request) {
 
   // Curated fallback for stores we can't scrape at all (enterprise bot walls, e.g.
   // adidas): if nothing scraped, use a hand-curated catalog for known brands.
-  if (products.length === 0) {
-    const cat = CURATED_CATALOGS.find((c) => c.match.test(url.hostname));
-    if (cat) {
-      products = cat.products.map((p, i) => ({
-        id: String(i + 1),
-        title: p.title,
-        variant: "",
-        price: p.price,
-        qty: 1,
-        image: p.image ?? null,
-        variants: [{ title: "Default", price: p.price }],
-      }));
-      if (cat.currency) currency = cat.currency;
-    }
+  const curatedCatalog =
+    products.length === 0 ? CURATED_CATALOGS.find((c) => c.match.test(url.hostname)) : undefined;
+  if (curatedCatalog) {
+    products = curatedCatalog.products.map((p, i) => ({
+      id: String(i + 1),
+      title: p.title,
+      variant: "",
+      price: p.price,
+      qty: 1,
+      image: p.image ?? null,
+      variants: [{ title: "Default", price: p.price }],
+    }));
+    if (curatedCatalog.currency) currency = curatedCatalog.currency;
   }
 
   // Never hard-fail: even when a store blocks us entirely (no readable homepage and
@@ -1049,6 +1073,9 @@ export async function POST(req: Request) {
   // Curated accent colors win over (or fill in) the scraped theme-color.
   const curated = CURATED_COLORS.find(([re]) => re.test(url.hostname));
   if (curated) branding.brandColor = curated[1];
+
+  // Curated banner (for stores we can't scrape a hero image from).
+  if (curatedCatalog?.banner) branding.bannerImage = curatedCatalog.banner;
 
   // Country + famous city from the store's currency (falls back to the TLD, then US).
   const cur = currency || currencyFromTld(url.hostname);
