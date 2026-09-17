@@ -149,9 +149,14 @@ const SAMPLE_NEW_ARRIVALS: ArrivalProduct[] = [
   { name: "Relaxed Chino Pants", price: 58, image: UIMG("1624378439575-d8705ad7ae80") },
 ];
 
-/** Free gifts and unknown/invalid prices aren't products to sell in the demo. */
+// Match fee/label entries, not merchandise such as "Shipping Box" or "Return Shipping Kit".
+const SHIPPING_SERVICE_TITLE = /^(?:(?:return\s+)?shipping(?:\s+(?:fee|charge|cost|label))?|return\s+(?:postage|label))$/i;
+
+/** Exclude free gifts, invalid prices and shipping services from demo merchandise. */
 export function getPaidProducts(products: Product[]): Product[] {
-  return products.filter((p) => Number.isFinite(p.price) && p.price > 0);
+  return products.filter((p) =>
+    Number.isFinite(p.price) && p.price > 0 && !SHIPPING_SERVICE_TITLE.test(p.title.trim())
+  );
 }
 
 type UpsellPick = { forItem: string; name: string; blurb: string };

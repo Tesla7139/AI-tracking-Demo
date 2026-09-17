@@ -15,12 +15,30 @@ const kegg = [
   product("tracker", 279, "kegg fertility tracker"),
 ];
 
-test("kegg keeps four paid entries, with paid pairings and arrivals", () => {
+test("kegg keeps only three paid physical products, never return shipping", () => {
   const items = buildOrderItems(kegg);
-  assert.equal(getPaidProducts(kegg).length, 4);
-  assert.deepEqual(items.map((p) => p.name), [kegg[0].title, kegg[1].title]);
-  assert.deepEqual(items.map((p) => p.rec.name), [kegg[4].title, kegg[5].title]);
-  assert.deepEqual(buildNewArrivals(kegg).map((p) => p.name), [kegg[4].title, kegg[5].title]);
+  assert.deepEqual(getPaidProducts(kegg).map((p) => p.title), [kegg[1].title, kegg[4].title, kegg[5].title]);
+  assert.deepEqual(items.map((p) => p.name), [kegg[1].title, kegg[4].title]);
+  assert.deepEqual(items.map((p) => p.rec.name), [kegg[5].title, kegg[1].title]);
+  assert.deepEqual(buildNewArrivals(kegg).map((p) => p.name), [kegg[5].title]);
+});
+
+test("shipping fee and label entries are excluded without hiding shipping merchandise", () => {
+  const fees = ["Return Shipping", " return SHIPPING ", "Return Shipping Fee", "Shipping", "Shipping Charge", "Shipping Cost", "Shipping Label", "Return Postage", "Return Label"];
+  const merchandise = ["Shipping Box", "Return Shipping Kit", "Shipping Label Printer", "Return to Nature Tee"];
+  const products = [...fees, ...merchandise].map((title, i) => product(String(i), 20, title));
+  assert.deepEqual(getPaidProducts(products).map((p) => p.title), merchandise);
+});
+
+test("shipping-only catalogues do not fall back to sample merchandise", () => {
+  const products = [product("shipping", 20, "Return Shipping")];
+  assert.deepEqual(buildOrderItems(products), []);
+  assert.deepEqual(buildNewArrivals(products), []);
+});
+
+test("AI cannot bring a shipping fee back as a recommendation", () => {
+  const [item] = buildOrderItems(kegg, [{ forItem: kegg[1].title, name: "Return Shipping", blurb: "Wrong" }]);
+  assert.deepEqual(item.rec, buildOrderItems(kegg)[0].rec);
 });
 
 test("filters free entries before choosing orders and arrivals", () => {
