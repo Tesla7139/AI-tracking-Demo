@@ -20,7 +20,10 @@ test("kegg keeps only three paid physical products, never return shipping", () =
   assert.deepEqual(getPaidProducts(kegg).map((p) => p.title), [kegg[1].title, kegg[4].title, kegg[5].title]);
   assert.deepEqual(items.map((p) => p.name), [kegg[1].title, kegg[4].title]);
   assert.deepEqual(items.map((p) => p.rec.name), [kegg[5].title, kegg[1].title]);
-  assert.deepEqual(buildNewArrivals(kegg).map((p) => p.name), [kegg[5].title]);
+  const arrivals = buildNewArrivals(kegg);
+  assert.deepEqual(arrivals.map((p) => p.name), [kegg[5].title, kegg[1].title, kegg[4].title]);
+  assert.deepEqual(arrivals.map((p) => p.price), [279, 75, 15]);
+  assert.equal(new Set(arrivals.map((p) => p.name)).size, arrivals.length);
 });
 
 test("shipping fee and label entries are excluded without hiding shipping merchandise", () => {
@@ -44,7 +47,7 @@ test("AI cannot bring a shipping fee back as a recommendation", () => {
 test("filters free entries before choosing orders and arrivals", () => {
   const products = [product("free", 0), product("a", 2), product("b", 3), product("c", 4)];
   assert.deepEqual(buildOrderItems(products).map((p) => p.name), ["a", "b"]);
-  assert.deepEqual(buildNewArrivals(products).map((p) => p.name), ["c"]);
+  assert.deepEqual(buildNewArrivals(products).map((p) => p.name), ["c", "a", "b"]);
 });
 
 test("nonpositive and nonfinite prices never become demo products", () => {

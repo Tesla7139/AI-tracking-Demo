@@ -204,8 +204,8 @@ export function buildOrderItems(products: Product[], upsells?: UpsellPick[] | nu
 export function buildNewArrivals(products: Product[]): ArrivalProduct[] {
   if (products.length === 0) return SAMPLE_NEW_ARRIVALS;
   const paid = getPaidProducts(products);
-  const rest = paid.slice(2);
-  const src = rest.length ? rest : paid;
+  // Keep new picks first, then include products already shown in the order above.
+  const src = [...paid.slice(2), ...paid.slice(0, 2)];
   return src.slice(0, 10).map((p) => ({ name: p.title, price: p.price, image: p.image || "" }));
 }
 
