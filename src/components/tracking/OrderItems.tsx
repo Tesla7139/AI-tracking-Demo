@@ -38,7 +38,7 @@ function Tip({
       </div>
 
       {/* AI upsell recommendation nested inside the Pro Tip */}
-      {isPro && (
+      {isPro && item.rec && (
         <div className="mt-3 flex items-center gap-3 rounded-lg bg-white p-3 shadow-soft-sm">
           <ImageTile accent={accent} src={item.rec.image} alt={item.rec.name} className="size-14 shrink-0" label={<Package className="size-4 text-muted-foreground" />} />
           <div className="min-w-0 flex-1">

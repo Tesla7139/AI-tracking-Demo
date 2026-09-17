@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Brand } from "@/lib/site";
+import { getPaidProducts } from "@/lib/tracking";
 import type { UpsellRec, HeroCopy } from "@/lib/ai";
 
 export type Generated = {
@@ -22,6 +23,7 @@ export function useGenerated(brand: Brand | null): Generated | null {
   useEffect(() => {
     if (!brand) return;
     let cancelled = false;
+    const products = getPaidProducts(brand.products);
     (async () => {
       try {
         const res = await fetch("/api/generate", {
@@ -31,8 +33,8 @@ export function useGenerated(brand: Brand | null): Generated | null {
             brandName: brand.brandName,
             city: brand.city,
             country: brand.country,
-            orderedTitles: brand.products.slice(0, 2).map((p) => p.title),
-            catalogTitles: brand.products.map((p) => p.title),
+            orderedTitles: products.slice(0, 2).map((p) => p.title),
+            catalogTitles: products.map((p) => p.title),
           }),
         });
         if (!cancelled && res.ok) setGen((await res.json()) as Generated);

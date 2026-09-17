@@ -55,10 +55,7 @@ export function TrackingPage({
     : brandDidYouKnows(brand.brandName);
 
   // Order items from the catalog; override the upsell with the AI pick when present.
-  const items = buildOrderItems(brand.products).map((it) => {
-    const rec = generated?.upsells?.find((u) => u.forItem === it.name);
-    return rec ? { ...it, rec: { ...it.rec, name: rec.name, blurb: rec.blurb } } : it;
-  });
+  const items = buildOrderItems(brand.products, generated?.upsells);
   if (brandPhoto && items.length) items[0] = { ...items[0], image: brandPhoto };
   const orderValue =
     sym + items.reduce((s, it) => s + it.price * (it.qty || 1), 0).toLocaleString();
@@ -94,14 +91,14 @@ export function TrackingPage({
 
         <div className="flex flex-col gap-4 px-4 py-4">
           {/* Perfect-pair upsell (AI-matched add-on) — front and centre at the top */}
-          {items[0] && (
+          {items[0]?.rec && (
             <div id="tour-upsell" className="scroll-mt-24">
               <MobileUpsell item={items[0]} accent={accent} href={brand.url || "#"} />
             </div>
           )}
 
           {/* Tracking status — slides up to overlap the upsell above it (layered look) */}
-          <div id="tour-status" className="relative z-[1] -mt-16 scroll-mt-24">
+          <div id="tour-status" className={`relative z-[1] scroll-mt-24${items[0]?.rec ? " -mt-16" : ""}`}>
             <div id="tour-journey" className="scroll-mt-24">
               <MobileStatus
                 location={location}
@@ -123,9 +120,11 @@ export function TrackingPage({
           <PromoCard brand={brand} />
 
           {/* Arrivals (hero banner removed on mobile) */}
-          <div id="tour-arrivals" className="scroll-mt-24">
-            <NewArrivals products={arrivals} accent={accent} sym={sym} />
-          </div>
+          {arrivals.length > 0 && (
+            <div id="tour-arrivals" className="scroll-mt-24">
+              <NewArrivals products={arrivals} accent={accent} sym={sym} />
+            </div>
+          )}
         </div>
 
         <TrackingFooter brand={brand} />
@@ -196,9 +195,11 @@ export function TrackingPage({
           <motion.div {...reveal(0.64)}>
             <HeroBanner brand={brand} copy={generated?.heroCopy} />
           </motion.div>
-          <motion.div id="tour-arrivals" className="scroll-mt-24" {...reveal(0.72)}>
-            <NewArrivals products={arrivals} accent={accent} sym={sym} />
-          </motion.div>
+          {arrivals.length > 0 && (
+            <motion.div id="tour-arrivals" className="scroll-mt-24" {...reveal(0.72)}>
+              <NewArrivals products={arrivals} accent={accent} sym={sym} />
+            </motion.div>
+          )}
         </div>
       </div>
 

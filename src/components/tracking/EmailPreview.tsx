@@ -57,10 +57,7 @@ export function EmailView({
 
   const accent = brand.brandColor;
   const sym = currencySymbol(brand.currency);
-  const items = buildOrderItems(brand.products).map((it) => {
-    const rec = generated?.upsells?.find((u) => u.forItem === it.name);
-    return rec ? { ...it, rec: { ...it.rec, name: rec.name, blurb: rec.blurb } } : it;
-  });
+  const items = buildOrderItems(brand.products, generated?.upsells);
   const arrivals = buildNewArrivals(brand.products).slice(0, 6);
   const brandFact = generated?.brandFacts?.[0] || brandDidYouKnows(brand.brandName)[0];
   const host = (() => {
@@ -244,12 +241,14 @@ export function EmailView({
                       {sym}{it.price.toLocaleString()}
                     </p>
                   </div>
-                  <div className="mt-3 flex items-start gap-2 rounded-lg bg-neutral-50 p-3">
-                    <Sparkles className="mt-0.5 size-4 shrink-0" style={{ color: accent }} />
-                    <p className="text-xs text-neutral-600">
-                      <span className="font-semibold text-neutral-800">Pair tip:</span> {it.rec.blurb}
-                    </p>
-                  </div>
+                  {it.rec && (
+                    <div className="mt-3 flex items-start gap-2 rounded-lg bg-neutral-50 p-3">
+                      <Sparkles className="mt-0.5 size-4 shrink-0" style={{ color: accent }} />
+                      <p className="text-xs text-neutral-600">
+                        <span className="font-semibold text-neutral-800">Pair tip:</span> {it.rec.blurb}
+                      </p>
+                    </div>
+                  )}
                   <div className="mt-2 flex items-start gap-2 rounded-lg bg-neutral-50 p-3">
                     <Gift className="mt-0.5 size-4 shrink-0" style={{ color: accent }} />
                     <p className="text-xs text-neutral-600">

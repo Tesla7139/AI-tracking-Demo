@@ -74,6 +74,7 @@ export function NewArrivals({
   sym: string;
 }) {
   const mobile = useDevice() === "mobile";
+  if (products.length === 0) return null;
 
   if (mobile) {
     return (

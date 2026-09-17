@@ -100,7 +100,7 @@ export type OrderItem = {
   styleTip: string;
   careTip: string;
   usageTip: string;
-  rec: ItemRec; // AI upsell shown inside the "Pro Tip" card
+  rec: ItemRec | null; // No upsell when there is no distinct paid product.
 };
 
 const SAMPLE_ORDER_ITEMS: OrderItem[] = [
@@ -149,14 +149,34 @@ const SAMPLE_NEW_ARRIVALS: ArrivalProduct[] = [
   { name: "Relaxed Chino Pants", price: 58, image: UIMG("1624378439575-d8705ad7ae80") },
 ];
 
-/** Build the two order items from the store's real catalog (falls back to samples).
- *  Tips + the upsell blurb are placeholders here; AI fills them in once the key is set. */
-export function buildOrderItems(products: Product[]): OrderItem[] {
-  const real = products.slice(0, 2);
-  if (real.length === 0) return SAMPLE_ORDER_ITEMS;
-  return real.map((p, i) => {
-    const recIdx = products.length > 2 ? i + 2 : (i + 1) % products.length;
-    const rec = products[recIdx] ?? p;
+/** Free gifts and unknown/invalid prices aren't products to sell in the demo. */
+export function getPaidProducts(products: Product[]): Product[] {
+  return products.filter((p) => Number.isFinite(p.price) && p.price > 0);
+}
+
+type UpsellPick = { forItem: string; name: string; blurb: string };
+
+/** Build demo orders and paid recommendations; only missing catalogs use samples. */
+export function buildOrderItems(products: Product[], upsells?: UpsellPick[] | null): OrderItem[] {
+  if (products.length === 0) return SAMPLE_ORDER_ITEMS;
+  const paid = getPaidProducts(products);
+  return paid.slice(0, 2).map((p, i) => {
+    const candidates = paid.filter((candidate) => candidate.id !== p.id);
+    const recIdx = paid.length > 2 ? i + 2 : (i + 1) % paid.length;
+    const preferred = paid[recIdx];
+    let rec = candidates.find((candidate) => candidate === preferred) ?? candidates[0];
+    let blurb = "A perfect match to round out your order, hand-picked to pair with your pick.";
+
+    // Cached/generated names must still resolve to one distinct, paid product.
+    const pick = upsells?.find((u) => u.forItem === p.title);
+    if (pick) {
+      const matches = products.filter((candidate) => candidate.title === pick.name);
+      if (matches.length === 1 && candidates.includes(matches[0])) {
+        rec = matches[0];
+        blurb = pick.blurb || blurb;
+      }
+    }
+
     return {
       name: p.title,
       variant: p.variant || "Standard",
@@ -166,20 +186,21 @@ export function buildOrderItems(products: Product[]): OrderItem[] {
       styleTip: "A versatile pick that layers easily and works for any occasion.",
       careTip: "Follow the care label; a gentle cold wash keeps it looking new for longer.",
       usageTip: "",
-      rec: {
+      rec: rec ? {
         name: rec.title,
-        blurb: "A perfect match to round out your order, hand-picked to pair with your pick.",
-        image: rec.image || SAMPLE_ORDER_ITEMS[0].rec.image,
-      },
+        blurb,
+        image: rec.image || SAMPLE_ORDER_ITEMS[0].rec?.image || "",
+      } : null,
     };
   });
 }
 
-/** Build the New Arrivals carousel from the catalog (falls back to samples). */
+/** Build paid New Arrivals; don't substitute samples for an all-free catalog. */
 export function buildNewArrivals(products: Product[]): ArrivalProduct[] {
-  const rest = products.slice(2);
-  const src = rest.length ? rest : products;
-  if (src.length === 0) return SAMPLE_NEW_ARRIVALS;
+  if (products.length === 0) return SAMPLE_NEW_ARRIVALS;
+  const paid = getPaidProducts(products);
+  const rest = paid.slice(2);
+  const src = rest.length ? rest : paid;
   return src.slice(0, 10).map((p) => ({ name: p.title, price: p.price, image: p.image || "" }));
 }
 
