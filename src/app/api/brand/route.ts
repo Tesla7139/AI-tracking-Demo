@@ -40,6 +40,7 @@ const CURATED_COLORS: [RegExp, string][] = [
   [/armani/i, "#111111"],
   [/pehr/i, "#597c7c"],
   [/adidas/i, "#000000"],
+  [/bombas/i, "#111111"],
 ];
 
 // Curated catalogs for stores we cannot scrape at all (enterprise bot walls like
@@ -48,6 +49,52 @@ const CURATED_COLORS: [RegExp, string][] = [
 // real photos (otherwise a branded tile renders).
 type CuratedProduct = { title: string; price: number; image?: string };
 const CURATED_CATALOGS: { match: RegExp; currency?: string; banner?: string; products: CuratedProduct[] }[] = [
+  {
+    // bombas.com sits behind Vercel's Security Checkpoint, so nothing scrapes.
+    // Real products, INR prices, and images from bombas.com (Oct 2026).
+    match: /(^|\.)bombas\./i,
+    currency: "INR",
+    // "Stay Cozy Out There" homepage hero, with its Shop Women/Men buttons painted out.
+    banner: "/brands/bombas-banner.jpg",
+    products: [
+      {
+        title: "Men's Suede Moccasin Slipper",
+        price: 12600,
+        image:
+          "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/7sZu2n0UbMLTIxPTByaITw/e77fff3ac0687043a67cd0cdaebb22f0/10925-golden_camel-adult-male-closed_back_slip_on---transparent.png",
+      },
+      {
+        title: "Merino Wool Blend Calf Sock 4-Pack",
+        price: 8900,
+        image:
+          "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/4ATcZuTO6ynvph87GBrQPC/6052f3dc9d579f2a4765f5a34622e5ad/7800-alpine_green-adult-male-calf--HO26-transparent.png",
+      },
+      {
+        title: "Medical Grade Compression Knee High Socks",
+        price: 4500,
+        image:
+          "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/1sVbFFLNhPdrJuC01Q02Sr/703ef09d3e142e5a7353c2e6fbec52b3/11867-slatesea-adult-male-onmodel-2-transparent.png",
+      },
+      {
+        title: "Run Ankle Sock 3-Pack",
+        price: 6100,
+        image:
+          "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/66mWiBVVeBTI75bW3HRlEb/32eda84b23cfea68624fedc63a724a06/11133-alpine_green-adult-male-ankle-onmodel-1-HO26-transparent.png",
+      },
+      {
+        title: "Women's Suede Fluff Scuff Slipper",
+        price: 10900,
+        image:
+          "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/3yuUaulab6ia4YGdieH1fI/86d58547a8c2bce106d6e4f388b19b8e/11259-camel-adult-Female-layflat-1-transparent.png",
+      },
+      {
+        title: "Disco Party Ankle Sock 4-Pack",
+        price: 6100,
+        image:
+          "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/1RtHmhrf6bYPitiufLAlBv/7d71f39bce0efc4c7189306e227d3ff6/11656-winter_disco_mix-adult-female-ankle-layflat-HO26-transparent.png",
+      },
+    ],
+  },
   {
     // Real products, TL prices, and images from adidas.com.tr (Aug 2025).
     match: /(^|\.)adidas\./i,
@@ -201,9 +248,11 @@ function normalizeUrl(raw: string): URL | null {
   }
 }
 
-/** True when a response body is a Cloudflare/WAF challenge instead of real content. */
+/** True when a response body is a Cloudflare/Vercel/WAF challenge instead of real content. */
 function isChallenge(text: string): boolean {
-  return /Just a moment|challenge-platform|cf-browser-verification|Attention Required/i.test(text.slice(0, 2500));
+  return /Just a moment|challenge-platform|cf-browser-verification|Attention Required|Security Checkpoint|\.well-known\/vercel\/security|Pardon Our Interruption/i.test(
+    text.slice(0, 2500)
+  );
 }
 
 /** Read a capped amount of the body (whole for JSON; up to </head> for HTML). */
@@ -776,7 +825,7 @@ const BAD_TITLE_RE =
 // etc.) leak into the <title>/og:site_name as e.g. "Flipkart reCAPTCHA" — reject if
 // these appear ANYWHERE in the name, then fall back to the clean domain name.
 const CHALLENGE_RE =
-  /recaptcha|captcha|are you (a )?(human|robot)|robot check|attention required|access denied|just a moment|verify you are (a )?human|unusual traffic|enable (javascript|cookies)/i;
+  /recaptcha|captcha|are you (a )?(human|robot)|robot check|attention required|access denied|just a moment|verify you are (a )?human|unusual traffic|enable (javascript|cookies)|security checkpoint|pardon our interruption/i;
 function isUsableName(s: string | null | undefined): s is string {
   if (!s) return false;
   const t = s.trim();
