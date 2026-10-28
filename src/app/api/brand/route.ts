@@ -51,45 +51,46 @@ type CuratedProduct = { title: string; price: number; image?: string };
 const CURATED_CATALOGS: { match: RegExp; currency?: string; banner?: string; products: CuratedProduct[] }[] = [
   {
     // bombas.com sits behind Vercel's Security Checkpoint, so nothing scrapes.
-    // Real products, INR prices, and images from bombas.com (Oct 2026).
+    // Real products and images from bombas.com (Oct 2026); USD prices converted
+    // from the INR listing at ~₹88/$, not the US site's own prices.
     match: /(^|\.)bombas\./i,
-    currency: "INR",
+    currency: "USD",
     // "Stay Cozy Out There" homepage hero, with its Shop Women/Men buttons painted out.
     banner: "/brands/bombas-banner.jpg",
     products: [
       {
         title: "Men's Suede Moccasin Slipper",
-        price: 12600,
+        price: 143,
         image:
           "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/7sZu2n0UbMLTIxPTByaITw/e77fff3ac0687043a67cd0cdaebb22f0/10925-golden_camel-adult-male-closed_back_slip_on---transparent.png",
       },
       {
         title: "Merino Wool Blend Calf Sock 4-Pack",
-        price: 8900,
+        price: 101,
         image:
           "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/4ATcZuTO6ynvph87GBrQPC/6052f3dc9d579f2a4765f5a34622e5ad/7800-alpine_green-adult-male-calf--HO26-transparent.png",
       },
       {
         title: "Medical Grade Compression Knee High Socks",
-        price: 4500,
+        price: 51,
         image:
           "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/1sVbFFLNhPdrJuC01Q02Sr/703ef09d3e142e5a7353c2e6fbec52b3/11867-slatesea-adult-male-onmodel-2-transparent.png",
       },
       {
         title: "Run Ankle Sock 3-Pack",
-        price: 6100,
+        price: 69,
         image:
           "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/66mWiBVVeBTI75bW3HRlEb/32eda84b23cfea68624fedc63a724a06/11133-alpine_green-adult-male-ankle-onmodel-1-HO26-transparent.png",
       },
       {
         title: "Women's Suede Fluff Scuff Slipper",
-        price: 10900,
+        price: 124,
         image:
           "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/3yuUaulab6ia4YGdieH1fI/86d58547a8c2bce106d6e4f388b19b8e/11259-camel-adult-Female-layflat-1-transparent.png",
       },
       {
         title: "Disco Party Ankle Sock 4-Pack",
-        price: 6100,
+        price: 69,
         image:
           "https://assets.bombas.com/image/fetch/c_crop,h_3520,w_2640/b_rgb:F3F3F2,c_scale,w_525/f_auto,q_auto/https://images.ctfassets.net/09hbx69ra4p2/1RtHmhrf6bYPitiufLAlBv/7d71f39bce0efc4c7189306e227d3ff6/11656-winter_disco_mix-adult-female-ankle-layflat-HO26-transparent.png",
       },
