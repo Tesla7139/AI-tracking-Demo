@@ -58,6 +58,11 @@ export const DEFAULT_BRAND: Brand = {
   products: [],
 };
 
+/** Price without the symbol: whole amounts as-is, fractional ones to 2 places ($48.30). */
+export function formatPrice(n: number): string {
+  return Number.isInteger(n) ? n.toLocaleString() : n.toFixed(2);
+}
+
 /** Currency symbol for price formatting. */
 export function currencySymbol(code: string | null | undefined): string {
   switch (code) {

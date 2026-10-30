@@ -20,6 +20,8 @@ import { HeroBanner } from "./HeroBanner";
 import { PromoCard } from "./PromoCard";
 import { MobileUpsell } from "./MobileUpsell";
 import { MobileStatus } from "./MobileStatus";
+import { EverydayBanner, FestivePicks, KidPromo, KidsPicks, SiblingSet } from "./RyleeSections";
+import * as rylee from "@/lib/brands/ryleeandcru";
 
 // Persists across remounts within a session so the entrance reveal plays only ONCE
 // (not every time the desktop/mobile toggle remounts the page — that looked glitchy).
@@ -30,13 +32,17 @@ export function TrackingPage({
   location,
   weather,
   generated,
+  variant,
 }: {
   brand: Brand;
   location: GeoLocation | null;
   weather: Weather | null;
   generated: Generated | null;
+  /** Brand with hand-built content (see lib/brands); mobile layout only. */
+  variant?: "ryleeandcru";
 }) {
   const mobile = useDevice() === "mobile";
+  const isRylee = variant === "ryleeandcru";
   const accent = brand.brandColor;
   const city = location?.city ?? null;
   const sym = currencySymbol(brand.currency);
@@ -49,14 +55,20 @@ export function TrackingPage({
   if (brandPhoto && arrivals.length) arrivals[0] = { ...arrivals[0], image: brandPhoto };
 
   // AI-generated content when available, else the static/curated fallbacks.
-  const funFacts = generated?.cityFacts?.length ? generated.cityFacts : cityFunFacts(city);
-  const brandFacts = generated?.brandFacts?.length
+  const funFacts = isRylee
+    ? rylee.FUN_FACTS
+    : generated?.cityFacts?.length
+    ? generated.cityFacts
+    : cityFunFacts(city);
+  const brandFacts = isRylee
+    ? rylee.DID_YOU_KNOW
+    : generated?.brandFacts?.length
     ? generated.brandFacts
     : brandDidYouKnows(brand.brandName);
 
   // Order items from the catalog; override the upsell with the AI pick when present.
-  const items = buildOrderItems(brand.products, generated?.upsells);
-  if (brandPhoto && items.length) items[0] = { ...items[0], image: brandPhoto };
+  const items = isRylee ? rylee.ORDER_ITEMS : buildOrderItems(brand.products, generated?.upsells);
+  if (brandPhoto && items.length && !isRylee) items[0] = { ...items[0], image: brandPhoto };
   const orderValue =
     sym + items.reduce((s, it) => s + it.price * (it.qty || 1), 0).toLocaleString();
 
@@ -113,11 +125,22 @@ export function TrackingPage({
 
           {/* Order items (tips open in a pop-up) */}
           <div id="tour-items" className="scroll-mt-24">
-            <OrderItems items={items} accent={accent} sym={sym} />
+            <OrderItems items={items} accent={accent} sym={sym} showAll={isRylee} />
           </div>
 
-          {/* Promo / pairings */}
-          <PromoCard brand={brand} />
+          {isRylee ? (
+            <>
+              <KidsPicks accent={accent} />
+              <KidPromo accent={accent} />
+              <SiblingSet accent={accent} />
+              <InfoCard icon={Lightbulb} title="Did You Know?" items={brandFacts} accent={accent} />
+              <FestivePicks accent={accent} />
+              <EverydayBanner accent={accent} />
+            </>
+          ) : (
+            /* Promo / pairings */
+            <PromoCard brand={brand} />
+          )}
 
           {/* Arrivals (hero banner removed on mobile) */}
           {arrivals.length > 0 && (

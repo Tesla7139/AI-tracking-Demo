@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rylee + Cru · Track Order</title>
+<style>
+  :root {
+    --text: #030404;
+    --text-2: #252525;
+    --muted: #5e6e76;
+    --line: #eceff1;
+    --page: #fafafa;
+    --card: #ffffff;
+    --brand: #baa899;
+    --brand-ink: #b6a393;
+    --brand-soft: rgba(186, 168, 153, 0.16);
+    --link: #3883ff;
+    --radius: 16px;
+    --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--page); color: var(--text); font-family: var(--font); font-size: 14px; }
+  img { display: block; }
+  p { margin: 0; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .wrap { width: 1024px; margin: 0 auto; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+  .glass { background: rgba(255, 255, 255, 0.5); border: 1px solid var(--line); border-radius: var(--radius); }
+  .section-title { font-size: 20px; font-weight: 700; }
+  .divider { height: 1px; background: var(--line); width: 100%; }
+
+  /* ---------- Header ---------- */
+  .ribbon { background: var(--brand); height: 50px; display: flex; align-items: center; justify-content: center; position: relative; color: #2a1d14; }
+  /* The Figma icons are white; render them dark brown on the taupe for contrast. */
+  .ribbon img { filter: brightness(0) opacity(0.85); }
+  .ribbon__msg { display: flex; align-items: center; gap: 16px; }
+  .ribbon__text { display: flex; align-items: center; gap: 8px; }
+  .chip-w { background: rgba(255, 255, 255, 0.3); border-radius: 4px; padding: 4px 8px; font-weight: 700; }
+  .timer { display: flex; align-items: center; gap: 12px; }
+  .timer__digits { display: flex; align-items: center; gap: 4px; font-weight: 700; }
+  .ribbon__close { position: absolute; right: 112px; top: 13px; width: 24px; height: 24px; background: none; border: 0; padding: 0; }
+  .logo-bar { background: #fff; border-bottom: 1px solid #e7ebed; height: 80px; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; }
+
+  /* ---------- Top status cards ---------- */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px; }
+  .stat { height: 167px; position: relative; overflow: hidden; }
+  .stat__body { position: absolute; left: 23px; top: 23px; height: 119px; display: flex; flex-direction: column; color: var(--brand-ink); }
+  .stat__label { font-size: 14px; }
+  .stat__value { font-size: 24px; font-weight: 700; margin-top: 8px; }
+  .stat__mask { position: absolute; width: 154px; height: 154px; }
+  .badge { display: inline-flex; align-items: center; height: 18px; padding: 2px 8px; border-radius: 16px; font-size: 10px; color: #3c3c3c; }
+
+  /* ---------- Main grid ---------- */
+  .main { display: grid; grid-template-columns: 675px 325px; gap: 24px; margin-top: 24px; }
+  .col { display: flex; flex-direction: column; gap: 24px; }
+  .panel { padding: 24px; display: flex; flex-direction: column; gap: 24px; overflow: hidden; }
+
+  /* Shipment journey */
+  .journey { height: 466px; }
+  .timeline { position: relative; overflow-y: auto; padding-right: 8px; }
+  .timeline::before { content: ""; position: absolute; left: 14px; top: 10px; bottom: 10px; border-left: 2px dashed #cfd8dc; }
+  .timeline__done { position: absolute; left: 14px; top: 10px; height: 135px; border-left: 2px solid var(--brand); }
+  .tl-row { position: relative; display: flex; gap: 14px; align-items: flex-start; padding-left: 6px; }
+  .tl-row + .tl-row { margin-top: 35px; }
+  .tl-dot { width: 16px; height: 16px; border-radius: 100px; border: 2px solid #cfd8dc; background: #fff; flex: none; position: relative; z-index: 1; }
+  .tl-dot--done { background: var(--brand); border-color: var(--brand); }
+  .tl-title { font-size: 14px; font-weight: 700; color: #263238; }
+  .tl-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .tl-row--past .tl-title, .tl-row--past .tl-sub, .tl-row--next .tl-title { opacity: 0.5; }
+  .tl-row--now { padding-left: 0; gap: 8px; }
+  .tl-row--now .tl-title { color: #000; }
+  .tl-row--now .tl-sub { color: #030404; font-weight: 700; margin-top: 6px; }
+  .tl-now-icon { position: relative; width: 28px; height: 28px; flex: none; z-index: 1; }
+  .tl-now-icon .beamer { position: absolute; left: -6px; top: -6px; width: 40px; height: 40px; animation: pulse 1.8s ease-out infinite; }
+  @keyframes pulse { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.3); opacity: 0; } }
+  .tl-details { margin: 14px 0 0 37px; display: flex; flex-direction: column; gap: 8px; }
+  /* One block per location/day; scans listed newest first, so the location and date aren't repeated. */
+  .tl-detail { background: #fafafa; border-radius: 8px; padding: 10px 12px; font-size: 12px; }
+  .tl-detail__where { font-weight: 700; margin-bottom: 8px; }
+  .tl-detail__where span { font-weight: 400; color: var(--muted); }
+  .tl-scan { display: grid; grid-template-columns: 64px 1fr; gap: 8px; }
+  .tl-scan + .tl-scan { margin-top: 6px; }
+  .tl-scan time { color: var(--muted); }
+  .tl-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #111; background: none; border: 0; padding: 0; }
+  .tl-details[hidden] { display: none; }
+  .timeline.collapsed .tl-toggle img { transform: rotate(180deg); }
+
+  /* Order items: one card per item, swipeable, with a photo index and a list view */
+  .oi { position: relative; margin-top: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .oi__head { display: flex; align-items: center; gap: 10px; }
+  .oi__count { font-size: 14px; color: var(--muted); }
+  .oi__cards { display: flex; flex-direction: column; gap: 16px; }
+  /* 3px padding keeps the selected outline visible; the negative margin keeps the visible gap to the cards at 16px. */
+  .oi__index { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding: 3px; margin: -3px -3px -3px; }
+  .oi__index::-webkit-scrollbar { display: none; }
+  .oi__dot { flex: none; width: 38px; height: 48px; padding: 0; border: 0; border-radius: 6px; background: #f4f2ef; overflow: hidden; opacity: 0.5; outline: 2px solid transparent; outline-offset: 1px; transition: opacity 0.2s, outline-color 0.2s; }
+  .oi__dot img { width: 100%; height: 100%; object-fit: cover; }
+  .oi__dot:hover { opacity: 0.85; }
+  .oi__dot.in-view { opacity: 1; }
+  .oi__dot[aria-current="true"] { opacity: 1; outline-color: var(--brand-ink); }
+  .oi__dot:focus-visible { outline-color: #2a1d14; }
+
+  .oi__track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .oi__track::-webkit-scrollbar { display: none; }
+  .oi__track:focus-visible { outline: 2px solid var(--brand-ink); outline-offset: 4px; border-radius: 14px; }
+  .oi__track > .oi-card { flex: 0 0 440px; scroll-snap-align: start; }
+  .oi--pair .oi__track > .oi-card { flex: 1 1 0; }
+  .oi--single .oi__track > .oi-card { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); column-gap: 24px; align-items: start; }
+  .oi--single .oi-card__top { grid-column: 1 / -1; }
+  .oi--single .oi-prod { grid-column: 1; grid-row: 1 / 3; }
+  .oi--single .oi-prod img { width: 120px; height: 150px; }
+  .oi--single .oi-tip { grid-column: 2; }
+  .oi--single .oi-tip--care { margin-top: 12px; }
+  .oi-card { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 14px; background: #fff; transition: opacity 0.25s; }
+  .oi--carousel .oi-card:not(.is-active) { opacity: 0.55; }
+  .oi-card__top { display: flex; align-items: center; justify-content: space-between; }
+  .oi-card__num { font-size: 11px; color: var(--muted); background: #f3f4f5; border-radius: 999px; padding: 3px 9px; }
+  .oi-prod { display: flex; gap: 14px; align-items: center; }
+  .oi-prod img { width: 84px; height: 105px; border-radius: 10px; object-fit: cover; background: #f4f2ef; flex: none; }
+  .oi-prod__name { font-size: 16px; font-weight: 700; }
+  .oi-prod__colour { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .oi-prod__meta { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .oi-prod__price { font-size: 16px; font-weight: 700; margin-top: 6px; }
+
+  .oi-tip { border-radius: 10px; padding: 12px; display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.45; }
+  .oi-tip__icon { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; flex: none; background: #fff; }
+  .oi-tip b { font-weight: 700; }
+  .oi-tip--pro { background: #f6f1ec; flex-direction: column; align-items: stretch; gap: 10px; }
+  .oi-tip--pro .oi-tip__icon { color: #8f7a69; }
+  .oi-tip__head { display: flex; gap: 10px; align-items: flex-start; }
+  .oi-tip--care { background: #f1f5f2; }
+  .oi-tip--care .oi-tip__icon { color: #5f7a68; }
+  .oi-rec { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 8px; padding: 8px; }
+  .oi-rec img { width: 44px; height: 55px; border-radius: 6px; object-fit: cover; flex: none; background: #f4f2ef; }
+  .oi-rec__name { font-size: 13px; font-weight: 700; }
+  .oi-rec__price { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .oi-rec__add { margin-left: auto; border: 0; border-radius: 8px; background: var(--brand); color: #2a1d14; font-size: 12px; font-weight: 700; padding: 9px 14px; flex: none; transition: background 0.2s; }
+  .oi-rec__add:hover { background: #a8927f; }
+  .oi-rec__add.added { background: #2a1d14; color: #fff; }
+
+
+  .oi__tip { position: absolute; z-index: 5; pointer-events: none; transform: translate(-50%, calc(-100% - 8px)); background: #2a1d14; color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; padding: 6px 10px; border-radius: 6px; opacity: 0; transition: opacity 0.15s; }
+  .oi__tip::after { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #2a1d14; }
+  .oi__tip.show { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .oi__track { scroll-behavior: auto; } .oi-card { transition: none; } }
+
+  /* Right column widgets */
+  .widget { padding: 24px; display: flex; flex-direction: column; gap: 16px; position: relative; }
+  .widget__head { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; }
+  .ico-circle { width: 32px; height: 32px; border-radius: 16px; background: rgba(0, 0, 0, 0.15); display: grid; place-items: center; flex: none; }
+  .ico-circle img { width: 18px; height: 18px; }
+  .weather__anim { position: absolute; left: 48%; right: 5%; top: 79px; aspect-ratio: 184 / 166; overflow: hidden; pointer-events: none; }
+  .weather__anim img { position: absolute; width: 100%; height: 110.84%; top: -10.84%; left: 0; max-width: none; }
+  .weather__info { height: 152px; display: flex; flex-direction: column; justify-content: space-between; }
+  .metric { flex: 1; background: #fff; border-radius: 4px; padding: 8px 12px; display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+  .metric img { width: 14px; height: 14px; }
+  .dots { display: flex; gap: 4px; }
+  .dots span { width: 6px; height: 6px; border-radius: 3px; background: rgba(0, 0, 0, 0.2); transition: width 0.2s; }
+  .dots span.on { width: 19px; background: rgba(0, 0, 0, 0.5); }
+  .kv { display: grid; grid-template-columns: 108px 1fr 16px; column-gap: 24px; row-gap: 16px; align-items: center; }
+  .kv dt { color: var(--muted); margin: 0; }
+  .kv dd { margin: 0; }
+  .kv .gap { grid-column: 1 / -1; height: 0; }
+  .copy { background: none; border: 0; padding: 0; width: 16px; height: 16px; }
+
+  /* Brand banner: copy on a warm cream panel, photo on the right */
+  .everyday { margin-top: 24px; height: 460px; border-radius: 16px; overflow: hidden; position: relative; background: #f0ece6; display: grid; grid-template-columns: 424px 1fr; }
+  .everyday__copy { padding: 48px 40px; display: flex; flex-direction: column; justify-content: center; gap: 16px; color: #3a332d; position: relative; z-index: 1; }
+  .everyday__eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brand-ink); }
+  .everyday__title { font: 400 38px/1.1 Georgia, "Times New Roman", serif; letter-spacing: -0.01em; }
+  .everyday__body { font-size: 14px; line-height: 1.7; color: #5b524a; }
+  .everyday__ctas { display: flex; gap: 8px; margin-top: 8px; }
+  .everyday__cta { background: var(--brand); color: #2a1d14; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 14px; border-radius: 2px; transition: background 0.2s; white-space: nowrap; }
+  .everyday__cta:hover { background: #a8927f; }
+  .everyday__cta:focus-visible { outline: 2px solid #2a1d14; outline-offset: 2px; }
+  .everyday__photo { position: relative; overflow: hidden; }
+  .everyday__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+  .everyday__photo::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 120px; z-index: 1; background: linear-gradient(90deg, #f0ece6, rgba(240, 236, 230, 0)); }
+
+  /* Festive season: night-time card with a live countdown */
+  .fest { margin-top: 24px; border-radius: 16px; overflow: hidden; position: relative; isolation: isolate; color: #fff; padding: 24px 28px; display: flex; flex-direction: column; gap: 18px;
+    background:
+      radial-gradient(circle at 88% 8%, rgba(255, 170, 80, 0.35), rgba(255, 170, 80, 0) 32%),
+      radial-gradient(rgba(255, 255, 255, 0.10) 1px, transparent 1.5px) 0 0 / 22px 22px,
+      linear-gradient(160deg, #2b1f17 0%, #1a130e 100%); }
+  .fest__moon { position: absolute; right: 48px; top: 18px; width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffe2b0, #f2a65a 70%); box-shadow: 0 0 60px 18px rgba(242, 166, 90, 0.35); z-index: -1; }
+  .fest__bat { position: absolute; z-index: -1; color: rgba(255, 255, 255, 0.55); animation: flap 4s ease-in-out infinite; }
+  @keyframes flap { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-6px) rotate(4deg); } }
+  .fest__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+  .fest__eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #f2a65a; }
+  .fest__title { font: italic 34px/1.05 Georgia, "Times New Roman", serif; margin-top: 6px; }
+  .fest__title b { font-weight: 400; color: #f2a65a; }
+  .fest__sub { font-size: 14px; line-height: 1.5; color: rgba(255, 255, 255, 0.75); margin-top: 6px; max-width: 600px; }
+  .fest__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .fcard { background: #fff; color: var(--text); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
+  .fcard:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35); }
+  .fcard__media { position: relative; aspect-ratio: 4 / 3; background: #f4f2ef; }
+  .fcard__media { overflow: hidden; }
+  .fcard__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+  .fcard__body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .fcard__for { font-size: 11px; font-weight: 700; color: #c26a1f; }
+  .fcard__name { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fcard__price { font-size: 15px; font-weight: 700; }
+  .fcard .quick { margin-top: 6px; }
+
+  /* ---------- Personalised picks ---------- */
+  .picks { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .picks[data-theme="brooks"], .sib__item[data-theme="brooks"] { --accent: #6f7f6a; --accent-soft: #eef1ea; --accent-mid: #d9e0d3; }
+  .picks[data-theme="noa"], .sib__item[data-theme="noa"] { --accent: #b97a72; --accent-soft: #f8eeec; --accent-mid: #efd8d4; }
+
+  .picks__head { display: flex; align-items: center; gap: 12px; }
+  .picks__head .avatar { width: 36px; height: 36px; font-size: 18px; }
+  .picks__title { font-size: 20px; font-weight: 700; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font: italic 16px/1 Georgia, "Times New Roman", serif; flex: none; box-shadow: inset 0 0 0 1.5px var(--accent-mid); }
+  .picks__panel { display: flex; flex-direction: column; gap: 12px; }
+
+  .bday { display: flex; align-items: center; gap: 12px; padding: 9px 14px; border-radius: 12px; border: 1px dashed var(--accent-mid); background: linear-gradient(100deg, var(--accent-soft), #fff 85%); }
+  .bday__icon { width: 32px; height: 32px; border-radius: 50%; background: #fff; color: var(--accent); display: grid; place-items: center; flex: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06); }
+  .bday__text { flex: 1; min-width: 0; }
+  .bday__title { font-size: 14px; font-weight: 700; }
+  .bday__title span { font-weight: 400; color: var(--muted); }
+  .bday__sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .bday__sub b { color: var(--text); }
+  .wrap-toggle { flex: none; border: 1px solid var(--accent); color: var(--accent); background: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 700; }
+  .wrap-toggle[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+
+
+  .picks__body { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+
+  /* Look bundle */
+  .look { background: var(--accent-soft); border-radius: 12px; padding: 14px 16px; display: grid; grid-template-columns: 300px 1fr; column-gap: 20px; row-gap: 8px; align-content: center; }
+  .look > * { grid-column: 2; }
+  .look__eyebrow { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  .look__title { font: italic 20px/1.15 Georgia, "Times New Roman", serif; margin-top: 4px; }
+  .look__names { font-size: 12px; color: var(--muted); }
+  /* Three equal photos; hovering one shows its name and price. */
+  .look__collage { grid-column: 1; grid-row: 1 / 5; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; min-height: 150px; }
+  .look__item { position: relative; border-radius: 8px; background: #fff; }
+  .look__item > img, .look__item > .ph { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+  .look__item::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); background: #2a1d14; color: #fff; font-size: 11px; font-weight: 700; white-space: nowrap; padding: 5px 8px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity 0.15s; z-index: 2; }
+  .look__item:hover::after { opacity: 1; }
+  .look__price { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; }
+  .look__price strong { font-size: 18px; }
+  .look__price s { color: var(--muted); font-size: 12px; }
+  .look__save { font-size: 12px; font-weight: 700; color: var(--accent); }
+  .btn { border: 0; border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 700; }
+  .btn--solid { background: var(--brand); color: #2a1d14; width: 100%; box-shadow: 0 6px 16px rgba(186, 168, 153, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22); transition: background 0.2s, transform 0.15s, box-shadow 0.2s; }
+  .btn--solid:hover { background: #a8927f; transform: translateY(-1px); box-shadow: 0 10px 20px rgba(186, 168, 153, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+  .btn--solid:active { transform: translateY(0); }
+  .btn--solid:focus-visible { outline: 2px solid #2a1d14; outline-offset: 2px; }
+
+  /* Product rail */
+  .rail { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; min-width: 0; flex: 1; }
+  .pcard { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; transition: box-shadow 0.2s, transform 0.2s; }
+  .pcard:hover { box-shadow: 0 6px 18px rgba(3, 4, 4, 0.08); transform: translateY(-2px); }
+  .pcard__media { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #f4f2ef; }
+  .pcard__media .ph { position: absolute; inset: 0; }
+  .pcard__media > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+  .stock { position: absolute; left: 8px; top: 8px; background: rgba(255, 255, 255, 0.92); border-radius: 999px; padding: 3px 8px 3px 6px; font-size: 10px; display: inline-flex; align-items: center; gap: 5px; }
+  .stock::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #2e9d5b; }
+  .stock--low::before { background: #e08a1e; }
+  .heart { position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.92); display: grid; place-items: center; color: var(--text); }
+  .heart[aria-pressed="true"] { color: #d64545; }
+  .heart[aria-pressed="true"] path { fill: currentColor; }
+  .pcard__body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 5px; }
+  .pcard__name { font-size: 13px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .pcard__price { font-size: 16px; font-weight: 700; display: flex; align-items: baseline; gap: 6px; }
+  .pcard__price s { font-size: 11px; font-weight: 400; color: var(--muted); }
+  /* Secondary button in the brand taupe; fills on hover. */
+  .quick { margin-top: 4px; border: 1.5px solid var(--brand); background: #fff; color: #2a1d14; border-radius: 8px; padding: 8px; font-size: 12px; font-weight: 700; transition: background 0.2s, color 0.2s; }
+  .quick:hover, .quick.added { background: var(--brand); }
+  .quick:focus-visible { outline: 2px solid #2a1d14; outline-offset: 2px; }
+
+  /* Placeholder product art (swap for real images via the `img` field) */
+  .ph { background: var(--tint, #f1ede9); display: grid; place-items: center; overflow: hidden; }
+  .ph svg { width: 62%; height: 62%; }
+
+  /* Personalised upsell banner (right column) */
+  .kp { display: block; text-decoration: none; position: relative; height: 200px; border-radius: var(--radius); overflow: hidden; background: #2a1d14; color: #fff; isolation: isolate; }
+  .kp__img { position: absolute; left: 0; top: 0; width: 52%; height: 100%; object-fit: cover; object-position: center 22%; z-index: -2; }
+  .kp::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(42, 29, 20, 0) 22%, rgba(42, 29, 20, 0.85) 46%, #2a1d14 56%); }
+  .kp__content { position: absolute; top: 18px; right: 16px; bottom: 18px; width: 54%; display: flex; flex-direction: column; align-items: flex-start; }
+  .kp__eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #d9c7b6; }
+  .kp__title { font: italic 21px/1.12 Georgia, "Times New Roman", serif; margin-top: 8px; }
+  .kp__title b { font-weight: 400; color: #f1d9b8; }
+  .kp__sub { font-size: 11.5px; line-height: 1.4; color: rgba(255, 255, 255, 0.78); margin-top: 8px; }
+  .kp__cta { margin-top: auto; display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 8px; background: var(--brand); color: #2a1d14; font-size: 12px; font-weight: 700; padding: 9px 12px; text-decoration: none; transition: background 0.2s; }
+  .kp__cta svg { transition: transform 0.2s; }
+  .kp__cta:hover { background: #a8927f; }
+  .kp__cta:hover svg { transform: translateX(3px); }
+  .kp__cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+  /* Sibling set banner */
+  .sib { position: relative; margin-top: 24px; height: 520px; border-radius: var(--radius); overflow: hidden; color: #fff; isolation: isolate; }
+  .sib__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left 30%; z-index: -2; }
+  .sib::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(38, 26, 18, 0) 38%, rgba(38, 26, 18, 0.5) 56%, rgba(38, 26, 18, 0.82) 100%); }
+  .sib__content { position: absolute; top: 32px; right: 40px; bottom: 32px; width: 360px; display: flex; flex-direction: column; gap: 12px; }
+  .sib__eyebrow { align-self: flex-start; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; padding: 4px 10px; backdrop-filter: blur(6px); }
+  .sib__title { font: italic 34px/1.08 Georgia, "Times New Roman", serif; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.25); }
+  .sib__title b { font-weight: 400; color: #f1d9b8; }
+  .sib__sub { font-size: 13px; line-height: 1.45; color: rgba(255, 255, 255, 0.85); }
+  .sib__items { display: flex; flex-direction: column; gap: 8px; margin-top: auto; position: relative; }
+  .sib__plus { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 22px; height: 22px; border-radius: 50%; background: #2a1d14; color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 700; border: 2px solid rgba(255, 255, 255, 0.9); z-index: 1; }
+  .sib__item { display: flex; gap: 12px; align-items: center; padding: 8px; border-radius: 12px; background: rgba(255, 255, 255, 0.93); color: var(--text); backdrop-filter: blur(8px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+  .sib__item img { width: 56px; height: 70px; border-radius: 8px; object-fit: cover; flex: none; background: #f4f2ef; }
+  .sib__who { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+  .sib__who .avatar { width: 18px; height: 18px; font-size: 10px; }
+  .sib__name { font-size: 13px; font-weight: 700; margin-top: 3px; }
+  .sib__price { font-size: 13px; margin-top: 3px; }
+  .sib__buy { display: flex; flex-direction: column; gap: 8px; }
+  .sib__deal { display: flex; align-items: baseline; justify-content: space-between; font-size: 12px; color: rgba(255, 255, 255, 0.85); }
+  .sib__deal strong { font-size: 20px; color: #fff; }
+  .sib__deal s { margin-left: 6px; color: rgba(255, 255, 255, 0.6); }
+  .sib__deal em { font-style: normal; font-weight: 700; color: #2a1d14; background: #f1d9b8; border-radius: 999px; padding: 3px 8px; font-size: 11px; }
+  .sib__cta { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; border: 0; border-radius: 12px; background: var(--brand); color: #2a1d14; font-size: 15px; font-weight: 700; letter-spacing: 0.01em; box-shadow: 0 8px 22px rgba(186, 168, 153, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.22); transition: transform 0.15s, box-shadow 0.2s, background 0.2s; }
+  .sib__cta::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%); transform: translateX(-120%); animation: sheen 3.6s ease-in-out 1s infinite; }
+  @keyframes sheen { 0%, 60% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+  .sib__cta:hover { background: #a8927f; transform: translateY(-1px); box-shadow: 0 12px 26px rgba(186, 168, 153, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+  .sib__cta:active { transform: translateY(0); }
+  .sib__cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .sib__cta svg { flex: none; }
+  .sib__cta .arrow-r { transition: transform 0.2s; }
+  .sib__cta:hover .arrow-r { transform: translateX(3px); }
+  .sib__cta.added { background: #2a1d14; color: #fff; box-shadow: 0 8px 22px rgba(42, 29, 20, 0.45); }
+  .sib__cta.added::after, .sib__cta.added .arrow-r { display: none; }
+
+  /* New arrivals (from Figma) */
+  .arrivals { margin-top: 24px; padding: 24px; display: flex; flex-direction: column; gap: 24px; position: relative; overflow: hidden; }
+  .arrivals__list { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; width: 1000px; }
+  .arrivals__list::-webkit-scrollbar { display: none; }
+  .acard { flex: 0 0 214px; min-width: 0; }
+  .acard__img { height: 214px; position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 16px 16px 0 0; box-shadow: 0 4px 16px rgba(92, 97, 255, 0.05); }
+  .acard__img img { position: absolute; max-width: none; }
+  .acard__info { height: 100px; padding: 16px; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 16px 16px; display: flex; flex-direction: column; gap: 16px; font-weight: 700; }
+  .acard__info p:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .acard__info p:last-child { font-size: 18px; }
+  .arrivals__next { position: absolute; right: 24px; top: 220px; width: 52px; height: 52px; background: none; border: 0; padding: 0; }
+
+  /* Footer */
+  footer { background: #e9ebed; height: 347px; margin-top: 39px; display: flex; align-items: center; }
+  .foot { display: flex; gap: 50px; align-items: flex-start; color: #323232; }
+  .foot > div { flex: 1; display: flex; flex-direction: column; gap: 32px; }
+  .foot h4 { margin: 0; font-size: 14px; line-height: 10px; }
+  .foot ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; font-size: 12px; line-height: 21px; }
+  .foot a { color: inherit; }
+  .foot .row { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+  .socials { display: flex; flex-wrap: wrap; gap: 32px; }
+  .socials img { width: 14px; height: 14px; object-fit: contain; }
+
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); background: var(--text); color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 13px; opacity: 0; pointer-events: none; transition: 0.25s; z-index: 50; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ================= V2: responsive =================
+     Desktop (1056px and up) is unchanged. Tablet: one main column, two-up side cards.
+     Mobile (under 768px): everything stacks, banners go photo-on-top, product rows swipe.
+     Content is identical on every screen size; only the layout changes. */
+
+  @media (max-width: 1055px) {
+    .wrap { width: auto; margin: 0 16px; }
+    .ribbon { height: auto; min-height: 50px; padding: 8px 48px 8px 16px; }
+    .ribbon__msg { flex-wrap: wrap; justify-content: center; row-gap: 6px; }
+    .ribbon__close { right: 12px; top: 50%; transform: translateY(-50%); }
+
+    /* Status cards keep their 325px desktop composition and swipe sideways. */
+    .stats { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 16px -16px 0; padding: 0 16px; scroll-padding-inline: 16px; }
+    .stats::-webkit-scrollbar { display: none; }
+    .stats > .stat { flex: 0 0 325px; scroll-snap-align: start; }
+
+    .main { grid-template-columns: 1fr; gap: 16px; }
+    .col { gap: 16px; }
+    /* Side cards pair up two-by-two; the Noa banner spans the full row. */
+    .main > .col:last-child { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+    .main > .col:last-child > .kp { grid-column: 1 / -1; height: 220px; }
+    .main > .col:last-child > .panel { height: auto !important; }
+
+    .sib, .oi, .everyday, .fest, .arrivals { margin-top: 16px; }
+    .everyday { grid-template-columns: 1fr 1fr; }
+    .arrivals__list { width: auto; }
+
+    footer { height: auto; padding: 40px 0; margin-top: 24px; }
+    .foot { flex-wrap: wrap; row-gap: 32px; column-gap: 32px; }
+    .foot > div { flex: 1 1 calc(33% - 32px); }
+  }
+
+  @media (max-width: 767px) {
+    body { font-size: 13px; }
+    .section-title { font-size: 18px; }
+    .panel, .widget, .picks, .oi, .arrivals { padding: 16px; }
+
+    /* Ribbon: everything on one compact line (same content as desktop). */
+    .ribbon { padding: 8px 36px 8px 6px; }
+    .ribbon__msg, .ribbon__text, .timer, .timer__digits { flex-wrap: nowrap; gap: 3px; font-size: 10.5px; white-space: nowrap; }
+    .ribbon__msg { gap: 4px; }
+    .ribbon .chip-w { padding: 3px 4px; }
+    .ribbon img { width: 13px; height: 13px; }
+    .ribbon .chip-w { padding: 3px 5px; }
+    .timer__digits { gap: 0; font-variant-numeric: tabular-nums; }
+    .timer__digits .chip-w { background: none; padding: 0; }
+    .ribbon__close { right: 6px; width: 28px; height: 28px; }
+  }
+
+  /* Narrow phones (360px Android): shrink the ribbon line slightly so it still fits. */
+  @media (max-width: 374px) {
+    .ribbon__msg, .ribbon__text, .timer, .timer__digits { font-size: 10px; }
+    .ribbon__msg { gap: 3px; }
+    .ribbon img { width: 12px; height: 12px; }
+    .ribbon__close { width: 32px; height: 32px; padding: 4px; }
+    .logo-bar { height: 64px; }
+    .logo-bar img { width: 160px; height: 40px; }
+
+    /* Shipment journey: grows with its content instead of scrolling inside a box. */
+    .journey { height: auto; }
+    .timeline { overflow: visible; }
+
+    /* Side cards stack. */
+    .main > .col:last-child { grid-template-columns: 1fr; }
+    .weather__anim { left: auto; right: 8px; width: 42%; }
+
+    /* Picks: look card stacks, products swipe sideways. */
+    .bday { flex-wrap: wrap; }
+    .wrap-toggle { width: 100%; }
+    .look { grid-template-columns: 1fr; }
+    .look > *, .look__collage { grid-column: 1; grid-row: auto; }
+    .look__collage { height: 150px; min-height: 0; }
+    .look__item::after { display: none; }
+    .rail { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; scroll-padding-inline: 16px; }
+    .rail::-webkit-scrollbar { display: none; }
+    .rail > .pcard { flex: 0 0 62%; scroll-snap-align: start; }
+    .quick, .oi-rec__add { min-height: 40px; }
+
+    /* Noa banner: photo on top, copy below. */
+    .main > .col:last-child > .kp { height: auto; display: flex; flex-direction: column; }
+    .kp__img { position: static; width: 100%; height: 220px; }
+    .kp::before { display: none; }
+    .kp__content { position: static; width: auto; padding: 16px; gap: 0; }
+    .kp__cta { margin-top: 14px; }
+
+    /* Sibling set: photo on top, products and button below on dark brown. */
+    .sib { height: auto; display: flex; flex-direction: column; background: #2a1d14; }
+    .sib__bg { position: static; height: 240px; object-position: left 30%; }
+    .sib::before { display: none; }
+    .sib__content { position: static; width: auto; padding: 20px 16px; }
+    .sib__title { font-size: 26px; }
+    .sib__items { margin-top: 4px; }
+
+    /* Order items: cards fill most of the width so the next one peeks. */
+    .oi__track > .oi-card { flex-basis: calc(100% - 40px); }
+    .oi--pair .oi__track > .oi-card { flex: 0 0 calc(100% - 40px); }
+    .oi--single .oi__track > .oi-card { display: flex; }
+    .oi-prod img { width: 72px; height: 90px; }
+    .oi-rec { flex-wrap: wrap; }
+    .oi-rec > div { flex: 1; min-width: 0; }
+    .oi-rec__add { flex: 1 1 100%; margin-left: 0; }
+    .oi__tip { display: none; }
+
+    /* Everyday banner: photo on top. */
+    .everyday { grid-template-columns: 1fr; height: auto; }
+    .everyday__photo { order: -1; height: 240px; }
+    .everyday__photo::before { display: none; }
+    .everyday__copy { padding: 24px 16px; }
+    .everyday__title { font-size: 28px; }
+    .everyday__ctas { flex-wrap: wrap; }
+    .everyday__cta { flex: 1 1 auto; text-align: center; }
+
+    /* Halloween: countdown under the heading, 2-up product grid. */
+    .fest { padding: 20px 16px; }
+    .fest__head { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .fest__title { font-size: 28px; }
+    .fest__moon { right: 16px; top: 16px; width: 44px; height: 44px; }
+    .fest__bat { display: none; }
+    .fest__grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .fcard__body { padding: 8px 10px 10px; }
+    .fcard__name { font-size: 12px; }
+
+    .acard { flex-basis: 46%; }
+    .acard__img { height: auto; aspect-ratio: 1 / 1; }
+    .arrivals__next { width: 36px; height: 36px; top: 140px; right: 10px; }
+
+    .foot > div { flex: 1 1 calc(50% - 32px); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="ribbon" id="ribbon">
+    <div class="ribbon__msg">
+      <div class="ribbon__text">
+        <img src="assets/imgFeaturedSeasonalAndGifts24Dp5F6368Fill0Wght400Grad0Opsz241.svg" width="16" height="16" alt="">
+        <span class="ribbon__copy">25% off + free shipping · code</span>
+        <span class="chip-w">FLASH</span>
+      </div>
+      <div class="timer">
+        <img src="assets/imgTimer24Dp5F6368Fill0Wght400Grad0Opsz241.svg" width="24" height="24" alt="">
+        <div class="timer__digits" id="timer"><span class="chip-w">23</span>:<span class="chip-w">42</span>:<span class="chip-w">19</span></div>
+      </div>
+      <span class="chip-w">Shop Now</span>
+    </div>
+    <button class="ribbon__close" aria-label="Close banner" onclick="this.parentElement.remove()"><img src="assets/imgCloseIcon.svg" width="24" height="24" alt=""></button>
+  </div>
+  <div class="logo-bar"><img src="assets/imgRcHeaderLogoBarV21.png" width="208" height="52" alt="Rylee + Cru" style="object-fit:cover"></div>
+</header>
+
+<main class="wrap">
+  <!-- Status cards -->
+  <section class="stats">
+    <div class="card stat">
+      <div class="stat__body" style="justify-content:space-between">
+        <div><p class="stat__label">Estimated Delivery By</p><p class="stat__value">Sat, July</p></div>
+        <p style="font-size:70px;font-weight:700;line-height:55px">25</p>
+      </div>
+      <img class="stat__mask" src="assets/imgMask.svg" style="left:184px;top:41px" alt="">
+      <div style="position:absolute;left:211px;top:67px;width:92px;height:98px;overflow:hidden"><img src="assets/imgCalendar11.png" alt="" style="position:absolute;height:100%;width:216.51%;left:-53.91%;top:0;max-width:none"></div>
+    </div>
+    <div class="card stat">
+      <div class="stat__body" style="gap:16px;width:132px">
+        <div><p class="stat__label">Current Status</p><p class="stat__value">On The Way</p></div>
+        <span class="badge" style="background:var(--brand-soft);align-self:flex-start">Running Timely</span>
+      </div>
+      <img class="stat__mask" src="assets/imgMask.svg" style="left:184px;top:54px" alt="">
+      <div style="position:absolute;left:191.67px;top:49px;width:127px;height:124px;overflow:hidden"><img src="assets/imgHttpsAppLottiefilesComAnimation610Acfb2E5Af4E3C813E8B671D01D197.png" alt="" style="position:absolute;width:105.51%;height:108.06%;left:0;top:0;max-width:none"></div>
+    </div>
+    <div class="card stat">
+      <div class="stat__body" style="gap:16px;width:156px">
+        <div><p class="stat__label">Latest Update</p><p class="stat__value" style="width:142px">Received At New York</p></div>
+        <span class="badge" style="background:#fbedba;color:#030404;align-self:flex-start">Thu 24 July, 8 PM</span>
+      </div>
+      <img class="stat__mask" src="assets/imgMask.svg" style="left:179px;top:52px" alt="">
+      <img src="assets/imgLocation1.png" alt="" style="position:absolute;left:221px;top:82px;width:70px;height:70px;object-fit:cover">
+    </div>
+  </section>
+
+  <section class="main">
+    <div class="col">
+      <!-- Shipment journey -->
+      <div class="card panel journey">
+        <p class="section-title">Shipment Journey</p>
+        <div class="divider"></div>
+        <div class="timeline" id="timeline">
+          <div class="timeline__done"></div>
+          <div class="tl-row tl-row--past"><span class="tl-dot tl-dot--done"></span><div><p class="tl-title">Order Placed</p><p class="tl-sub">Guttenberg, Tue 1 July, 4:00 Pm</p></div></div>
+          <div class="tl-row tl-row--past"><span class="tl-dot tl-dot--done"></span><div><p class="tl-title">Dispatched</p><p class="tl-sub">Guttenberg, Wed 2 July, 5:00 Pm</p></div></div>
+          <div class="tl-row tl-row--now">
+            <span class="tl-now-icon"><img class="beamer" src="assets/imgBeamer.svg" alt=""><img src="assets/imgStatusIcon.svg" width="28" height="28" alt="" style="position:relative"></span>
+            <div><p class="tl-title">In Transit</p><p class="tl-sub">New York, Thu 3 July, 8:00 Pm</p></div>
+          </div>
+          <div class="tl-details" id="tlDetails">
+            <div class="tl-detail">
+              <p class="tl-detail__where">New York <span>· Thu 3 July</span></p>
+              <p class="tl-scan"><time>8:00 PM</time><span>Received at New York Hub</span></p>
+              <p class="tl-scan"><time>4:00 PM</time><span>Received at New York Airport</span></p>
+            </div>
+          </div>
+          <div style="margin:8px 0 0 37px"><button class="tl-toggle" id="tlToggle" aria-expanded="true"><span>Close Detailed Journey</span><img src="assets/imgVector.svg" width="10" height="5" alt="" style="transform:rotate(-90deg);width:5px;height:10px"></button></div>
+          <div class="tl-row tl-row--next" style="margin-top:36px"><span class="tl-dot"></span><p class="tl-title">Out For Delivery</p></div>
+          <div class="tl-row tl-row--next" style="margin-top:41px"><span class="tl-dot"></span><p class="tl-title">Delivered</p></div>
+        </div>
+      </div>
+
+      <!-- NEW: personalised picks, one tab per child (rendered from data below) -->
+      <div id="picks"></div>
+    </div>
+
+    <div class="col">
+      <div class="glass widget">
+        <div class="widget__head"><span class="ico-circle"><img src="assets/imgThermometer24Dp5F6368Fill0Wght400Grad0Opsz241.svg" alt=""></span>Weather at New York</div>
+        <div class="divider"></div>
+        <div class="weather__anim"><img src="assets/imgAnimation17448916692201.png" alt=""></div>
+        <div class="weather__info">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <p style="font-size:24px;font-weight:700">2°C</p>
+            <p style="font-size:18px;font-weight:700;color:#000">Cloudy</p>
+            <p style="font-size:12px;color:var(--muted)">Today at 9:00 pm</p>
+          </div>
+          <div style="display:flex;gap:8px;width:275px">
+            <div class="metric"><img src="assets/imgHumidityLow24Dp5F6368Fill0Wght400Grad0Opsz241.svg" alt="">Humidity: 60%</div>
+            <div class="metric"><img src="assets/imgAir24Dp5F6368Fill0Wght400Grad0Opsz241.svg" alt="">Wind: 9 mph</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass widget" data-carousel>
+        <div class="widget__head"><span class="ico-circle"><img src="assets/imgDistance24Dp5F6368Fill0Wght400Grad0Opsz241.svg" alt=""></span>New York Fun Fact</div>
+        <div class="divider"></div>
+        <p class="slide" style="line-height:20px;min-height:80px">New York City is home to over 800 languages spoken by its residents, making it one of the most linguistically diverse cities in the world</p>
+        <div class="dots"><span class="on"></span><span></span><span></span></div>
+      </div>
+
+      <div class="glass widget">
+        <div class="widget__head"><span class="ico-circle"><img src="assets/imgLightbulb224Dp5F6368Fill0Wght400Grad0Opsz241.svg" alt=""></span>Did You Know?</div>
+        <div class="divider"></div>
+        <p style="line-height:20px">Rylee + Cru began as a mother's dream of heirloom-worthy childhood style, a legacy we hope Brooks and Noa wear with the same joy you feel dressing them.</p>
+        <div class="dots"><span class="on"></span><span></span><span></span></div>
+      </div>
+
+      <div class="card panel" style="height:305px">
+        <p class="section-title">Order Details</p>
+        <div class="divider"></div>
+        <dl class="kv">
+          <dt>Order id:</dt><dd>8998372778923</dd><button class="copy" data-copy="8998372778923" aria-label="Copy order id"><img src="assets/imgContentCopy.svg" width="16" height="16" alt=""></button>
+          <dt>Tracking id:</dt><dd>7578302288971</dd><button class="copy" data-copy="7578302288971" aria-label="Copy tracking id"><img src="assets/imgContentCopy.svg" width="16" height="16" alt=""></button>
+          <dt>Carrier partner:</dt><dd>Fedex</dd><span></span>
+          <dt>Order type:</dt><dd>Prepaid</dd><span></span>
+          <dt>Order date:</dt><dd>Tue, 1st July</dd><span></span>
+          <dt>Order Value</dt><dd id="orderValue">$390</dd><span></span>
+        </dl>
+      </div>
+
+      <!-- Personalised upsell banner (rendered from KID_PROMO below) -->
+      <div id="kid-promo"></div>
+    </div>
+  </section>
+
+  <!-- Full-width: sibling set banner, then order items -->
+  <div id="sibling-set"></div>
+  <div id="order-items"></div>
+
+  <!-- Brand banner -->
+  <section class="everyday" aria-label="Made for everyday adventures">
+    <div class="everyday__copy">
+      <span class="everyday__eyebrow">Rylee + Cru</span>
+      <p class="everyday__title">Made for Everyday Adventures</p>
+      <p class="everyday__body">Rylee + Cru brings a modern, nostalgic feel to everyday dressing with artful prints, relaxed silhouettes, and thoughtfully designed pieces made for every adventure, big or small.</p>
+      <div class="everyday__ctas">
+        <a class="everyday__cta" href="#">Shop Kids</a>
+        <a class="everyday__cta" href="#">Shop Teens</a>
+        <a class="everyday__cta" href="#">Shop Women</a>
+      </div>
+    </div>
+    <div class="everyday__photo"><img src="assets/banners/everyday-adventures.webp" alt="A mother and son in a field of tall grass, wearing Rylee + Cru"></div>
+  </section>
+
+  <!-- Festive season (rendered from FESTIVE below) -->
+  <div id="festive"></div>
+
+
+  <!-- Explore new arrivals -->
+  <section class="card arrivals">
+    <p class="section-title">Explore Our New Arrivals</p>
+    <div class="divider"></div>
+    <div class="arrivals__list">
+      <div class="acard"><div class="acard__img"><img src="assets/products/bella-dress-apples.jpg" alt="Bella Dress – Apples" loading="lazy" style="inset:0;width:100%;height:100%;object-fit:cover"></div><div class="acard__info"><p>Bella Dress – Apples</p><p>$48.30</p></div></div>
+      <div class="acard"><div class="acard__img"><img src="assets/products/relaxed-knit-sweater-midnight-stripe.jpg" alt="Relaxed Knit Sweater – Midnight Stripe" loading="lazy" style="inset:0;width:100%;height:100%;object-fit:cover"></div><div class="acard__info"><p>Relaxed Knit Sweater – Midnight Stripe</p><p>$54.60</p></div></div>
+      <div class="acard"><div class="acard__img"><img src="assets/products/paige-jacket-posy.jpg" alt="Paige Jacket – Posy" loading="lazy" style="inset:0;width:100%;height:100%;object-fit:cover"></div><div class="acard__info"><p>Paige Jacket – Posy</p><p>$67.20</p></div></div>
+      <div class="acard"><div class="acard__img"><img src="assets/products/zion-shirt-apples.jpg" alt="Zion Shirt – Apples" loading="lazy" style="inset:0;width:100%;height:100%;object-fit:cover"></div><div class="acard__info"><p>Zion Shirt – Apples</p><p>$33.60</p></div></div>
+      <div class="acard"><div class="acard__img"><img src="assets/products/darla-dress-black-cherry-stripe.jpg" alt="Darla Dress – Black Cherry Stripe" loading="lazy" style="inset:0;width:100%;height:100%;object-fit:cover"></div><div class="acard__info"><p>Darla Dress – Black Cherry Stripe</p><p>$57.75</p></div></div>
+    </div>
+    <button class="arrivals__next" aria-label="Next new arrivals"><img src="assets/imgGroup3318.svg" alt="" style="width:100%;height:100%"></button>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div><h4>Policy</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Return &amp; Exchange Policy</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">Terms &amp; Conditions</a></li></ul></div>
+    <div>
+      <h4>Contact Us</h4>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span class="row"><img src="assets/imgGroup.svg" width="12" height="8" alt="">help@yourbrand.com</span>
+        <span class="row"><img src="assets/imgGroup1.svg" width="12" height="12" alt="">+1 (123) 000-0000</span>
+        <span style="font-size:12px;line-height:17px">Mon - Fri 6:00 am to 9:00 pm, Sat - Sun 9:00 am to 12:00 pm</span>
+      </div>
+    </div>
+    <div>
+      <h4>Follow Us</h4>
+      <div class="socials">
+        <img src="assets/imgIconVector.svg" alt="YouTube"><img src="assets/imgGroup2.svg" alt="X"><img src="assets/imgSocialMediaIcon.svg" alt="Pinterest">
+        <img src="assets/imgXmlid107.svg" alt="LinkedIn"><img src="assets/imgXmlid102.svg" alt="Facebook"><img src="assets/imgXmlid90.svg" alt="Instagram">
+      </div>
+    </div>
+    <div><h4>Download Our App</h4><div style="display:flex;flex-direction:column;gap:16px"><img src="assets/imgGooglePlayButton.svg" width="86" height="26" alt="Get it on Google Play"><img src="assets/imgAppStoreButton.svg" width="86" height="26" alt="Download on the App Store"></div></div>
+    <div><h4>Powered By</h4><img src="assets/imgLayer1.svg" width="65" height="9" alt="ClickPost"><div style="width:60px;height:60px;border-radius:50%;overflow:hidden;position:relative"><img src="assets/imgImage27.png" alt="" style="position:absolute;width:122.45%;height:122.45%;left:-11.22%;top:-11.22%;max-width:none"></div></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ------------------------------------------------------------------
+   Personalised picks data. Products and photos are from ryleeandcru.com/en-in.
+   A product without `img` falls back to placeholder art (`shape`, `tint`, `ink`).
+------------------------------------------------------------------- */
+const SHAPES = {
+  polo:   '<path d="M38 18 52 12h16l14 6 18 12-9 17-11-6v55H40V41l-11 6-9-17Z"/><path d="M52 12 60 26 68 12" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3"/>',
+  tee:    '<path d="M38 18 50 12q10 9 20 0l12 6 18 12-9 17-11-6v55H40V41l-11 6-9-17Z"/>',
+  sweat:  '<path d="M38 18 50 12q10 8 20 0l12 6 12 30 4 46h-14l-4-36v55H40V58l-4 36H22l4-46Z"/><path d="M40 104h40" stroke="rgba(255,255,255,.5)" stroke-width="5"/>',
+  jacket: '<path d="M38 16 50 11l10 10 10-10 12 5 12 32 4 46h-14l-4-36v52H40V58l-4 36H22l4-46Z"/><path d="M60 21v89" stroke="rgba(255,255,255,.55)" stroke-width="2.5"/>',
+  pants:  '<path d="M38 12h44l6 98H66l-6-62-6 62H32Z"/><path d="M38 20h44" stroke="rgba(255,255,255,.5)" stroke-width="3"/>',
+  shorts: '<path d="M34 30h52l8 50H66l-6-26-6 26H26Z"/><path d="M34 38h52" stroke="rgba(255,255,255,.5)" stroke-width="3"/>',
+  overall:'<path d="M42 10h8v18h20V10h8v22l6 4 4 74H66l-6-50-6 50H32l4-74 6-4Z"/>',
+  dress:  '<path d="M48 10h24l-2 22 8 6 18 70H24l18-70 8-6Z"/><path d="M42 40h36" stroke="rgba(255,255,255,.5)" stroke-width="3"/>',
+  cardi:  '<path d="M40 16 52 11l8 30 8-30 12 5 12 32 4 46h-14l-4-36v52H40V58l-4 36H22l4-46Z"/><circle cx="60" cy="58" r="2.4" fill="rgba(255,255,255,.7)"/><circle cx="60" cy="74" r="2.4" fill="rgba(255,255,255,.7)"/><circle cx="60" cy="90" r="2.4" fill="rgba(255,255,255,.7)"/>',
+  hat:    '<path d="M30 70q4-38 30-40 26 2 30 40Z"/><ellipse cx="60" cy="74" rx="42" ry="9"/>',
+  bloomer:'<path d="M30 34h60l-4 30q-6 18-26 20-20-2-26-20Z"/><path d="M30 42h60" stroke="rgba(255,255,255,.5)" stroke-width="3"/>',
+  romper: '<path d="M44 12h8l8 14 8-14h8l14 22-10 8v26l8 42H66l-6-24-6 24H34l8-42V42l-10-8Z"/>',
+};
+
+const IMG = 'assets/products/';
+const PROFILES = {
+  brooks: {
+    name: 'Brooks', pronoun: 'his', theme: 'brooks', birthDate: '2023-03-14',
+    size: '2-3Y',
+    look: { title: 'His cosy weekend look', ids: ['b1', 'b4', 'b7'], bundle: 99.95 },
+    birthdayLook: { title: 'His birthday party look', ids: ['b6', 'b4', 'b7'], bundle: 89.95 },
+    picks: ['b3', 'b2', 'b6'],
+    products: [
+      { id: 'b1', cat: 'Tops', name: 'Rex Sweater', colour: 'Tree Fair Isle', swatch: '#4f6b4f', price: 54.60, img: IMG + 'rex-sweater-tree-fair-isle.jpg', stock: 'Best seller' },
+      { id: 'b2', cat: 'Tops', name: 'Relaxed Fleece Sweatshirt', colour: 'Holiday Drive', swatch: '#c9b79c', price: 34.65, img: IMG + 'relaxed-fleece-sweatshirt-holiday-drive.jpg', stock: 'In stock' },
+      { id: 'b3', cat: 'Outerwear', name: 'Ezrah Jacket', colour: 'Latte', swatch: '#b8987a', price: 67.20, img: IMG + 'ezrah-jacket-latte.jpg', stock: 'Only 2 left', low: true },
+      { id: 'b4', cat: 'Bottoms', name: 'Luca Pant', colour: 'Latte', swatch: '#b8987a', price: 44.10, img: IMG + 'luca-pant-latte.jpg', stock: 'In stock' },
+      { id: 'b5', cat: 'Bottoms', name: 'Relaxed Fleece Sweatpant', colour: 'Holiday Drive', swatch: '#c9b79c', price: 29.40, img: IMG + 'relaxed-fleece-sweatpant-holiday-drive.jpg', stock: 'In stock' },
+      { id: 'b6', cat: 'Tops', name: 'Milo Shirt', colour: 'Christmas Plaid', swatch: '#8e3b32', price: 44.10, img: IMG + 'milo-shirt-christmas-plaid.jpg', stock: 'New this week' },
+      { id: 'b7', cat: 'Accessories', name: 'Beanie', colour: 'Spruce', swatch: '#3f5a4c', price: 18.90, img: IMG + 'beanie-spruce.jpg', stock: 'In stock' },
+      { id: 'b8', cat: 'Outerwear', name: 'Shearling Zip Jacket', colour: 'Fog', swatch: '#c8c6bd', price: 65.10, img: IMG + 'shearling-zip-jacket-fog.jpg', stock: 'Only 3 left', low: true },
+    ],
+  },
+  noa: {
+    name: 'Noa', pronoun: 'her', theme: 'noa', birthDate: '2024-11-09',
+    size: '18-24M',
+    look: { title: 'Her holiday floral look', ids: ['n1', 'n3', 'n6'], bundle: 110.90 },
+    birthdayLook: { title: 'Her birthday party look', ids: ['n1', 'n3', 'n6'], bundle: 110.90 },
+    picks: ['n4', 'n7', 'n5'],
+    products: [
+      { id: 'n1', cat: 'Dresses', name: 'Carina Dress', colour: 'Holiday Floral', swatch: '#c98a82', price: 56.70, img: IMG + 'carina-dress-holiday-floral.jpg', stock: 'In stock' },
+      { id: 'n2', cat: 'Dresses', name: 'Eden Romper', colour: 'Winter Rose', swatch: '#d9a49c', price: 46.20, img: IMG + 'eden-romper-winter-rose.jpg', stock: 'Only 1 left', low: true },
+      { id: 'n3', cat: 'Outerwear', name: 'Holly Cardigan', colour: 'Natural', swatch: '#efe6d6', price: 54.60, img: IMG + 'holly-cardigan-natural.jpg', stock: 'In stock' },
+      { id: 'n4', cat: 'Dresses', name: 'V Smocked Dress', colour: 'Winter Rose', swatch: '#d9a49c', price: 54.60, img: IMG + 'v-smocked-dress-winter-rose.jpg', stock: 'New this week' },
+      { id: 'n5', cat: 'Tops', name: 'Relaxed Fleece Sweatshirt', colour: 'Mittens', swatch: '#e7dccb', price: 34.65, img: IMG + 'relaxed-fleece-sweatshirt-mittens.jpg', stock: 'Best seller' },
+      { id: 'n6', cat: 'Accessories', name: 'Bow', colour: 'Winter Rose', swatch: '#d9a49c', price: 14.70, img: IMG + 'bow-winter-rose.jpg', stock: 'In stock' },
+      { id: 'n7', cat: 'Outerwear', name: 'Shearling Zip Jacket', colour: 'Rose Water', swatch: '#e8c4bd', price: 65.10, img: IMG + 'shearling-zip-jacket-rose-water.jpg', stock: 'Only 2 left', low: true },
+      { id: 'n8', cat: 'Bottoms', name: 'Velour Relaxed Sweatpant', colour: 'Red Bows', swatch: '#b5463f', price: 29.40, img: IMG + 'velour-relaxed-sweatpant-red-bows.jpg', stock: 'In stock' },
+    ],
+  },
+};
+
+const art = (p) => p.img
+  ? `<img src="${p.img}" alt="${p.name} – ${p.colour}" loading="lazy">`
+  : `<div class="ph" style="--tint:${p.tint}" role="img" aria-label="${p.name}"><svg viewBox="0 0 120 120" fill="${p.ink}">${SHAPES[p.shape]}</svg></div>`;
+
+const money = (n) => '$' + n.toFixed(2);
+const heartSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.2 0 3.7 1.2 5.2 3 1.5-1.8 3-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21Z"/></svg>';
+
+/* Birthday window: a child whose birthday is within BIRTHDAY_WINDOW days gets the
+   birthday edit, a countdown on their tab, and opens first. Change TODAY to preview. */
+const TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
+const BIRTHDAY_WINDOW = 30;
+const DELIVERY_BUFFER = 5;
+const fmtDate = (d) => d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+
+function upcomingBirthday(pr) {
+  const born = new Date(pr.birthDate + 'T00:00:00');
+  const next = new Date(TODAY.getFullYear(), born.getMonth(), born.getDate());
+  if (next < TODAY) next.setFullYear(next.getFullYear() + 1);
+  const days = Math.round((next - TODAY) / 86400000);
+  if (days > BIRTHDAY_WINDOW) return null;
+  const orderBy = new Date(next); orderBy.setDate(orderBy.getDate() - DELIVERY_BUFFER);
+  return { days, date: next, age: next.getFullYear() - born.getFullYear(), orderBy, tooLate: orderBy < TODAY };
+}
+
+const cakeSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7"/><path d="M5 16c1.2 1 2.4 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0"/><path d="M12 12V8"/><path d="M12 4.5c.8.7 1 1.6.4 2.2a.9.9 0 0 1-1.3-.1c-.5-.6 0-1.3.9-2.1Z" fill="currentColor"/></svg>';
+
+const listNames = (names) => names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names[0];
+
+function panelHTML(key, pr, bday) {
+  const byId = Object.fromEntries(pr.products.map((p) => [p.id, p]));
+  const look = bday && pr.birthdayLook ? pr.birthdayLook : pr.look;
+  const lookItems = look.ids.map((id) => byId[id]);
+  const lookFull = lookItems.reduce((s, p) => s + p.price, 0);
+  const picks = pr.picks.slice(0, 3).map((id) => byId[id]);
+
+  const card = (p) => `
+    <article class="pcard" data-cat="${p.cat}">
+      <div class="pcard__media">
+        ${art(p)}
+        <span class="stock${p.low ? ' stock--low' : ''}" data-stock="${p.stock}">${p.stock}</span>
+        <button class="heart" aria-pressed="false" aria-label="Save ${p.name}">${heartSvg}</button>
+      </div>
+      <div class="pcard__body">
+        <p class="pcard__name">${p.name}</p>
+        <p class="pcard__price">${money(p.price)}${p.was ? `<s>${money(p.was)}</s>` : ''}</p>
+        <button class="quick" data-name="${p.name} ${p.colour}">Quick add</button>
+      </div>
+    </article>`;
+
+  const when = bday && (bday.days === 0 ? 'today' : bday.days === 1 ? 'tomorrow' : `in ${bday.days} days`);
+  const banner = bday ? `
+    <div class="bday">
+      <span class="bday__icon">${cakeSvg}</span>
+      <div class="bday__text">
+        <p class="bday__title">${pr.name}'s birthday is ${when} <span>· ${fmtDate(bday.date)}</span></p>
+        <p class="bday__sub">${bday.tooLate
+          ? 'Choose express delivery at checkout to get it there in time.'
+          : `Order by <b>${fmtDate(bday.orderBy)}</b> to have it delivered before the big day.`}</p>
+      </div>
+      <button class="wrap-toggle" aria-pressed="false">Add free gift wrap</button>
+    </div>` : '';
+
+  return `
+  <div class="picks__panel" id="panel-${key}">
+    ${banner}
+    <div class="picks__body">
+      <aside class="look">
+        <div><p class="look__eyebrow">${bday ? 'Birthday edit' : 'Complete the look'} · ${lookItems.length} pieces</p><p class="look__title">${look.title}</p></div>
+        <div class="look__collage">${lookItems.map((p) => `<span class="look__item" data-tip="${p.name} – ${p.colour} · ${money(p.price)}">${art(p)}</span>`).join('')}</div>
+        <p class="look__names">${listNames(lookItems.map((p) => p.name))}</p>
+        <div class="look__price"><strong>${money(look.bundle)}</strong><s>${money(lookFull)}</s><span class="look__save">Save ${money(lookFull - look.bundle)}</span></div>
+        <button class="btn btn--solid look__add" data-title="${look.title}" data-price="${look.bundle}">Add the look<span class="wrap-note"></span></button>
+      </aside>
+      <div class="rail">${picks.map(card).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function bindPanel(panel, pr) {
+  let wrapped = false;
+
+  panel.querySelectorAll('.heart').forEach((h) => h.addEventListener('click', () => {
+    const on = h.getAttribute('aria-pressed') !== 'true';
+    h.setAttribute('aria-pressed', on);
+    toast(on ? `Saved to ${pr.name}'s wishlist` : 'Removed from wishlist');
+  }));
+
+  panel.querySelectorAll('.quick').forEach((q) => q.addEventListener('click', () => {
+    q.classList.add('added'); q.textContent = 'Added ✓';
+    toast(`${q.dataset.name} added to bag${wrapped ? ', gift-wrapped' : ''}`);
+  }));
+
+  const wrap = panel.querySelector('.wrap-toggle');
+  wrap?.addEventListener('click', () => {
+    wrapped = !wrapped;
+    wrap.setAttribute('aria-pressed', wrapped);
+    wrap.textContent = wrapped ? 'Gift wrap added' : 'Add free gift wrap';
+    panel.querySelector('.wrap-note').textContent = wrapped ? ' · gift-wrapped' : '';
+    toast(wrapped ? `Free gift wrap added for ${pr.name}'s birthday` : 'Gift wrap removed');
+  });
+
+  const add = panel.querySelector('.look__add');
+  add.addEventListener('click', () => toast(`${add.dataset.title} added${wrapped ? ', gift-wrapped' : ''} — ${money(Number(add.dataset.price))}`));
+}
+
+function renderPicks(keys) {
+  const kids = keys.map((key) => ({ key, pr: PROFILES[key], bday: upcomingBirthday(PROFILES[key]) }))
+    .sort((x, y) => (y.bday ? 1 : 0) - (x.bday ? 1 : 0));   // a child with a birthday coming up goes first
+
+  document.getElementById('picks').outerHTML = kids.map(({ key, pr, bday }) => `
+  <section class="card picks" id="picks-${key}" data-theme="${pr.theme}" aria-label="Picked for ${pr.name}">
+    <div class="picks__head">
+      <span class="avatar" aria-hidden="true">${pr.name[0]}</span>
+      <p class="picks__title">Picked for ${pr.name}</p>
+    </div>
+    <div class="divider"></div>
+    ${panelHTML(key, pr, bday)}
+  </section>`).join('');
+
+  kids.forEach(({ key, pr }) => bindPanel(document.getElementById(`panel-${key}`), pr));
+}
+
+renderPicks(['brooks', 'noa']);
+
+/* ---------- Personalised upsell banner: one child, one collection ---------- */
+const KID_PROMO = {
+  kid: 'noa',
+  img: 'assets/banners/noa-cardigan.webp',
+  title: (name) => `Cosy knits ${name} <b>will live in</b>`,
+  sub: 'Holiday cardigans and florals, handpicked in her size.',
+  cta: 'Explore collection',
+  href: '#',
+};
+
+function renderKidPromo(p) {
+  const k = PROFILES[p.kid];
+  document.getElementById('kid-promo').outerHTML = `
+  <a class="kp" id="kid-promo" href="${p.href}" aria-label="${p.cta} for ${k.name}">
+    <img class="kp__img" src="${p.img}" alt="">
+    <div class="kp__content">
+      <span class="kp__eyebrow">Picked for ${k.name}</span>
+      <p class="kp__title">${p.title(k.name)}</p>
+      <p class="kp__sub">${p.sub}</p>
+      <span class="kp__cta">${p.cta}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </div>
+  </a>`;
+}
+
+renderKidPromo(KID_PROMO);
+
+/* ---------- Sibling set: one matching print, each piece in that child's size ---------- */
+const SIBLING_SET = {
+  print: 'Winter Plaid',
+  banner: 'assets/banners/holiday-01.jpg',
+  bundleSave: 0.1,
+  items: [
+    { kid: 'brooks', name: 'Pocketed Flannel Shirt', price: 60.90, img: IMG + 'pocketed-flannel-shirt-winter-plaid.jpg' },
+    { kid: 'noa', name: 'Jolene Dress', price: 69.30, img: IMG + 'jolene-dress-winter-plaid.jpg' },
+  ],
+};
+
+function renderSiblingSet(set) {
+  const kids = set.items.map((it) => PROFILES[it.kid]);
+  const full = set.items.reduce((s, it) => s + it.price, 0);
+  const bundle = Math.round(full * (1 - set.bundleSave) * 100) / 100;
+
+  document.getElementById('sibling-set').outerHTML = `
+  <section class="sib" id="sibling-set" aria-label="Sibling set">
+    <img class="sib__bg" src="${set.banner}" alt="">
+    <div class="sib__content">
+      <span class="sib__eyebrow">Sibling set</span>
+      <p class="sib__title">Match ${kids.map((k) => k.name).join(' &amp; ')} in <b>${set.print}</b></p>
+      <p class="sib__sub">Matching pieces in both their sizes, ready for holiday photos together.</p>
+      <div class="sib__items">
+        ${set.items.map((it, i) => `
+          <div class="sib__item" data-theme="${kids[i].theme}">
+            <img src="${it.img}" alt="${it.name} – ${set.print}">
+            <div>
+              <span class="sib__who"><span class="avatar">${kids[i].name[0]}</span>For ${kids[i].name}</span>
+              <p class="sib__name">${it.name}</p>
+              <p class="sib__price">${money(it.price)}</p>
+            </div>
+          </div>`).join('<span class="sib__plus" aria-hidden="true">+</span>')}
+      </div>
+      <div class="sib__buy">
+        <div class="sib__deal"><span><strong>${money(bundle)}</strong><s>${money(full)}</s></span><em>You save ${money(full - bundle)}</em></div>
+        <button class="sib__cta">
+          <span class="sib__cta-label">Add both to bag</span>
+          <svg class="arrow-r" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>`;
+
+  const cta = document.querySelector('#sibling-set .sib__cta');
+  cta.addEventListener('click', () => {
+    cta.classList.add('added');
+    cta.querySelector('.sib__cta-label').textContent = 'Added both to bag ✓';
+    toast(`${set.print} sibling set added for ${kids.map((k) => k.name).join(' & ')}`);
+  });
+}
+
+renderSiblingSet(SIBLING_SET);
+
+/* ---------- Order items: each item has exactly one Pro Tip product and one Care Tip ----------
+   Preview smaller orders with ?items=1 or ?items=2 in the URL. */
+const ORDER_ITEMS = [
+  { name: 'Chunky Knit Sweater', colour: 'Heathered Latte', price: 54.60, qty: 1, kid: 'brooks', img: IMG + 'chunky-knit-sweater-heathered-latte.jpg',
+    tip: 'Make it a matching knit set with the pant in the same yarn.', rec: { name: 'Chunky Knit Pant', colour: 'Heathered Latte', price: 36.75, img: IMG + 'chunky-knit-pant-heathered-latte.jpg' },
+    care: 'Hand wash cold and dry flat so the chunky knit keeps its shape.' },
+  { name: 'Luca Pant', colour: 'Spruce', price: 44.10, qty: 1, kid: 'brooks', img: IMG + 'luca-pant-spruce.jpg',
+    tip: 'Tone-on-tone with the pant, a spruce beanie finishes the look on chilly days.', rec: { name: 'Beanie', colour: 'Spruce', price: 18.90, img: IMG + 'beanie-spruce.jpg' },
+    care: 'Wash cold with like colours and tumble dry low to keep the gauze soft.' },
+  { name: 'Bear Jumpsuit', colour: 'Latte', price: 65.10, qty: 1, kid: 'noa', img: IMG + 'bear-jumpsuit-latte.jpg',
+    tip: 'Warm socks under the bear suit keep little toes cosy on outings.', rec: { name: 'Socks Set', colour: 'Natural / Redwood', price: 14.70, img: IMG + 'socks-set-natural-redwood.jpg' },
+    care: 'Zip up before washing. Wash cold, tumble dry low, then brush the pile gently.' },
+  { name: 'Hooded Jumpsuit', colour: 'Gingerbread', price: 57.75, qty: 1, kid: 'noa', img: IMG + 'hooded-jumpsuit-gingerbread.jpg',
+    tip: 'The same gingerbread print in a sweatpant mixes easily with tops she already has.', rec: { name: 'Relaxed Fleece Sweatpant', colour: 'Gingerbread', price: 29.40, img: IMG + 'relaxed-fleece-sweatpant-gingerbread.jpg' },
+    care: 'Wash inside out in cold water to keep the fleece print bright.' },
+  { name: 'Bamboo Pajama Set', colour: 'Forest Friends', price: 40.95, qty: 1, kid: 'brooks', img: IMG + 'bamboo-pajama-set-forest-friends.jpg',
+    tip: 'Add the matching footie for Noa, sibling PJs for holiday mornings.', rec: { name: 'Bamboo Zip Footie', colour: 'Forest Friends', price: 40.95, img: IMG + 'bamboo-zip-footie-forest-friends.jpg' },
+    care: 'Bamboo is delicate: wash cold, skip fabric softener and line dry.' },
+  { name: 'Velour Baby Dress', colour: 'Redwood', price: 46.20, qty: 1, kid: 'noa', img: IMG + 'velour-baby-dress-redwood.jpg',
+    tip: 'The matching velour bow completes the holiday-card look.', rec: { name: 'Velour Bow Headband', colour: 'Redwood', price: 12.60, img: IMG + 'velour-bow-headband-redwood.jpg' },
+    care: 'Wash cold inside out. Don\'t iron velour; steam lightly to lift the pile.' },
+  { name: 'Alda Dress', colour: 'Red Bows', price: 46.20, qty: 1, kid: 'noa', img: IMG + 'alda-dress-red-bows.jpg',
+    tip: 'Ribbed redwood tights pick up the bow print and keep legs warm.', rec: { name: 'Tights', colour: 'Redwood', price: 16.80, img: IMG + 'tights-redwood.jpg' },
+    care: 'Wash cold with darks and lay flat to dry.' },
+  { name: 'Holly Cardigan', colour: 'Redwood', price: 54.60, qty: 1, kid: 'noa', img: IMG + 'holly-cardigan-redwood.jpg',
+    tip: 'A crochet bow in the same redwood ties the cardigan into an outfit.', rec: { name: 'Crochet Bow', colour: 'Redwood', price: 14.70, img: IMG + 'crochet-bow-redwood.jpg' },
+    care: 'Hand wash cold and dry flat. Fold, don\'t hang, to avoid shoulder bumps.' },
+  { name: 'Darla Dress', colour: 'Gingerbread', price: 57.75, qty: 1, kid: 'noa', img: IMG + 'darla-dress-gingerbread.jpg',
+    tip: 'A soft latte beanie suits the gingerbread print for outdoor days.', rec: { name: 'Beanie', colour: 'Heathered Latte', price: 18.90, img: IMG + 'beanie-heathered-latte.jpg' },
+    care: 'Wash cold and tumble dry low; high heat makes fleece pill.' },
+  { name: 'Callie Romper', colour: 'Holiday Floral', price: 48.30, qty: 1, kid: 'noa', img: IMG + 'callie-romper-holiday-floral.jpg',
+    tip: 'The matching floral bonnet is cut from the same cotton gauze.', rec: { name: 'Woven Baby Bonnet', colour: 'Holiday Floral', price: 14.70, img: IMG + 'woven-baby-bonnet-holiday-floral.jpg' },
+    care: 'Wash cold and tumble dry low. Soft wrinkles are part of gauze\'s charm.' },
+  { name: 'Rex Sweater', colour: 'Mushroom', price: 54.60, qty: 1, kid: 'brooks', img: IMG + 'rex-sweater-mushroom.jpg',
+    tip: 'Mushroom and latte go together. Pair it with the corduroy Luca Pant.', rec: { name: 'Luca Pant', colour: 'Latte', price: 44.10, img: IMG + 'luca-pant-latte.jpg' },
+    care: 'Hand wash cold, dry flat, and de-pill gently with a sweater comb.' },
+  { name: 'Shearling Zip Jacket', colour: 'Fog', price: 65.10, qty: 1, kid: 'brooks', img: IMG + 'shearling-zip-jacket-fog.jpg',
+    tip: 'The fog beanie matches the jacket for a head-to-toe winter look.', rec: { name: 'Beanie', colour: 'Fog', price: 18.90, img: IMG + 'beanie-fog.jpg' },
+    care: 'Spot clean where you can; otherwise wash cold on gentle and air dry.' },
+];
+
+const sparkleSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8Z"/></svg>';
+const washSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l2 13h14l2-13"/><path d="M3 6c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0 3 1.3 4.5 0 3-1.3 4.5 0"/><path d="M9.5 13.5h5"/></svg>';
+
+function renderOrderItems(all) {
+  const limit = Number(new URLSearchParams(location.search).get('items'));
+  const items = limit > 0 ? all.slice(0, limit) : all;
+  const n = items.length;
+  const multi = n > 1;
+  const layout = n === 1 ? 'oi--single' : n === 2 ? 'oi--pair' : 'oi--carousel';   // 1 and 2 items fit without scrolling
+  const showIndex = n >= 3;   // photo chips are the way to reach cards beyond the first two
+  const kidOf = (it) => PROFILES[it.kid];
+
+  document.getElementById('orderValue').textContent = money(items.reduce((s, it) => s + it.price * it.qty, 0));
+
+  const card = (it, i) => {
+    const k = kidOf(it);
+    return `
+    <article class="oi-card${i === 0 ? ' is-active' : ''}" role="group" aria-roledescription="item" aria-label="Item ${i + 1} of ${n}: ${it.name}">
+      ${multi ? `<div class="oi-card__top"><span class="oi-card__num">Item ${i + 1} of ${n}</span></div>` : ''}
+      <div class="oi-prod">
+        <img src="${it.img}" alt="${it.name} – ${it.colour}" loading="lazy">
+        <div>
+          <p class="oi-prod__name">${it.name}</p>
+          <p class="oi-prod__colour">${it.colour}</p>
+          <p class="oi-prod__meta">Qty ${it.qty}${k ? ` · Size ${k.size}` : ''}</p>
+          <p class="oi-prod__price">${money(it.price)}</p>
+        </div>
+      </div>
+      <div class="oi-tip oi-tip--pro">
+        <div class="oi-tip__head"><span class="oi-tip__icon">${sparkleSvg}</span><p><b>Pro tip: </b>${it.tip}</p></div>
+        <div class="oi-rec">
+          <img src="${it.rec.img}" alt="${it.rec.name} – ${it.rec.colour}" loading="lazy">
+          <div><p class="oi-rec__name">${it.rec.name} – ${it.rec.colour}</p><p class="oi-rec__price">${money(it.rec.price)}</p></div>
+          <button class="oi-rec__add" data-name="${it.rec.name} – ${it.rec.colour}">Add to bag</button>
+        </div>
+      </div>
+      <div class="oi-tip oi-tip--care"><span class="oi-tip__icon">${washSvg}</span><p><b>Care tip: </b>${it.care}</p></div>
+    </article>`;
+  };
+
+  document.getElementById('order-items').outerHTML = `
+  <section class="card oi ${layout}" id="order-items" aria-label="Order items">
+    <div class="oi__head">
+      <p class="section-title">Order Item(s)</p>
+      <span class="oi__count">· ${n} item${n > 1 ? 's' : ''}</span>
+    </div>
+    <div class="divider"></div>
+    <div class="oi__cards">
+      ${showIndex ? `<div class="oi__index" role="tablist" aria-label="Jump to item">
+        ${items.map((it, i) => `<button class="oi__dot" data-i="${i}" data-tip="${it.name} – ${it.colour}" aria-label="Item ${i + 1}: ${it.name} – ${it.colour}" aria-current="${i === 0}"><img src="${it.img}" alt=""></button>`).join('')}
+      </div>` : ''}
+      <div class="oi__track" tabindex="0" aria-label="Order items, use arrow keys to move">${items.map(card).join('')}</div>
+    </div>
+    ${showIndex ? '<span class="oi__tip" role="tooltip" aria-hidden="true"></span>' : ''}
+  </section>`;
+
+  const root = document.getElementById('order-items');
+  const track = root.querySelector('.oi__track');
+  const cards = [...track.children];
+  const dots = [...root.querySelectorAll('.oi__dot')];
+  let current = 0;
+
+  // How many cards fit side by side; `current` is the first one in view.
+  const perView = () => {
+    const step = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth;
+    return Math.max(1, Math.floor((track.clientWidth + 12) / step));
+  };
+  const setActive = (i) => {
+    const pv = perView();
+    current = i;
+    const last = Math.min(n, i + pv) - 1;
+    cards.forEach((c, j) => c.classList.toggle('is-active', j >= i && j <= last));
+    dots.forEach((d, j) => { d.setAttribute('aria-current', j === i); d.classList.toggle('in-view', j >= i && j <= last); });
+    dots[i]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  };
+  const goTo = (i, instant) => {
+    i = Math.max(0, Math.min(n - perView(), i));
+    track.scrollTo({ left: cards[i].offsetLeft - track.offsetLeft, behavior: instant ? 'instant' : 'smooth' });
+    setActive(i);
+  };
+
+  // Keep the active card in sync with swipes / trackpad scrolling.
+  let settle;
+  track.addEventListener('scroll', () => {
+    clearTimeout(settle);
+    settle = setTimeout(() => {
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      const step = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : 1;
+      setActive(atEnd ? Math.max(0, n - perView()) : Math.round(track.scrollLeft / step));
+    }, 60);
+  }, { passive: true });
+
+  // Name tooltip on hover / keyboard focus. It lives on the section so the chip row's overflow can't clip it.
+  const tip = root.querySelector('.oi__tip');
+  const showTip = (d) => {
+    const r = d.getBoundingClientRect(), base = root.getBoundingClientRect();
+    tip.textContent = d.dataset.tip;
+    tip.style.left = `${r.left - base.left + r.width / 2}px`;
+    tip.style.top = `${r.top - base.top}px`;
+    tip.classList.add('show');
+  };
+  const hideTip = () => tip.classList.remove('show');
+  dots.forEach((d) => {
+    d.addEventListener('mouseenter', () => showTip(d));
+    d.addEventListener('focus', () => showTip(d));
+    d.addEventListener('mouseleave', hideTip);
+    d.addEventListener('blur', hideTip);
+  });
+  root.querySelector('.oi__index')?.addEventListener('scroll', hideTip, { passive: true });
+  dots.forEach((d) => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
+  track.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+    if (step && multi) { e.preventDefault(); goTo(current + step); }
+  });
+
+  root.querySelectorAll('.oi-rec__add').forEach((b) => b.addEventListener('click', () => {
+    b.classList.add('added'); b.textContent = 'Added ✓';
+    toast(`${b.dataset.name} added to bag`);
+  }));
+
+  setActive(0);
+}
+
+renderOrderItems(ORDER_ITEMS);
+
+/* ---------- Festive season: next occurrence of the date, live countdown ---------- */
+const FESTIVE = {
+  name: 'Halloween', month: 10, day: 31,
+  sub: 'Little pumpkins, dancing ghosts and cosy PJs, ready for a chilly night of trick-or-treating.',
+  items: [
+    { for: ['brooks', 'noa'], name: 'Bamboo Pajama Set', colour: 'Dancing Ghosts', price: 30.71, img: IMG + 'bamboo-pajama-set-dancing-ghosts.jpg' },
+    { for: ['brooks'], name: 'Relaxed Fleece Sweatshirt', colour: 'Lil Pumpkin', price: 24.26, img: IMG + 'relaxed-fleece-sweatshirt-lil-pumpkin.jpg' },
+    { for: ['noa'], name: 'Darla Dress', colour: 'Pumpkins', price: 46.20, img: IMG + 'darla-dress-pumpkins.jpg' },
+    { for: ['noa'], name: 'Darla Dress', colour: 'Sweet Ghost', price: 46.20, img: IMG + 'darla-dress-sweet-ghost.jpg' },
+  ],
+};
+const batSvg = (w) => `<svg width="${w}" height="${w * 0.5}" viewBox="0 0 64 32" fill="currentColor"><path d="M32 10c1.5-3 3-4 4-4-1 2-1 3 0 4 3-4 9-6 16-4-4 1-6 4-6 7 4-2 9-2 14 1-6 0-10 3-12 7-2-2-5-3-8-2-2-3-5-5-8-5s-6 2-8 5c-3-1-6 0-8 2-2-4-6-7-12-7 5-3 10-3 14-1 0-3-2-6-6-7 7-2 13 0 16 4 1-1 1-2 0-4 1 0 2.5 1 4 4Z"/></svg>`;
+
+function renderFestive(f) {
+  const now = new Date();
+  let when = new Date(now.getFullYear(), f.month - 1, f.day);
+  if (when < new Date(now.getFullYear(), now.getMonth(), now.getDate())) when.setFullYear(when.getFullYear() + 1);
+  const daysAway = Math.round((when - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+  const weekday = when.toLocaleDateString('en-US', { weekday: 'long' });
+  const headline = daysAway === 0 ? `${f.name} is <b>tonight</b>`
+    : daysAway === 1 ? `${f.name} is <b>tomorrow</b>`
+    : daysAway < 7 ? `${f.name} is <b>this ${weekday}</b>`
+    : `${f.name} is <b>${when.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</b>`;
+  const forLabel = (kids) => kids.length > 1 ? 'For both kids'
+    : `For ${PROFILES[kids[0]].name}`;
+
+  document.getElementById('festive').outerHTML = `
+  <section class="fest" id="festive" aria-label="${f.name} picks">
+    <span class="fest__moon" aria-hidden="true"></span>
+    <span class="fest__bat" style="right:180px;top:30px" aria-hidden="true">${batSvg(34)}</span>
+    <span class="fest__bat" style="right:28px;top:110px;animation-delay:-1.5s" aria-hidden="true">${batSvg(24)}</span>
+    <span class="fest__bat" style="left:46%;top:22px;animation-delay:-2.6s" aria-hidden="true">${batSvg(20)}</span>
+    <div class="fest__head">
+      <div>
+        <span class="fest__eyebrow">Festive season</span>
+        <p class="fest__title">${headline}</p>
+        <p class="fest__sub">${f.sub}</p>
+      </div>
+    </div>
+    <div class="fest__grid">
+      ${f.items.map((it) => `
+        <article class="fcard">
+          <div class="fcard__media"><img src="${it.img}" alt="${it.name} – ${it.colour}" loading="lazy"></div>
+          <div class="fcard__body">
+            <span class="fcard__for">${forLabel(it.for)}</span>
+            <p class="fcard__name">${it.name} – ${it.colour}</p>
+            <p class="fcard__price">${money(it.price)}</p>
+            <button class="quick" data-name="${it.name} – ${it.colour}">Add to bag</button>
+          </div>
+        </article>`).join('')}
+    </div>
+  </section>`;
+
+  const root = document.getElementById('festive');
+
+  root.querySelectorAll('.quick').forEach((q) => q.addEventListener('click', () => {
+    q.classList.add('added'); q.textContent = 'Added ✓';
+    toast(`${q.dataset.name} added to bag`);
+  }));
+}
+
+renderFestive(FESTIVE);
+
+document.querySelector('.arrivals__next').addEventListener('click', () => {
+  document.querySelector('.arrivals__list').scrollBy({ left: 230 * 2 });
+});
+
+/* ---------- Existing page behaviour ---------- */
+document.getElementById('tlToggle').addEventListener('click', (e) => {
+  const btn = e.currentTarget, d = document.getElementById('tlDetails');
+  d.hidden = !d.hidden;
+  btn.setAttribute('aria-expanded', !d.hidden);
+  btn.querySelector('span').textContent = d.hidden ? 'View Detailed Journey' : 'Close Detailed Journey';
+  btn.querySelector('img').style.transform = d.hidden ? 'rotate(90deg)' : 'rotate(-90deg)';
+});
+
+document.querySelectorAll('.copy').forEach((b) => b.addEventListener('click', () => {
+  navigator.clipboard?.writeText(b.dataset.copy).catch(() => {});
+  toast('Copied ' + b.dataset.copy);
+}));
+
+(function countdown() {
+  let s = 23 * 3600 + 42 * 60 + 19;
+  const cells = document.querySelectorAll('#timer .chip-w');
+  setInterval(() => {
+    s = Math.max(0, s - 1);
+    [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].forEach((v, i) => (cells[i].textContent = String(v).padStart(2, '0')));
+  }, 1000);
+})();
+</script>
+</body>
+</html>

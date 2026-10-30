@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Gem, HeartHandshake, Package, SlidersHorizontal, Star } from "lucide-react";
 import { type OrderItem } from "@/lib/tracking";
+import { formatPrice } from "@/lib/site";
 import { TrackingCard, ImageTile } from "./TrackingCard";
 import { useDevice } from "./device";
 import { BottomSheet } from "./sheet";
@@ -85,7 +86,7 @@ function OrderItemCard({
         />
         <div className="min-w-0 flex-1">
           <p className="text-lg font-bold text-foreground">{item.name}</p>
-          <p className="mt-1 text-base font-semibold text-foreground">{sym}{item.price}</p>
+          <p className="mt-1 text-base font-semibold text-foreground">{sym}{formatPrice(item.price)}</p>
           <p className="mt-1.5 text-sm text-muted-foreground">
             Qty: {item.qty} · {item.variant}
           </p>
@@ -126,7 +127,7 @@ function MobileItemCard({ item, accent, sym }: { item: OrderItem; accent: string
             Qty: {item.qty}
           </span>
         </div>
-        <p className="mt-1.5 text-lg font-bold text-foreground">{sym}{item.price}</p>
+        <p className="mt-1.5 text-lg font-bold text-foreground">{sym}{formatPrice(item.price)}</p>
 
         <button
           type="button"
@@ -152,15 +153,19 @@ export function OrderItems({
   items,
   accent,
   sym,
+  showAll = false,
 }: {
   items: OrderItem[];
   accent: string;
   sym: string;
+  /** Mobile: swipe through every item instead of showing only the first. */
+  showAll?: boolean;
 }) {
   const mobile = useDevice() === "mobile";
 
   if (mobile) {
-    // Mobile shows a single, compact ordered item as one clean card (no outer box).
+    // Mobile shows a single, compact ordered item as one clean card (no outer box),
+    // or with `showAll`, a swipeable row of every item.
     const item = items[0];
     return (
       <div>
@@ -170,7 +175,20 @@ export function OrderItems({
             My Order Items <span className="text-muted-foreground">({items.length})</span>
           </h2>
         </div>
-        {item && <MobileItemCard item={item} accent={accent} sym={sym} />}
+        {showAll && items.length > 1 ? (
+          <div className="thin-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3">
+            {items.map((it, i) => (
+              <div key={it.name} className="w-[82%] shrink-0 snap-center">
+                <p className="mb-1.5 text-[11px] font-semibold text-muted-foreground">
+                  Item {i + 1} of {items.length} · {it.variant}
+                </p>
+                <MobileItemCard item={it} accent={accent} sym={sym} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          item && <MobileItemCard item={item} accent={accent} sym={sym} />
+        )}
       </div>
     );
   }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Check, Package } from "lucide-react";
 import { type ArrivalProduct } from "@/lib/tracking";
+import { formatPrice } from "@/lib/site";
 import { TrackingCard, ImageTile } from "./TrackingCard";
 import { useDevice } from "./device";
 
@@ -38,7 +39,7 @@ function ArrivalCard({
       <p className="mt-2 line-clamp-1 text-[13px] font-semibold text-foreground">{product.name}</p>
 
       <div className="mt-1 flex flex-wrap items-baseline gap-x-1.5">
-        <span className="text-sm font-bold text-foreground">{sym}{product.price}</span>
+        <span className="text-sm font-bold text-foreground">{sym}{formatPrice(product.price)}</span>
         <span className="text-[11px] text-muted-foreground line-through">{sym}{mrp}</span>
         <span className="text-[11px] font-semibold text-emerald-600">{pct}% OFF</span>
       </div>
@@ -117,7 +118,7 @@ export function NewArrivals({
             </p>
             <p className="mt-0.5 text-base font-bold" style={{ color: accent }}>
               {sym}
-              {p.price}
+              {formatPrice(p.price)}
             </p>
           </div>
         ))}

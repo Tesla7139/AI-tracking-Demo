@@ -7,6 +7,7 @@ import type { Brand, GeoLocation, Weather } from "@/lib/site";
 import type { Generated } from "@/hooks/useGenerated";
 import { TrackingScreen } from "./TrackingScreen";
 import { TrackingPage } from "./TrackingPage";
+import { BrandPageEmbed, brandPageFor } from "./BrandPageEmbed";
 
 type Status = "idle" | "loading" | "ready";
 
@@ -48,6 +49,7 @@ export function LaunchExperience({
 
   const domain = cleanDomain(submittedUrl);
   const ready = status === "ready" && minElapsed && !!brand;
+  const brandPage = brand ? brandPageFor(brand) : null;
 
   return (
     // Force animations to always run, even if the OS/browser has "reduce motion" on.
@@ -73,12 +75,28 @@ export function LaunchExperience({
           />
         ) : (
           <TrackingScreen key="tracking" brand={brand!} generated={generated}>
-            <TrackingPage
-              brand={brand!}
-              location={location}
-              weather={weather}
-              generated={generated}
-            />
+            {brandPage ? (
+              <BrandPageEmbed
+                src={brandPage.src}
+                title={`${brand!.brandName} tracking page`}
+                mobile={
+                  <TrackingPage
+                    brand={brand!}
+                    location={location}
+                    weather={weather}
+                    generated={generated}
+                    variant={brandPage.variant}
+                  />
+                }
+              />
+            ) : (
+              <TrackingPage
+                brand={brand!}
+                location={location}
+                weather={weather}
+                generated={generated}
+              />
+            )}
           </TrackingScreen>
         )}
       </AnimatePresence>

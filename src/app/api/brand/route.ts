@@ -41,6 +41,8 @@ const CURATED_COLORS: [RegExp, string][] = [
   [/pehr/i, "#597c7c"],
   [/adidas/i, "#000000"],
   [/bombas/i, "#111111"],
+  // Rylee + Cru's #baa899, darkened so white button text stays readable.
+  [/ryleeandcru/i, "#8c7867"],
 ];
 
 // Curated catalogs for stores we cannot scrape at all (enterprise bot walls like
@@ -48,7 +50,30 @@ const CURATED_COLORS: [RegExp, string][] = [
 // placeholders per market — replace with real values; add `image` URLs to show
 // real photos (otherwise a branded tile renders).
 type CuratedProduct = { title: string; price: number; image?: string };
-const CURATED_CATALOGS: { match: RegExp; currency?: string; banner?: string; products: CuratedProduct[] }[] = [
+const CURATED_CATALOGS: {
+  match: RegExp;
+  name?: string;
+  logo?: string;
+  currency?: string;
+  banner?: string;
+  products: CuratedProduct[];
+}[] = [
+  {
+    // ryleeandcru.com sits behind Cloudflare's bot check. Products, prices and banner
+    // come from its hand-built tracking page in public/brands/ryleeandcru.
+    match: /(^|\.)ryleeandcru\./i,
+    name: "Rylee + Cru",
+    logo: "/brands/ryleeandcru/assets/imgRcHeaderLogoBarV21.png",
+    currency: "USD",
+    banner: "/brands/ryleeandcru/assets/banners/everyday-adventures.webp",
+    products: [
+      { title: "Bella Dress – Apples", price: 48.3, image: "/brands/ryleeandcru/assets/products/bella-dress-apples.jpg" },
+      { title: "Relaxed Knit Sweater – Midnight Stripe", price: 54.6, image: "/brands/ryleeandcru/assets/products/relaxed-knit-sweater-midnight-stripe.jpg" },
+      { title: "Paige Jacket – Posy", price: 67.2, image: "/brands/ryleeandcru/assets/products/paige-jacket-posy.jpg" },
+      { title: "Zion Shirt – Apples", price: 33.6, image: "/brands/ryleeandcru/assets/products/zion-shirt-apples.jpg" },
+      { title: "Darla Dress – Black Cherry Stripe", price: 57.75, image: "/brands/ryleeandcru/assets/products/darla-dress-black-cherry-stripe.jpg" },
+    ],
+  },
   {
     // bombas.com sits behind Vercel's Security Checkpoint, so nothing scrapes.
     // Real products and images from bombas.com (Oct 2026); USD prices converted
@@ -1138,6 +1163,8 @@ export async function POST(req: Request) {
 
   // Curated banner (for stores we can't scrape a hero image from).
   if (curatedCatalog?.banner) branding.bannerImage = curatedCatalog.banner;
+  if (curatedCatalog?.name) branding.brandName = curatedCatalog.name;
+  if (curatedCatalog?.logo) branding.logo = curatedCatalog.logo;
 
   // Country + famous city from the store's currency (falls back to the TLD, then US).
   const cur = currency || currencyFromTld(url.hostname);
