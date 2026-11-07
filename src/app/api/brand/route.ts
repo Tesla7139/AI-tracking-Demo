@@ -41,6 +41,8 @@ const CURATED_COLORS: [RegExp, string][] = [
   [/pehr/i, "#597c7c"],
   [/adidas/i, "#000000"],
   [/bombas/i, "#111111"],
+  // one8.com's markup yields #00ffff, unreadable as a button/text color; the brand is black.
+  [/one8/i, "#111111"],
   // Rylee + Cru's #baa899, darkened so white button text stays readable.
   [/ryleeandcru/i, "#8c7867"],
 ];
