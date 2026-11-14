@@ -219,16 +219,12 @@ export function SiblingSet({ accent }: { accent: string }) {
 
         <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           {SIBLING_SET.items.map((it, i) => {
-            const kid = kidByKey(it.kid);
             return [
               i > 0 && <Plus key={`plus-${i}`} className="size-4 text-white" />,
               <div key={it.name} className="rounded-xl bg-white p-2 text-foreground">
                 {/* eslint-disable-next-line @next/next/no-img-element -- static brand asset */}
                 <img src={it.img} alt={`${it.name} – ${SIBLING_SET.print}`} className="aspect-square w-full rounded-lg object-cover" />
-                <span className="mt-1.5 flex items-center gap-1 text-[10px] font-semibold" style={{ color: kid.accent }}>
-                  <Avatar kid={kid} size={16} /> For {kid.name}
-                </span>
-                <p className="mt-0.5 line-clamp-1 text-xs font-semibold">{it.name}</p>
+                <p className="mt-1.5 line-clamp-1 text-xs font-semibold">{it.name}</p>
                 <p className="text-xs font-bold">{money(it.price)}</p>
               </div>,
             ];
@@ -275,10 +271,7 @@ export function FestivePicks({ accent }: { accent: string }) {
           <div key={it.name} className="flex flex-col rounded-xl bg-white p-2 text-foreground">
             {/* eslint-disable-next-line @next/next/no-img-element -- static brand asset */}
             <img src={it.img} alt={it.name} className="aspect-square w-full rounded-lg object-cover" />
-            <span className="mt-1.5 text-[10px] font-semibold text-muted-foreground">
-              {it.for.length > 1 ? "For both kids" : `For ${kidByKey(it.for[0]).name}`}
-            </span>
-            <p className="line-clamp-2 text-xs font-semibold">{it.name}</p>
+            <p className="mt-1.5 line-clamp-2 text-xs font-semibold">{it.name}</p>
             <p className="mt-0.5 text-sm font-bold">{money(it.price)}</p>
             <AddButton label="Add to bag" accent={accent} className="mt-auto pt-2" />
           </div>
@@ -299,12 +292,12 @@ export function EverydayBanner({ accent }: { accent: string }) {
         </p>
         <p className="mt-1 text-xl font-bold leading-tight text-foreground">{EVERYDAY.title}</p>
         <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{EVERYDAY.body}</p>
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="mt-3 flex gap-2">
           {EVERYDAY.ctas.map((c) => (
             <a
               key={c}
               href="#"
-              className="rounded-md py-2 text-center text-[11px] font-bold uppercase tracking-wide text-white"
+              className="rounded-md px-5 py-2 text-center text-[11px] font-bold uppercase tracking-wide text-white"
               style={{ background: accent }}
             >
               {c}

@@ -128,9 +128,12 @@ export const FESTIVE = {
 export const EVERYDAY = {
   title: "Made for Everyday Adventures",
   body: "Rylee + Cru brings a modern, nostalgic feel to everyday dressing with artful prints, relaxed silhouettes, and thoughtfully designed pieces made for every adventure, big or small.",
-  ctas: ["Shop Kids", "Shop Teens", "Shop Women"],
+  ctas: ["Explore Collection"],
   img: BANNERS + "everyday-adventures.webp",
 };
+
+/** Pro Tip colours on mobile, matching .oi-tip--pro on the desktop page. */
+export const PRO_TIP_COLORS = { bg: "#f6f1ec", color: "#8f7a69" };
 
 export const FUN_FACTS = [
   "New York City is home to over 800 languages spoken by its residents, making it one of the most linguistically diverse cities in the world",

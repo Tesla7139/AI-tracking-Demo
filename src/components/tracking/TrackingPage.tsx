@@ -125,7 +125,13 @@ export function TrackingPage({
 
           {/* Order items (tips open in a pop-up) */}
           <div id="tour-items" className="scroll-mt-24">
-            <OrderItems items={items} accent={accent} sym={sym} showAll={isRylee} />
+            <OrderItems
+              items={items}
+              accent={accent}
+              sym={sym}
+              showAll={isRylee}
+              proTipColors={isRylee ? rylee.PRO_TIP_COLORS : undefined}
+            />
           </div>
 
           {isRylee ? (

@@ -13,23 +13,29 @@ const TIPS = [
   { key: "careTip", label: "Care Tip", icon: HeartHandshake, bg: "#eff6fe", color: "#3b82f6" },
 ] as const;
 
+/** Optional brand colours for the Pro Tip box (background + icon). */
+export type TipColors = { bg: string; color: string };
+
 function Tip({
   item,
   tip,
   accent,
+  proColors,
 }: {
   item: OrderItem;
   tip: (typeof TIPS)[number];
   accent: string;
+  proColors?: TipColors;
 }) {
   const Icon = tip.icon;
   const isPro = tip.key === "styleTip";
+  const colors = (isPro && proColors) || tip;
   return (
-    <div className="rounded-lg p-3" style={{ background: tip.bg }}>
+    <div className="rounded-lg p-3" style={{ background: colors.bg }}>
       <div className="flex gap-3">
         <span
           className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white"
-          style={{ color: tip.color }}
+          style={{ color: colors.color }}
         >
           <Icon className="size-4" />
         </span>
@@ -104,10 +110,20 @@ function OrderItemCard({
 
 /** Mobile order item: a card with a big product image on top, name + qty + price,
  *  and a light "Pro & Care Tips" button that opens the tips in a bottom sheet. */
-function MobileItemCard({ item, accent, sym }: { item: OrderItem; accent: string; sym: string }) {
+function MobileItemCard({
+  item,
+  accent,
+  sym,
+  proColors,
+}: {
+  item: OrderItem;
+  accent: string;
+  sym: string;
+  proColors?: TipColors;
+}) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-soft-md">
+    <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-soft-md">
       {/* Big product image */}
       <ImageTile
         accent={accent}
@@ -117,7 +133,7 @@ function MobileItemCard({ item, accent, sym }: { item: OrderItem; accent: string
         label={<Package className="size-6 text-muted-foreground" />}
       />
 
-      <div className="mt-3 border-t border-border/60 pt-3">
+      <div className="mt-3 flex flex-1 flex-col border-t border-border/60 pt-3">
         <div className="flex items-start justify-between gap-3">
           <p className="line-clamp-2 flex-1 text-sm font-bold text-foreground">{item.name}</p>
           <span
@@ -127,12 +143,13 @@ function MobileItemCard({ item, accent, sym }: { item: OrderItem; accent: string
             Qty: {item.qty}
           </span>
         </div>
-        <p className="mt-1.5 text-lg font-bold text-foreground">{sym}{formatPrice(item.price)}</p>
+        <p className="mt-1.5 mb-3 text-lg font-bold text-foreground">{sym}{formatPrice(item.price)}</p>
 
+        {/* mt-auto pins the button to the bottom so cards in the swipe row line up */}
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border border-primary/10 bg-primary/[0.05] px-3 py-2.5 text-[13px] font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.98]"
+          className="mt-auto flex w-full items-center justify-center gap-1.5 rounded-xl border border-primary/10 bg-primary/[0.05] px-3 py-2.5 text-[13px] font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.98]"
         >
           <Star className="size-4" /> Pro &amp; Care Tips
         </button>
@@ -141,7 +158,7 @@ function MobileItemCard({ item, accent, sym }: { item: OrderItem; accent: string
       <BottomSheet open={open} onClose={() => setOpen(false)} title={item.name}>
         <div className="flex flex-col gap-2">
           {TIPS.map((tip) => (
-            <Tip key={tip.key} item={item} tip={tip} accent={accent} />
+            <Tip key={tip.key} item={item} tip={tip} accent={accent} proColors={proColors} />
           ))}
         </div>
       </BottomSheet>
@@ -154,12 +171,15 @@ export function OrderItems({
   accent,
   sym,
   showAll = false,
+  proTipColors,
 }: {
   items: OrderItem[];
   accent: string;
   sym: string;
   /** Mobile: swipe through every item instead of showing only the first. */
   showAll?: boolean;
+  /** Mobile: brand colours for the Pro Tip box instead of the default green. */
+  proTipColors?: TipColors;
 }) {
   const mobile = useDevice() === "mobile";
 
@@ -178,16 +198,16 @@ export function OrderItems({
         {showAll && items.length > 1 ? (
           <div className="thin-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3">
             {items.map((it, i) => (
-              <div key={it.name} className="w-[82%] shrink-0 snap-center">
+              <div key={it.name} className="flex w-[82%] shrink-0 snap-center flex-col">
                 <p className="mb-1.5 text-[11px] font-semibold text-muted-foreground">
                   Item {i + 1} of {items.length} · {it.variant}
                 </p>
-                <MobileItemCard item={it} accent={accent} sym={sym} />
+                <MobileItemCard item={it} accent={accent} sym={sym} proColors={proTipColors} />
               </div>
             ))}
           </div>
         ) : (
-          item && <MobileItemCard item={item} accent={accent} sym={sym} />
+          item && <MobileItemCard item={item} accent={accent} sym={sym} proColors={proTipColors} />
         )}
       </div>
     );
