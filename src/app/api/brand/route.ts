@@ -1128,8 +1128,10 @@ export async function POST(req: Request) {
 
   // Curated fallback for stores we can't scrape at all (enterprise bot walls, e.g.
   // adidas): if nothing scraped, use a hand-curated catalog for known brands.
-  const curatedCatalog =
-    products.length === 0 ? CURATED_CATALOGS.find((c) => c.match.test(url.hostname)) : undefined;
+  // The curated banner/name/logo apply even when scraping works (see below): bot
+  // walls are intermittent, and scraped image URLs from those stores won't hotlink.
+  const curatedBrand = CURATED_CATALOGS.find((c) => c.match.test(url.hostname));
+  const curatedCatalog = products.length === 0 ? curatedBrand : undefined;
   if (curatedCatalog) {
     products = curatedCatalog.products.map((p, i) => ({
       id: String(i + 1),
@@ -1164,9 +1166,9 @@ export async function POST(req: Request) {
   if (curated) branding.brandColor = curated[1];
 
   // Curated banner (for stores we can't scrape a hero image from).
-  if (curatedCatalog?.banner) branding.bannerImage = curatedCatalog.banner;
-  if (curatedCatalog?.name) branding.brandName = curatedCatalog.name;
-  if (curatedCatalog?.logo) branding.logo = curatedCatalog.logo;
+  if (curatedBrand?.banner) branding.bannerImage = curatedBrand.banner;
+  if (curatedBrand?.name) branding.brandName = curatedBrand.name;
+  if (curatedBrand?.logo) branding.logo = curatedBrand.logo;
 
   // Country + famous city from the store's currency (falls back to the TLD, then US).
   const cur = currency || currencyFromTld(url.hostname);
