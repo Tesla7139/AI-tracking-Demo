@@ -33,15 +33,6 @@
   .divider { height: 1px; background: var(--line); width: 100%; }
 
   /* ---------- Header ---------- */
-  .ribbon { background: var(--brand); height: 50px; display: flex; align-items: center; justify-content: center; position: relative; color: #2a1d14; }
-  /* The Figma icons are white; render them dark brown on the taupe for contrast. */
-  .ribbon img { filter: brightness(0) opacity(0.85); }
-  .ribbon__msg { display: flex; align-items: center; gap: 16px; }
-  .ribbon__text { display: flex; align-items: center; gap: 8px; }
-  .chip-w { background: rgba(255, 255, 255, 0.3); border-radius: 4px; padding: 4px 8px; font-weight: 700; }
-  .timer { display: flex; align-items: center; gap: 12px; }
-  .timer__digits { display: flex; align-items: center; gap: 4px; font-weight: 700; }
-  .ribbon__close { position: absolute; right: 112px; top: 13px; width: 24px; height: 24px; background: none; border: 0; padding: 0; }
   .logo-bar { background: #fff; border-bottom: 1px solid #e7ebed; height: 80px; display: flex; align-items: center; justify-content: center; position: sticky; top: 0; z-index: 10; }
 
   /* ---------- Top status cards ---------- */
@@ -358,9 +349,6 @@
 
   @media (max-width: 1055px) {
     .wrap { width: auto; margin: 0 16px; }
-    .ribbon { height: auto; min-height: 50px; padding: 8px 48px 8px 16px; }
-    .ribbon__msg { flex-wrap: wrap; justify-content: center; row-gap: 6px; }
-    .ribbon__close { right: 12px; top: 50%; transform: translateY(-50%); }
 
     /* Status cards keep their 325px desktop composition and swipe sideways. */
     .stats { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 16px -16px 0; padding: 0 16px; scroll-padding-inline: 16px; }
@@ -388,24 +376,9 @@
     .section-title { font-size: 18px; }
     .panel, .widget, .picks, .oi, .arrivals { padding: 16px; }
 
-    /* Ribbon: everything on one compact line (same content as desktop). */
-    .ribbon { padding: 8px 36px 8px 6px; }
-    .ribbon__msg, .ribbon__text, .timer, .timer__digits { flex-wrap: nowrap; gap: 3px; font-size: 10.5px; white-space: nowrap; }
-    .ribbon__msg { gap: 4px; }
-    .ribbon .chip-w { padding: 3px 4px; }
-    .ribbon img { width: 13px; height: 13px; }
-    .ribbon .chip-w { padding: 3px 5px; }
-    .timer__digits { gap: 0; font-variant-numeric: tabular-nums; }
-    .timer__digits .chip-w { background: none; padding: 0; }
-    .ribbon__close { right: 6px; width: 28px; height: 28px; }
   }
 
-  /* Narrow phones (360px Android): shrink the ribbon line slightly so it still fits. */
   @media (max-width: 374px) {
-    .ribbon__msg, .ribbon__text, .timer, .timer__digits { font-size: 10px; }
-    .ribbon__msg { gap: 3px; }
-    .ribbon img { width: 12px; height: 12px; }
-    .ribbon__close { width: 32px; height: 32px; padding: 4px; }
     .logo-bar { height: 64px; }
     .logo-bar img { width: 160px; height: 40px; }
 
@@ -484,21 +457,6 @@
 <body>
 
 <header>
-  <div class="ribbon" id="ribbon">
-    <div class="ribbon__msg">
-      <div class="ribbon__text">
-        <img src="assets/imgFeaturedSeasonalAndGifts24Dp5F6368Fill0Wght400Grad0Opsz241.svg" width="16" height="16" alt="">
-        <span class="ribbon__copy">25% off + free shipping · code</span>
-        <span class="chip-w">FLASH</span>
-      </div>
-      <div class="timer">
-        <img src="assets/imgTimer24Dp5F6368Fill0Wght400Grad0Opsz241.svg" width="24" height="24" alt="">
-        <div class="timer__digits" id="timer"><span class="chip-w">23</span>:<span class="chip-w">42</span>:<span class="chip-w">19</span></div>
-      </div>
-      <span class="chip-w">Shop Now</span>
-    </div>
-    <button class="ribbon__close" aria-label="Close banner" onclick="this.parentElement.remove()"><img src="assets/imgCloseIcon.svg" width="24" height="24" alt=""></button>
-  </div>
   <div class="logo-bar"><img src="assets/imgRcHeaderLogoBarV21.png" width="208" height="52" alt="Rylee + Cru" style="object-fit:cover"></div>
 </header>
 
@@ -1179,14 +1137,6 @@ document.querySelectorAll('.copy').forEach((b) => b.addEventListener('click', ()
   toast('Copied ' + b.dataset.copy);
 }));
 
-(function countdown() {
-  let s = 23 * 3600 + 42 * 60 + 19;
-  const cells = document.querySelectorAll('#timer .chip-w');
-  setInterval(() => {
-    s = Math.max(0, s - 1);
-    [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].forEach((v, i) => (cells[i].textContent = String(v).padStart(2, '0')));
-  }, 1000);
-})();
 </script>
 </body>
 </html>
