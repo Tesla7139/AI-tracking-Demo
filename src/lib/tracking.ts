@@ -101,7 +101,9 @@ export type OrderItem = {
   careTip: string;
   usageTip: string;
   rec: ItemRec | null; // No upsell when there is no distinct paid product.
+  guide?: ItemGuide; // Setup & maintenance steps, for brands that have them (lib/guides).
 };
+export type ItemGuide = { setup: string[]; maintain: string[] };
 
 const SAMPLE_ORDER_ITEMS: OrderItem[] = [
   {

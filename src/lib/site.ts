@@ -30,6 +30,8 @@ export type Brand = {
   ogImage: string | null;
   /** Best-guess wide lifestyle/banner image from the homepage (preferred for the hero). */
   bannerImage: string | null;
+  /** Hand-picked photo for the promo card (otherwise a product photo is used). */
+  promoImage?: string | null;
   /** The store's homepage URL (for CTA links). */
   url: string | null;
   currency: string | null;

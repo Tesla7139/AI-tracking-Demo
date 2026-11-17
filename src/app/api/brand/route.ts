@@ -23,6 +23,7 @@ type Branding = {
   logo: string | null;
   ogImage: string | null; // wide brand photo (for hero/promo)
   bannerImage: string | null; // best-guess wide lifestyle/banner image for the hero
+  promoImage?: string | null; // curated photo for the promo card
   url: string | null; // the store's homepage (for CTA links)
   currency: string | null;
   country: string | null;
@@ -43,8 +44,25 @@ const CURATED_COLORS: [RegExp, string][] = [
   [/bombas/i, "#111111"],
   // one8.com's markup yields #00ffff, unreadable as a button/text color; the brand is black.
   [/one8/i, "#111111"],
+  // prioritybicycles.com declares an empty theme-color; the markup picker lands on
+  // the yellow of a small repeated icon. The site itself is charcoal.
+  [/prioritybicycles/i, "#1c1c1c"],
   // Rylee + Cru's #baa899, darkened so white button text stays readable.
   [/ryleeandcru/i, "#8c7867"],
+];
+
+// Curated promo-card photos, for stores whose first product shot is a cut-out on white.
+const CURATED_PROMOS: [RegExp, string][] = [
+  [/prioritybicycles/i, "https://www.prioritybicycles.com/cdn/shop/files/commuter-bikes.jpg?width=900"],
+];
+
+// Curated banners for stores whose scraped hero image is unusable.
+const CURATED_BANNERS: [RegExp, string][] = [
+  // The scraped hero is a transparent overlay holding only a "Shop Now" button.
+  [
+    /prioritybicycles/i,
+    "https://www.prioritybicycles.com/cdn/shop/files/600_parkavetunnel_18_1of1.jpg?width=1500",
+  ],
 ];
 
 // Curated catalogs for stores we cannot scrape at all (enterprise bot walls like
@@ -1167,6 +1185,8 @@ export async function POST(req: Request) {
 
   // Curated banner (for stores we can't scrape a hero image from).
   if (curatedBrand?.banner) branding.bannerImage = curatedBrand.banner;
+  const curatedBanner = CURATED_BANNERS.find(([re]) => re.test(url.hostname));
+  if (curatedBanner) branding.bannerImage = curatedBanner[1];
   if (curatedBrand?.name) branding.brandName = curatedBrand.name;
   if (curatedBrand?.logo) branding.logo = curatedBrand.logo;
 
@@ -1194,6 +1214,8 @@ export async function POST(req: Request) {
     timezone: locale.tz,
     products,
   };
+  const curatedPromo = CURATED_PROMOS.find(([re]) => re.test(url.hostname));
+  if (curatedPromo) data.promoImage = curatedPromo[1];
   cache.set(key, { data, at: Date.now() });
   return NextResponse.json(data);
 }

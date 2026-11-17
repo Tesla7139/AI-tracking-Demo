@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Gem, HeartHandshake, Package, SlidersHorizontal, Star } from "lucide-react";
-import { type OrderItem } from "@/lib/tracking";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Gem, HeartHandshake, Package, ShieldCheck, SlidersHorizontal, Star, Wrench, X } from "lucide-react";
+import { type ItemGuide, type OrderItem } from "@/lib/tracking";
 import { formatPrice } from "@/lib/site";
 import { TrackingCard, ImageTile } from "./TrackingCard";
 import { useDevice } from "./device";
@@ -61,6 +63,118 @@ function Tip({
   );
 }
 
+const GUIDE_SECTIONS = [
+  { key: "setup", label: "How to setup", icon: Wrench, bg: "#fff6e5", color: "#d97706" },
+  { key: "maintain", label: "How to maintain", icon: ShieldCheck, bg: "#f1f1f1", color: "#1c1c1c" },
+] as const;
+
+/** "How to setup" + "How to maintain" bullet lists; shared by the modal and the sheet. */
+function GuideBody({ guide }: { guide: ItemGuide }) {
+  return (
+    <div className="flex flex-col gap-3">
+      {GUIDE_SECTIONS.map((sec) => {
+        const Icon = sec.icon;
+        return (
+          <div key={sec.key} className="flex gap-3 rounded-xl p-4" style={{ background: sec.bg }}>
+            <span
+              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white"
+              style={{ color: sec.color }}
+            >
+              <Icon className="size-[18px]" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[15px] font-bold text-foreground">{sec.label}:</p>
+              <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm leading-relaxed text-foreground">
+                {guide[sec.key].map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Desktop: centred modal over the whole page (portalled out of the zoomed page). */
+function GuideModal({ open, onClose, guide }: { open: boolean; onClose: () => void; guide: ItemGuide }) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (typeof document === "undefined") return null;
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+          <motion.div
+            className="absolute inset-0 bg-black/45"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Setup and Maintenance Guide"
+            className="relative w-full max-w-xl rounded-2xl bg-white p-5 shadow-2xl"
+            style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ duration: 0.18 }}
+          >
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h3 className="text-lg font-bold text-foreground">Setup and Maintenance Guide</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close"
+                className="flex size-8 items-center justify-center rounded-full text-muted-foreground hover:bg-background-muted"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            <GuideBody guide={guide} />
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+}
+
+/** Brand-coloured "Setup and Maintenance Guide" button; opens a modal (desktop) or sheet (mobile). */
+function GuideButton({ guide, accent, mobile }: { guide: ItemGuide; accent: string; mobile?: boolean }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={`flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90 active:scale-[0.98] ${
+          mobile ? "mt-2 w-full" : "w-fit"
+        }`}
+        style={{ background: accent }}
+      >
+        <Wrench className="size-4" /> Setup and Maintenance Guide
+      </button>
+      {mobile ? (
+        <BottomSheet open={open} onClose={() => setOpen(false)} title="Setup and Maintenance Guide">
+          <GuideBody guide={guide} />
+        </BottomSheet>
+      ) : (
+        <GuideModal open={open} onClose={() => setOpen(false)} guide={guide} />
+      )}
+    </>
+  );
+}
+
 /** Desktop order item: image left, tips shown inline below (unchanged). */
 function OrderItemCard({
   item,
@@ -98,6 +212,8 @@ function OrderItemCard({
           </p>
         </div>
       </div>
+
+      {item.guide && <GuideButton guide={item.guide} accent={accent} />}
 
       <div className="flex flex-col gap-2">
         {TIPS.map((tip) => (
@@ -153,6 +269,7 @@ function MobileItemCard({
         >
           <Star className="size-4" /> Pro &amp; Care Tips
         </button>
+        {item.guide && <GuideButton guide={item.guide} accent={accent} mobile />}
       </div>
 
       <BottomSheet open={open} onClose={() => setOpen(false)} title={item.name}>

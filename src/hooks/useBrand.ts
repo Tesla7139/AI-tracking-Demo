@@ -41,6 +41,7 @@ export function useBrand() {
       logo: data?.logo || null,
       ogImage: data?.ogImage || null,
       bannerImage: data?.bannerImage || null,
+      promoImage: data?.promoImage || null,
       url: data?.url || (trimmed.startsWith("http") ? trimmed : `https://${trimmed}`),
       currency: data?.currency ?? DEFAULT_BRAND.currency,
       country: data?.country ?? DEFAULT_BRAND.country,

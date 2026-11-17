@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { MapPinned, Lightbulb } from "lucide-react";
 import { currencySymbol, type Brand, type GeoLocation, type Weather } from "@/lib/site";
 import { cityFunFacts, brandDidYouKnows, buildOrderItems, buildNewArrivals } from "@/lib/tracking";
+import { withItemGuides } from "@/lib/guides";
 import { useDevice } from "./device";
 import type { Generated } from "@/hooks/useGenerated";
 import { TrackingHeader } from "./TrackingHeader";
@@ -67,7 +68,9 @@ export function TrackingPage({
     : brandDidYouKnows(brand.brandName);
 
   // Order items from the catalog; override the upsell with the AI pick when present.
-  const items = isRylee ? rylee.ORDER_ITEMS : buildOrderItems(brand.products, generated?.upsells);
+  const items = isRylee
+    ? rylee.ORDER_ITEMS
+    : withItemGuides(brand, buildOrderItems(brand.products, generated?.upsells));
   if (brandPhoto && items.length && !isRylee) items[0] = { ...items[0], image: brandPhoto };
   const orderValue =
     sym + items.reduce((s, it) => s + it.price * (it.qty || 1), 0).toLocaleString();

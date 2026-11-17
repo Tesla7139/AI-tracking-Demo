@@ -16,7 +16,8 @@ export function PromoCard({ brand, className }: { brand: Brand; className?: stri
   const heroImg =
     brand.bannerImage || brand.ogImage || brand.products.find((p) => p.image)?.image || null;
   const productImgs = brand.products.map((p) => p.image).filter(Boolean) as string[];
-  const img = productImgs.find((i) => i !== heroImg) || productImgs[0] || promoImage;
+  const img =
+    brand.promoImage || productImgs.find((i) => i !== heroImg) || productImgs[0] || promoImage;
   return (
     <div
       className={cn(
